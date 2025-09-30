@@ -1,7 +1,7 @@
 ﻿using SIGEBI.Domain.Entitines.Configuration.Notificaciones;
 using SIGEBI.Domain.Repository;
 
-namespace SIGEBI.Application.Repositories
+namespace SIGEBI.Application.Repositories.Configuration
 {
     public interface INotificacionRepository : IBaseRepository<Notificacion>
     {

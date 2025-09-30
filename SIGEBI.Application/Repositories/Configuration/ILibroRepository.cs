@@ -1,7 +1,7 @@
 ﻿using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
 
-namespace SIGEBI.Application.Repositories
+namespace SIGEBI.Application.Repositories.Configuration
 {
     public interface ILibroRepository : IBaseRepository<Libro>
     {

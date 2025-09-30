@@ -1,7 +1,7 @@
 ﻿using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
 
-namespace SIGEBI.Application.Repositories
+namespace SIGEBI.Application.Repositories.Configuration
 {
     public interface IEjemplarRepository : IBaseRepository<Ejemplar>
     {
@@ -11,8 +11,6 @@ namespace SIGEBI.Application.Repositories
         Task<IEnumerable<Ejemplar>> ObtenerPrestadosAsync();
         Task<bool> MarcarComoPerdidoAsync(int ejemplarId);
         Task<bool> MarcarComoDaniadoAsync(int ejemplarId);
-
-
 
 
     }

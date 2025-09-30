@@ -2,7 +2,7 @@
 using SIGEBI.Domain.Repository;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 
-namespace SIGEBI.Application.Repositories
+namespace SIGEBI.Application.Repositories.Configuration
 {
     public interface IUsuarioRepository : IBaseRepository<Usuario>
     {

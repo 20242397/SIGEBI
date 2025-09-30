@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SIGEBI.Application.Repositories
+namespace SIGEBI.Application.Repositories.Configuration
 {
     public interface IReporteRepository : IBaseRepository<Reporte>
     {

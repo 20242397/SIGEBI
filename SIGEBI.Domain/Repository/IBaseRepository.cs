@@ -1,6 +1,7 @@
 ﻿
 using SIGEBI.Domain.Base;
 
+
 namespace SIGEBI.Domain.Repository
 {
     public interface IBaseRepository<T> where T : Base.BaseEntity

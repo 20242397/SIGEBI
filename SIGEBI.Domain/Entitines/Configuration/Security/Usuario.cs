@@ -10,6 +10,8 @@ namespace SIGEBI.Domain.Entitines.Configuration.Security
     }
     public sealed class Usuario : Base.BaseEntity
     {
+        public string Estado { get; set; } = "Activo"; // Activo, Inactivo
+
         public string Nombre { get; set; } = null!;
         public string Apellido { get; set; } = null!;
         public string Email { get; set; } = null!;

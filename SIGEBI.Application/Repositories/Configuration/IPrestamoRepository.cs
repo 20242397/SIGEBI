@@ -1,7 +1,7 @@
 ﻿using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 using SIGEBI.Domain.Repository;
 
-namespace SIGEBI.Application.Repositories
+namespace SIGEBI.Application.Repositories.Configuration
 {
     public interface IPrestamoRepository : IBaseRepository<Prestamo>
     {
