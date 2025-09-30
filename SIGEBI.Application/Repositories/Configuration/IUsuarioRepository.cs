@@ -1,5 +1,4 @@
-﻿
-using SIGEBI.Domain.Repository;
+﻿using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 
 namespace SIGEBI.Application.Repositories.Configuration
