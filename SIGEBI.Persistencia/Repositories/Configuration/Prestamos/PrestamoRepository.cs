@@ -6,7 +6,7 @@ using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 
-namespace SIGEBI.Persistence.Repositories
+namespace SIGEBI.Persistence.Repositories.Configuration.Prestamos
 {
     public sealed class PrestamoRepository : BaseRepository<Prestamo>, IBaseRepository<Prestamo>
     {

@@ -6,7 +6,7 @@ using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 
-namespace SIGEBI.Persistence.Repositories
+namespace SIGEBI.Persistence.Repositories.Configuration.Reportes
 {
     public sealed class ReporteRepository : BaseRepository<Reporte>, IBaseRepository<Reporte>
     {

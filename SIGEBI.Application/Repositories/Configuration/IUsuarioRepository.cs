@@ -1,14 +1,11 @@
 ﻿using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 
-namespace SIGEBI.Application.Repositories.Configuration
+namespace SIGEBI.Domain.Repository
 {
-    public interface IUsuarioRepository : IBaseRepository<Usuario>
+    public interface IUsuarioRepository
     {
-
-        Task<Usuario?> GetByEmailAsync(string email);
-        Task<IEnumerable<Usuario>> GetUsuariosActivosAsync();
-        Task<IEnumerable<Usuario>> GetUsuariosInactivosAsync();
-        Task<bool> CambiarRolAsync(int usuarioId, string nuevoRol);
+        Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync();
+        Task<OperationResult<bool>> AddAsync(Usuario usuario);
     }
 }

@@ -7,7 +7,7 @@ using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 using System.Text.RegularExpressions;
 
-namespace SIGEBI.Persistence.Repositories
+namespace SIGEBI.Persistence.Repositories.Configuration.Security
 {
     public sealed class UsuarioRepository : BaseRepository<Usuario>, IBaseRepository<Usuario>
     {

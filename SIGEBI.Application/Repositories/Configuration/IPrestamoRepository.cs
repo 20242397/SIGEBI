@@ -1,14 +1,15 @@
-﻿using SIGEBI.Domain.Entitines.Configuration.Prestamos;
-using SIGEBI.Domain.Repository;
+﻿using SIGEBI.Domain.Base;
+using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 
-namespace SIGEBI.Application.Repositories.Configuration
+namespace SIGEBI.Domain.Repository
 {
     public interface IPrestamoRepository : IBaseRepository<Prestamo>
     {
-        Task<IEnumerable<Prestamo>> ObtenerPrestamosActivosAsync();
-        Task<IEnumerable<Prestamo>> ObtenerPrestamosActivosPorUsuarioAsync(int usuarioId);
-        Task<Prestamo?> ObtenerPrestamoActivoPorEjemplarAsync(int ejemplarId);
-        Task<bool> RegistrarDevolucionAsync(int prestamoId, DateTime fechaDevolucion);
-        Task<decimal> CalcularPenalizacionAsync(int prestamoId);
+        Task<OperationResult<bool>> RegistrarPrestamoAsync(Prestamo prestamo);
+        Task<OperationResult<bool>> RegistrarDevolucionAsync(int prestamoId, DateTime fechaDevolucion, decimal? penalizacion);
+        Task<OperationResult<IEnumerable<Prestamo>>> GetPrestamosActivosAsync();
+        Task<OperationResult<IEnumerable<Prestamo>>> GetPrestamosConPenalizacionAsync();
+        Task<OperationResult<bool>> AddAsync(Prestamo prestamo);
     }
 }
+

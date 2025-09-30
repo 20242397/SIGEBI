@@ -5,7 +5,7 @@ using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 
-namespace SIGEBI.Persistence.Repositories
+namespace SIGEBI.Persistence.Repositories.Configuration.NotificacionesRepositories
 {
     public sealed class NotificacionRepository : BaseRepository<Notificacion>, IBaseRepository<Notificacion>
     {
