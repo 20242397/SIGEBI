@@ -1,10 +1,10 @@
-﻿using SIGEBI.Domain.Base;
+﻿using Microsoft.Extensions.Logging;
+using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Helpers;
-using SIGEBI.Persistence.Models;                // <-- importar mapper
-using SIGEBI.Persistence.Models.Configuration;  // <-- para PrestamoGetModel
-using Microsoft.Extensions.Logging;
+using SIGEBI.Persistence.Models;
+using SIGEBI.Persistence.Validators;
 
 namespace SIGEBI.Persistence.Repositories.Ado
 {
@@ -22,14 +22,16 @@ namespace SIGEBI.Persistence.Repositories.Ado
         #region IBaseRepository<Prestamo>
         public async Task<OperationResult<Prestamo>> AddAsync(Prestamo entity)
         {
-            if (entity.UsuarioId <= 0 || entity.EjemplarId <= 0)
-                return new OperationResult<Prestamo> { Success = false, Message = "Usuario y Ejemplar son obligatorios" };
+            // Validación centralizada
+            var validation = PrestamoValidator.Validar(entity);
+            if (!validation.Success) return validation;
 
             try
             {
                 var query = @"INSERT INTO Prestamos (UsuarioId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion)
                               OUTPUT INSERTED.Id
                               VALUES (@UsuarioId, @EjemplarId, @FechaPrestamo, @FechaVencimiento, @FechaDevolucion, @Penalizacion)";
+
                 var parameters = new Dictionary<string, object>
                 {
                     {"@UsuarioId", entity.UsuarioId},
@@ -56,8 +58,8 @@ namespace SIGEBI.Persistence.Repositories.Ado
         {
             try
             {
-                var query = "SELECT Id, UsuarioId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamos";
-                var rows = await _dbHelper.ExecuteQueryAsync(query);
+                var rows = await _dbHelper.ExecuteQueryAsync(
+                    "SELECT Id, UsuarioId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamos");
 
                 return new OperationResult<IEnumerable<Prestamo>>
                 {
@@ -72,44 +74,111 @@ namespace SIGEBI.Persistence.Repositories.Ado
             }
         }
 
-        public Task<OperationResult<Prestamo>> GetByIdAsync(int id)
+        public async Task<OperationResult<Prestamo>> GetByIdAsync(int id)
         {
-            throw new NotImplementedException("Este método no es requerido en los requisitos actuales.");
+            if (id <= 0)
+                return new OperationResult<Prestamo> { Success = false, Message = "El ID debe ser mayor que 0" };
+
+            try
+            {
+                var rows = await _dbHelper.ExecuteQueryAsync(
+                    "SELECT TOP 1 * FROM Prestamos WHERE Id=@Id",
+                    new() { { "@Id", id } });
+
+                if (!rows.Any())
+                    return new OperationResult<Prestamo> { Success = false, Message = "Préstamo no encontrado" };
+
+                return new OperationResult<Prestamo> { Success = true, Data = EntityToModelMapper.ToPrestamo(rows.First()) };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener préstamo por Id");
+                return new OperationResult<Prestamo> { Success = false, Message = "Error al obtener préstamo por Id" };
+            }
         }
 
-        public Task<OperationResult<Prestamo>> UpdateAsync(Prestamo entity)
+        public async Task<OperationResult<Prestamo>> UpdateAsync(Prestamo entity)
         {
-            throw new NotImplementedException("Este método no es requerido en los requisitos actuales.");
+            if (entity.Id <= 0)
+                return new OperationResult<Prestamo> { Success = false, Message = "El ID es inválido" };
+
+            // Validación centralizada
+            var validation = PrestamoValidator.Validar(entity);
+            if (!validation.Success) return validation;
+
+            try
+            {
+                var query = @"UPDATE Prestamos
+                              SET UsuarioId=@UsuarioId, EjemplarId=@EjemplarId, FechaPrestamo=@FechaPrestamo, 
+                                  FechaVencimiento=@FechaVencimiento, FechaDevolucion=@FechaDevolucion, Penalizacion=@Penalizacion
+                              WHERE Id=@Id";
+
+                var parameters = new Dictionary<string, object>
+                {
+                    {"@UsuarioId", entity.UsuarioId},
+                    {"@EjemplarId", entity.EjemplarId},
+                    {"@FechaPrestamo", entity.FechaPrestamo},
+                    {"@FechaVencimiento", entity.FechaVencimiento},
+                    {"@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value},
+                    {"@Penalizacion", entity.Penalizacion ?? (object)DBNull.Value},
+                    {"@Id", entity.Id}
+                };
+
+                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+                return new OperationResult<Prestamo>
+                {
+                    Success = rows > 0,
+                    Data = entity,
+                    Message = rows > 0 ? null : "No se actualizó el registro"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar préstamo");
+                return new OperationResult<Prestamo> { Success = false, Message = "Error al actualizar préstamo" };
+            }
         }
 
-        public Task<OperationResult<bool>> RemoveAsync(int id)
+        public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
-            throw new NotImplementedException("Este método no es requerido en los requisitos actuales.");
+            if (id <= 0)
+                return new OperationResult<bool> { Success = false, Message = "El ID debe ser mayor que 0" };
+
+            try
+            {
+                var rows = await _dbHelper.ExecuteCommandAsync("DELETE FROM Prestamos WHERE Id=@Id", new() { { "@Id", id } });
+                return new OperationResult<bool>
+                {
+                    Success = rows > 0,
+                    Data = rows > 0,
+                    Message = rows > 0 ? null : "No se eliminó el registro"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar préstamo");
+                return new OperationResult<bool> { Success = false, Message = "Error al eliminar préstamo" };
+            }
         }
         #endregion
 
-        #region IPrestamoRepository
+        #region IPrestamoRepository (métodos específicos)
         public async Task<OperationResult<bool>> RegistrarPrestamoAsync(Prestamo prestamo)
-        {
-            var result = await AddAsync(prestamo);
-            return new OperationResult<bool>
-            {
-                Success = result.Success,
-                Message = result.Message,
-                Data = result.Success
-            };
-        }
+            => (await AddAsync(prestamo)).Success
+                ? new OperationResult<bool> { Success = true, Data = true }
+                : new OperationResult<bool> { Success = false, Message = "Error al registrar préstamo" };
 
         public async Task<OperationResult<bool>> RegistrarDevolucionAsync(int prestamoId, DateTime fechaDevolucion, decimal? penalizacion)
         {
             if (prestamoId <= 0)
-                return new OperationResult<bool> { Success = false, Message = "El ID de préstamo es inválido" };
+                return new OperationResult<bool> { Success = false, Message = "El ID es inválido" };
 
             try
             {
                 var query = @"UPDATE Prestamos 
                               SET FechaDevolucion=@FechaDevolucion, Penalizacion=@Penalizacion
                               WHERE Id=@Id";
+
                 var parameters = new Dictionary<string, object>
                 {
                     {"@FechaDevolucion", fechaDevolucion},
@@ -118,12 +187,7 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 };
 
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
-                return new OperationResult<bool>
-                {
-                    Success = rows > 0,
-                    Data = rows > 0,
-                    Message = rows > 0 ? null : "No se actualizó el registro"
-                };
+                return new OperationResult<bool> { Success = rows > 0, Data = rows > 0 };
             }
             catch (Exception ex)
             {
@@ -136,14 +200,10 @@ namespace SIGEBI.Persistence.Repositories.Ado
         {
             try
             {
-                var query = "SELECT Id, UsuarioId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamos WHERE FechaDevolucion IS NULL";
-                var rows = await _dbHelper.ExecuteQueryAsync(query);
+                var rows = await _dbHelper.ExecuteQueryAsync(
+                    "SELECT * FROM Prestamos WHERE FechaDevolucion IS NULL");
 
-                return new OperationResult<IEnumerable<Prestamo>>
-                {
-                    Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToPrestamo)
-                };
+                return new OperationResult<IEnumerable<Prestamo>> { Success = true, Data = rows.Select(EntityToModelMapper.ToPrestamo) };
             }
             catch (Exception ex)
             {
@@ -156,14 +216,10 @@ namespace SIGEBI.Persistence.Repositories.Ado
         {
             try
             {
-                var query = "SELECT Id, UsuarioId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamos WHERE Penalizacion IS NOT NULL";
-                var rows = await _dbHelper.ExecuteQueryAsync(query);
+                var rows = await _dbHelper.ExecuteQueryAsync(
+                    "SELECT * FROM Prestamos WHERE Penalizacion IS NOT NULL AND Penalizacion > 0");
 
-                return new OperationResult<IEnumerable<Prestamo>>
-                {
-                    Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToPrestamo)
-                };
+                return new OperationResult<IEnumerable<Prestamo>> { Success = true, Data = rows.Select(EntityToModelMapper.ToPrestamo) };
             }
             catch (Exception ex)
             {
@@ -171,34 +227,23 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 return new OperationResult<IEnumerable<Prestamo>> { Success = false, Message = "Error al obtener préstamos con penalización" };
             }
         }
-        #endregion
-
-        #region Métodos DTO
-        public async Task<OperationResult<IEnumerable<PrestamoGetModel>>> GetAllModelsAsync()
-        {
-            try
-            {
-                var query = "SELECT Id, UsuarioId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamos";
-                var rows = await _dbHelper.ExecuteQueryAsync(query);
-                return new OperationResult<IEnumerable<PrestamoGetModel>>
-                {
-                    Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToPrestamoGetModel)
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener modelos de préstamos");
-                return new OperationResult<IEnumerable<PrestamoGetModel>> { Success = false, Message = "Error al obtener modelos de préstamos" };
-            }
-        }
 
         Task<OperationResult<bool>> IPrestamoRepository.AddAsync(Prestamo prestamo)
         {
-            
-            return RegistrarPrestamoAsync(prestamo);
+            // Use the existing AddAsync(Prestamo) method and map its result to OperationResult<bool>
+            return AddAsync(prestamo).ContinueWith(task =>
+            {
+                var result = task.Result;
+                return new OperationResult<bool>
+                {
+                    Success = result.Success,
+                    Data = result.Success,
+                    Message = result.Message
+                };
+            });
         }
         #endregion
     }
 }
+
 

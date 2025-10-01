@@ -10,7 +10,7 @@ namespace SIGEBI.Persistence.Models.Configuration.Usuario
 {
     public record UsuarioGetModel
     {
-        internal int Id;
+        public int Id { get; set; }
 
         public string Estado { get; set; } = "Activo"; // Activo, Inactivo
 

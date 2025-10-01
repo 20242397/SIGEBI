@@ -6,6 +6,7 @@ namespace SIGEBI.Domain.Repository
     public interface IUsuarioRepository
     {
         Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync();
+
         Task<OperationResult<bool>> AddAsync(Usuario usuario);
     }
 }

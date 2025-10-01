@@ -3,10 +3,9 @@ using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Helpers;
-using SIGEBI.Persistence.Models;
-using SIGEBI.Persistence.Models.Configuration;
 using SIGEBI.Persistence.Models.Configuration.Usuario;
-using System.Text.RegularExpressions;
+using SIGEBI.Persistence.Validators;
+using SIGEBI.Persistence.Models;
 
 namespace SIGEBI.Persistence.Repositories.Ado
 {
@@ -24,15 +23,14 @@ namespace SIGEBI.Persistence.Repositories.Ado
         #region IBaseRepository
         public async Task<OperationResult<Usuario>> AddAsync(Usuario entity)
         {
-            if (string.IsNullOrWhiteSpace(entity.Nombre))
-                return new OperationResult<Usuario> { Success = false, Message = "El nombre es obligatorio" };
-            if (string.IsNullOrWhiteSpace(entity.Email) ||
-                !Regex.IsMatch(entity.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                return new OperationResult<Usuario> { Success = false, Message = "Email inválido" };
+            // Validación encapsulada
+            var validacion = UsuarioValidator.Validar(entity);
+            if (!validacion.Success) return validacion;
 
             try
             {
-                var query = @"INSERT INTO Usuarios (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado)
+                var query = @"INSERT INTO Usuarios 
+                                (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado)
                               OUTPUT INSERTED.Id
                               VALUES (@Nombre, @Apellido, @Email, @PasswordHash, @PhoneNumber, @Role, @Estado)";
 
@@ -75,16 +73,9 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 var query = "SELECT Id, Nombre, Apellido, Email, PhoneNumber, Role, Estado FROM Usuarios";
                 var rows = await _dbHelper.ExecuteQueryAsync(query);
 
-                var usuarios = rows.Select(r => new Usuario
-                {
-                    Id = (int)r["Id"],
-                    Nombre = r["Nombre"].ToString()!,
-                    Apellido = r["Apellido"].ToString()!,
-                    Email = r["Email"].ToString()!,
-                    PhoneNumber = r["PhoneNumber"]?.ToString(),
-                    Role = r["Role"]?.ToString(),
-                    Estado = r["Estado"].ToString()!
-                }).Select(u => u.ToModel());
+                // Mapeo con EntityToModelMapper
+                var usuarios = rows.Select(EntityToModelMapper.ToUsuario)
+                                   .Select(u => u.ToModel());
 
                 return new OperationResult<IEnumerable<UsuarioGetModel>>
                 {
@@ -128,17 +119,8 @@ namespace SIGEBI.Persistence.Repositories.Ado
                         Message = "No encontrado"
                     };
 
-                var r = rows.First();
-                var usuario = new Usuario
-                {
-                    Id = (int)r["Id"],
-                    Nombre = r["Nombre"].ToString()!,
-                    Apellido = r["Apellido"].ToString()!,
-                    Email = r["Email"].ToString()!,
-                    PhoneNumber = r["PhoneNumber"]?.ToString(),
-                    Role = r["Role"]?.ToString(),
-                    Estado = r["Estado"].ToString()!
-                };
+                // Mapeo con EntityToModelMapper
+                var usuario = EntityToModelMapper.ToUsuario(rows.First());
 
                 return new OperationResult<UsuarioGetModel>
                 {
@@ -176,13 +158,14 @@ namespace SIGEBI.Persistence.Repositories.Ado
             return GetAllAsync().ContinueWith(task =>
             {
                 OperationResult<IEnumerable<UsuarioGetModel>> result = task.Result;
-                var data = result.Data as IEnumerable<UsuarioGetModel>;
+                var data = result.Data;
+
                 return new OperationResult<IEnumerable<Usuario>>
                 {
                     Success = result.Success,
                     Message = result.Message,
                     Data = result.Success && data != null
-                        ? data.Select(m => new Usuario
+                        ? ((IEnumerable<UsuarioGetModel>)data).Select(m => new Usuario
                         {
                             Id = m.Id,
                             Nombre = m.Nombre,
@@ -195,7 +178,6 @@ namespace SIGEBI.Persistence.Repositories.Ado
                         : Enumerable.Empty<Usuario>()
                 };
             });
-
         }
         #endregion
     }

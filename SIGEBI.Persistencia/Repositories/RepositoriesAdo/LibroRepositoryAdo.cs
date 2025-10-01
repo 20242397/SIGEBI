@@ -3,9 +3,9 @@ using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Helpers;
-using SIGEBI.Persistence.Models;                
-using SIGEBI.Persistence.Models.Configuration;  
+using SIGEBI.Persistence.Models;
 using SIGEBI.Persistence.Models.Configuration.Libro;
+using SIGEBI.Persistence.Validators;  // Importante
 
 namespace SIGEBI.Persistence.Repositories.Ado
 {
@@ -23,12 +23,9 @@ namespace SIGEBI.Persistence.Repositories.Ado
         #region IBaseRepository<Libro>
         public async Task<OperationResult<Libro>> AddAsync(Libro entity)
         {
-            if (string.IsNullOrWhiteSpace(entity.Titulo))
-                return new OperationResult<Libro> { Success = false, Message = "El título es obligatorio" };
-            if (string.IsNullOrWhiteSpace(entity.Autor))
-                return new OperationResult<Libro> { Success = false, Message = "El autor es obligatorio" };
-            if (string.IsNullOrWhiteSpace(entity.ISBN))
-                return new OperationResult<Libro> { Success = false, Message = "El ISBN es obligatorio" };
+            // Validación centralizada
+            var validation = LibroValidator.Validar(entity);
+            if (!validation.Success) return validation;
 
             try
             {
@@ -67,7 +64,7 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 return new OperationResult<IEnumerable<Libro>>
                 {
                     Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToLibro)  // row -> entity
+                    Data = rows.Select(EntityToModelMapper.ToLibro)
                 };
             }
             catch (Exception ex)
@@ -91,11 +88,7 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 if (!rows.Any())
                     return new OperationResult<Libro> { Success = false, Message = "Libro no encontrado" };
 
-                return new OperationResult<Libro>
-                {
-                    Success = true,
-                    Data = EntityToModelMapper.ToLibro(rows.First())
-                };
+                return new OperationResult<Libro> { Success = true, Data = EntityToModelMapper.ToLibro(rows.First()) };
             }
             catch (Exception ex)
             {
@@ -108,6 +101,10 @@ namespace SIGEBI.Persistence.Repositories.Ado
         {
             if (entity.Id <= 0)
                 return new OperationResult<Libro> { Success = false, Message = "El ID es inválido" };
+
+            // Validación centralizada
+            var validation = LibroValidator.Validar(entity);
+            if (!validation.Success) return validation;
 
             try
             {
@@ -148,10 +145,7 @@ namespace SIGEBI.Persistence.Repositories.Ado
 
             try
             {
-                var rows = await _dbHelper.ExecuteCommandAsync(
-                    "DELETE FROM Libros WHERE Id=@Id",
-                    new() { { "@Id", id } });
-
+                var rows = await _dbHelper.ExecuteCommandAsync("DELETE FROM Libros WHERE Id=@Id", new() { { "@Id", id } });
                 return new OperationResult<bool>
                 {
                     Success = rows > 0,
@@ -168,14 +162,14 @@ namespace SIGEBI.Persistence.Repositories.Ado
         #endregion
 
         #region ILibroRepository (específicos)
-        public async Task<OperationResult<IEnumerable<Libro>>> BuscarPorTituloAsync(string titulo)
-            => await BuscarAsync("Titulo", titulo);
+        public Task<OperationResult<IEnumerable<Libro>>> BuscarPorTituloAsync(string titulo)
+            => BuscarAsync("Titulo", titulo);
 
-        public async Task<OperationResult<IEnumerable<Libro>>> BuscarPorAutorAsync(string autor)
-            => await BuscarAsync("Autor", autor);
+        public Task<OperationResult<IEnumerable<Libro>>> BuscarPorAutorAsync(string autor)
+            => BuscarAsync("Autor", autor);
 
-        public async Task<OperationResult<IEnumerable<Libro>>> BuscarPorCategoriaAsync(string categoria)
-            => await BuscarAsync("Categoria", categoria);
+        public Task<OperationResult<IEnumerable<Libro>>> BuscarPorCategoriaAsync(string categoria)
+            => BuscarAsync("Categoria", categoria);
 
         public async Task<OperationResult<IEnumerable<Libro>>> GetLibrosMasPrestadosAsync(int topN)
         {
@@ -192,80 +186,43 @@ namespace SIGEBI.Persistence.Repositories.Ado
                               ORDER BY TotalPrestamos DESC";
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, new() { { "@TopN", topN } });
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToLibro)
-                };
+                return new OperationResult<IEnumerable<Libro>> { Success = true, Data = rows.Select(EntityToModelMapper.ToLibro) };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener libros más prestados");
-                return new OperationResult<IEnumerable<Libro>> { Success = false, 
-                                                               Message = "Error al obtener libros más prestados" };
+                return new OperationResult<IEnumerable<Libro>> { Success = false, Message = "Error al obtener libros más prestados" };
             }
         }
 
-        // Implementación EXPLÍCITA del AddAsync(bool)
         async Task<OperationResult<bool>> ILibroRepository.AddAsync(Libro libro)
         {
             var result = await AddAsync(libro);
-            return new OperationResult<bool>
-            {
-                Success = result.Success,
-                Message = result.Message,
-                Data = result.Success
-            };
+            return new OperationResult<bool> { Success = result.Success, Message = result.Message, Data = result.Success };
         }
         #endregion
 
-        #region DTO helpers
-        public async Task<OperationResult<IEnumerable<LibroGetModel>>> GetAllModelsAsync()
-        {
-            try
-            {
-                var rows = await _dbHelper.ExecuteQueryAsync(
-                    "SELECT Id, Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria FROM Libros");
-
-                return new OperationResult<IEnumerable<LibroGetModel>>
-                {
-                    Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToLibroGetModel) // row -> model
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener modelos de libro");
-                return new OperationResult<IEnumerable<LibroGetModel>> { Success = false, Message = "Error al obtener modelos de libro" };
-            }
-        }
-
+        #region Helpers
         private async Task<OperationResult<IEnumerable<Libro>>> BuscarAsync(string campo, string valor)
         {
             if (string.IsNullOrWhiteSpace(valor))
-                return new OperationResult<IEnumerable<Libro>> { Success = false, 
-                                                                Message = $"El valor de búsqueda para {campo} no puede estar vacío" };
+                return new OperationResult<IEnumerable<Libro>> { Success = false, Message = $"El valor de búsqueda para {campo} no puede estar vacío" };
 
             try
             {
                 var rows = await _dbHelper.ExecuteQueryAsync(
-                    $"SELECT Id, Titulo, Autor, ISBN, Editorial, AñoPublicacion," +
-                    $" Categoria FROM Libros WHERE {campo} LIKE @Valor",
+                    $"SELECT Id, Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria FROM Libros WHERE {campo} LIKE @Valor",
                     new() { { "@Valor", $"%{valor}%" } });
 
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = true,
-                    Data = rows.Select(EntityToModelMapper.ToLibro)
-                };
+                return new OperationResult<IEnumerable<Libro>> { Success = true, Data = rows.Select(EntityToModelMapper.ToLibro) };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al buscar libros por {Campo}", campo);
-                return new OperationResult<IEnumerable<Libro>> { Success = false, 
-                                                                Message = $"Error al buscar libros por {campo}" };
+                return new OperationResult<IEnumerable<Libro>> { Success = false, Message = $"Error al buscar libros por {campo}" };
             }
         }
         #endregion
     }
 }
+
