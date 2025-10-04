@@ -1,30 +1,57 @@
-﻿using SIGEBI.Domain.Entitines.Configuration.Prestamos;
-using SIGEBI.Domain.Entitines.Configuration.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace SIGEBI.Persistence.Models.Configuration.Usuario
+namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
 {
-    public record UsuarioGetModel
+    public  class UsuarioGetModel
     {
-        public int Id { get; set; }
+        public int Id { get; internal set; }
+        public string Nombre { get; internal set; }
+        public string Apellido { get; internal set; }
+        public string? PhoneNumber { get; internal set; }
+        public string Email { get; internal set; }
+        public string? Role { get; internal set; }
+        public string Estado { get; internal set; }
 
-        public string Estado { get; set; } = "Activo"; // Activo, Inactivo
+        public record UsuarioCreateDto(
+            string Nombre,
+            string Apellido,
+            string Email,
+            string PasswordHash,
+            string? PhoneNumber,
+            string? Role,
+            string Estado = "Activo"
+        )
+        {
+            internal Domain.Entitines.Configuration.Security.Usuario ToEntity()
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public string Nombre { get; set; } = null!;
-        public string Apellido { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
-        public string? PhoneNumber { get; set; }
+        public record UsuarioUpdateDto(
+            int Id,
+            string Nombre,
+            string Apellido,
+            string Email,
+            string? PhoneNumber,
+            string? Role,
+            string Estado
+        )
+        {
+            internal Domain.Entitines.Configuration.Security.Usuario ToEntity()
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public string? Role { get; set; } = UserRole.User.ToString();
+        public record UsuarioRoleDto(int UsuarioId, string Rol);
 
-        public ICollection<Prestamo> Prestamos { get; set; } = new List<Prestamo>();
+        public record UsuarioEstadoDto(int UsuarioId, string Estado); // Activo o Inactivo
 
+        public record UsuarioHistorialPrestamosDto(
+            int UsuarioId,
+            IEnumerable<int> PrestamoIds
+        );
     }
 
 }
-

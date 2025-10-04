@@ -4,7 +4,6 @@ using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Helpers;
 using SIGEBI.Persistence.Models;
-using SIGEBI.Persistence.Models.Configuration.Libro;
 using SIGEBI.Persistence.Validators;  // Importante
 
 namespace SIGEBI.Persistence.Repositories.Ado
@@ -222,6 +221,176 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 return new OperationResult<IEnumerable<Libro>> { Success = false, Message = $"Error al buscar libros por {campo}" };
             }
         }
+
+        public async Task<OperationResult<bool>> GetByAuthorAsync(string autor)
+        {
+            if (string.IsNullOrWhiteSpace(autor))
+            {
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "El autor no puede estar vacío",
+                    Data = false
+                };
+            }
+
+            try
+            {
+                var query = @"SELECT COUNT(*) 
+                      FROM Libros 
+                      WHERE Autor LIKE @Autor";
+
+                var parameters = new Dictionary<string, object>
+        {
+            { "@Autor", $"%{autor}%" }
+        };
+
+                var count = (int)await _dbHelper.ExecuteScalarAsync(query, parameters);
+
+                if (count == 0)
+                {
+                    _logger.LogWarning("No se encontraron libros para el autor {Autor}", autor);
+                    return new OperationResult<bool>
+                    {
+                        Success = false,
+                        Message = "No se encontraron libros para el autor especificado",
+                        Data = false
+                    };
+                }
+
+                _logger.LogInformation("Se encontraron {Count} libros para el autor {Autor}", count, autor);
+                return new OperationResult<bool>
+                {
+                    Success = true,
+                    Message = "Libros encontrados",
+                    Data = true
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener libros por autor {Autor}", autor);
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "Error al obtener libros por autor",
+                    Data = false
+                };
+            }
+        }
+
+        public async Task<OperationResult<bool>> GetByCategoryAsync(string categoria)
+        {
+            if (string.IsNullOrWhiteSpace(categoria))
+            {
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "La categoría no puede estar vacía",
+                    Data = false
+                };
+            }
+
+            try
+            {
+                var query = @"SELECT COUNT(*) 
+                      FROM Libros 
+                      WHERE Categoria LIKE @Categoria";
+
+                var parameters = new Dictionary<string, object>
+        {
+            { "@Categoria", $"%{categoria}%" }
+        };
+
+                var count = (int)await _dbHelper.ExecuteScalarAsync(query, parameters);
+
+                if (count == 0)
+                {
+                    _logger.LogWarning("No se encontraron libros para la categoría {Categoria}", categoria);
+                    return new OperationResult<bool>
+                    {
+                        Success = false,
+                        Message = "No se encontraron libros para la categoría especificada",
+                        Data = false
+                    };
+                }
+
+                _logger.LogInformation("Se encontraron {Count} libros para la categoría {Categoria}", count, categoria);
+                return new OperationResult<bool>
+                {
+                    Success = true,
+                    Message = "Libros encontrados",
+                    Data = true
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener libros por categoría {Categoria}", categoria);
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "Error al obtener libros por categoría",
+                    Data = false
+                };
+            }
+        }
+
+
+        public async Task<OperationResult<bool>> SearchByTitleAsync(string titulo)
+        {
+            if (string.IsNullOrWhiteSpace(titulo))
+            {
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "El título no puede estar vacío",
+                    Data = false
+                };
+            }
+
+            try
+            {
+                var query = @"SELECT COUNT(*) 
+                      FROM Libros 
+                      WHERE Titulo LIKE @Titulo";
+
+                var parameters = new Dictionary<string, object>
+        {
+            { "@Titulo", $"%{titulo}%" }
+        };
+
+                var count = (int)await _dbHelper.ExecuteScalarAsync(query, parameters);
+
+                if (count == 0)
+                {
+                    _logger.LogWarning("No se encontraron libros con el título que contiene {Titulo}", titulo);
+                    return new OperationResult<bool>
+                    {
+                        Success = false,
+                        Message = "No se encontraron libros con el título especificado",
+                        Data = false
+                    };
+                }
+
+                _logger.LogInformation("Se encontraron {Count} libros con el título que contiene {Titulo}", count, titulo);
+                return new OperationResult<bool>
+                {
+                    Success = true,
+                    Message = "Libros encontrados",
+                    Data = true
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al buscar libros por título {Titulo}", titulo);
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "Error al buscar libros por título",
+                    Data = false
+                };
+            }
+        }
+
         #endregion
     }
 }

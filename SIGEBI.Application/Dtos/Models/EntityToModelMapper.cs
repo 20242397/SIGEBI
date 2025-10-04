@@ -1,9 +1,12 @@
-﻿using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
+﻿
+using SIGEBI.Application.Dtos.Models.Configuration.Libro;
+using SIGEBI.Application.Dtos.Models.Configuration.Prestamo;
+using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
+using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 using SIGEBI.Domain.Entitines.Configuration.Security;
-using SIGEBI.Persistence.Models.Configuration;
-using SIGEBI.Persistence.Models.Configuration.Libro;
-using SIGEBI.Persistence.Models.Configuration.Usuario;
+using System.Reflection.Metadata.Ecma335;
+using static SIGEBI.Application.Dtos.Models.Configuration.Libro.LibroGetModel;
 
 namespace SIGEBI.Persistence.Models
 {
@@ -51,6 +54,8 @@ namespace SIGEBI.Persistence.Models
         // ============
         public static UsuarioGetModel ToUsuarioGetModel(Dictionary<string, object> r) => new UsuarioGetModel
         {
+            
+
             Id = (int)r["Id"],
             Nombre = r["Nombre"].ToString()!,
             Apellido = r["Apellido"].ToString()!,
@@ -117,5 +122,27 @@ namespace SIGEBI.Persistence.Models
             FechaDevolucion = e.FechaDevolucion,
             Penalizacion = e.Penalizacion
         };
+        public static Libro ToEntity(this LibroCreateDto dto) =>
+           new Libro
+           {
+               Titulo = dto.Titulo,
+               Autor = dto.Autor,
+               ISBN = dto.ISBN,
+               Editorial = dto.Editorial,
+               AñoPublicacion = dto.AñoPublicacion,
+               Categoria = dto.Categoria,
+               Estado = "Disponible"
+           };
+        public static Libro ToEntity(this LibroUpdateDto dto) =>
+           new Libro
+           {
+               Titulo = dto.Titulo,
+               Autor = dto.Autor,
+               ISBN = dto.ISBN,
+               Editorial = dto.Editorial,
+               AñoPublicacion = dto.AñoPublicacion,
+               Categoria = dto.Categoria,
+               Estado = "Disponible"
+           };
     }
 }

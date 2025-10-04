@@ -21,5 +21,6 @@ namespace SIGEBI.Domain.Entitines.Configuration.Security
         public string? Role { get; set; } = UserRole.User.ToString();
 
         public ICollection<Prestamo> Prestamos { get; set; } = new List<Prestamo>();
+        public bool Activo { get; set; }
     }
 }

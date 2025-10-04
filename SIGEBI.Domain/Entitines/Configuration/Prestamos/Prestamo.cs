@@ -5,6 +5,8 @@ namespace SIGEBI.Domain.Entitines.Configuration.Prestamos
 {
     public sealed class Prestamo : Base.BaseEntity
     {
+        public string? LibroId;
+
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; } = null!;
         public int EjemplarId { get; set; }

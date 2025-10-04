@@ -242,6 +242,91 @@ namespace SIGEBI.Persistence.Repositories.Ado
                 };
             });
         }
+
+        public async Task<OperationResult<bool>> CalcularPenalizacionAsync(int prestamoId)
+        {
+            if (prestamoId <= 0)
+                return new OperationResult<bool> { Success = false, Message = "El ID es inválido" };
+            try
+            {
+               
+                var prestamoResult = await GetByIdAsync(prestamoId);
+                if (!prestamoResult.Success || prestamoResult.Data == null)
+                    return new OperationResult<bool> { Success = false, Message = "Préstamo no encontrado" };
+                var prestamo = prestamoResult.Data;
+
+                if (prestamo.FechaDevolucion != null)
+                    return new OperationResult<bool> { Success = false, Message = "El préstamo ya ha sido devuelto" };
+                var diasAtraso = (DateTime.Now - prestamo.FechaVencimiento).Days;
+                decimal penalizacion = diasAtraso > 0 ? diasAtraso * 1.00m : 0; 
+                var updateResult = await RegistrarDevolucionAsync(prestamoId, DateTime.Now, penalizacion);
+                return updateResult;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al calcular penalización");
+                return new OperationResult<bool> { Success = false, Message = "Error al calcular penalización" };
+            }
+        }
+
+        public async Task<OperationResult<bool>> GetHistorialPorUsuarioAsync(int usuarioId)
+        {
+            if (usuarioId <= 0)
+                return new OperationResult<bool> { Success = false, Message = "El ID del usuario es inválido" };
+            try
+            {
+                var rows = await _dbHelper.ExecuteQueryAsync(
+                    "SELECT * FROM Prestamos WHERE UsuarioId=@UsuarioId",
+                    new() { { "@UsuarioId", usuarioId } });
+                var prestamos = rows.Select(EntityToModelMapper.ToPrestamo).ToList();
+                return new OperationResult<bool> { Success = true, Data = prestamos.Any() };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener historial de préstamos por usuario");
+                return new OperationResult<bool> { Success = false, Message = "Error al obtener historial de préstamos por usuario" };
+            }
+        }
+
+        public async Task<OperationResult<bool>> RestringirPrestamoSiPenalizadoAsync(int usuarioId)
+        {
+            if (usuarioId <= 0)
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "El ID del usuario es inválido"
+                };
+
+            try
+            {
+                var rows = await _dbHelper.ExecuteQueryAsync(
+                    "SELECT COUNT(*) as Penalizados FROM Prestamos WHERE UsuarioId=@UsuarioId AND Penalizacion IS NOT NULL AND Penalizacion > 0",
+                    new() { { "@UsuarioId", usuarioId } });
+
+                var penalizados = Convert.ToInt32(rows.First()["Penalizados"]);
+
+                bool restringido = penalizados > 0;
+
+                return new OperationResult<bool>
+                {
+                    Success = true,
+                    Data = restringido,
+                    Message = restringido
+                        ? "El usuario tiene préstamos con penalización y no puede realizar nuevos préstamos."
+                        : "El usuario no tiene restricciones."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al verificar si el usuario {UsuarioId} está restringido", usuarioId);
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "Error al verificar restricciones de préstamo"
+                };
+            }
+        }
+
         #endregion
     }
 }

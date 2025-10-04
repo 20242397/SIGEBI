@@ -4,10 +4,10 @@ namespace SIGEBI.Domain.Repository
 {
     public interface ILibroRepository : IBaseRepository<Libro>
     {
-        Task<OperationResult<IEnumerable<Libro>>> BuscarPorTituloAsync(string titulo);
-        Task<OperationResult<IEnumerable<Libro>>> BuscarPorAutorAsync(string autor);
-        Task<OperationResult<IEnumerable<Libro>>> BuscarPorCategoriaAsync(string categoria);
-        Task<OperationResult<IEnumerable<Libro>>> GetLibrosMasPrestadosAsync(int topN);
+
         Task<OperationResult<bool>> AddAsync(Libro libro);
+        Task <OperationResult<bool>>GetByAuthorAsync(string autor);
+        Task <OperationResult<bool>>GetByCategoryAsync(string categoria);
+        Task <OperationResult<bool>>SearchByTitleAsync(string titulo);
     }
 }
