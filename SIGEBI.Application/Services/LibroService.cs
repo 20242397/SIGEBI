@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using NPOI.SS.Formula.Functions;
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Libro;
 using SIGEBI.Application.Interfaces;
