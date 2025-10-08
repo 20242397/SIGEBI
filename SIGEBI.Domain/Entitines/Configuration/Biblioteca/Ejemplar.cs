@@ -4,13 +4,15 @@
     {
         Disponible,
         Prestado,
-        Reservado
+        Reservado,
+        Perdido,
+        Dañado
     }
 
     public sealed class Ejemplar : Base.BaseEntity
     {
         public string CodigoBarras { get; set; } = null!;
-        public string Estado { get; set; } = "Disponible"; // Disponible, Prestado, Reservado.
+        public EstadoEjemplar Estado { get; set; } = EstadoEjemplar.Disponible;
         public int LibroId { get; set; }
         public Libro Libro { get; set; } = null!;
     }

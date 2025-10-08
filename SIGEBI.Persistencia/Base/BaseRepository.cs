@@ -94,5 +94,20 @@ namespace SIGEBI.Persistence.Base
                 return new OperationResult<bool> { Success = true, Data = true };
             }, "Error al eliminar entidad.");
         }
+
+        Task<OperationResult<T>> IBaseRepository<T>.RemoveAsync(int id)
+        {
+            // Call RemoveAsync and map the result to OperationResult<T>
+            return RemoveAsync(id).ContinueWith(task =>
+            {
+                var result = task.Result;
+                return new OperationResult<T>
+                {
+                    Success = result.Success,
+                    Message = result.Message,
+                    Data = default // No entity to return, so default(T)
+                };
+            });
+        }
     }
 }

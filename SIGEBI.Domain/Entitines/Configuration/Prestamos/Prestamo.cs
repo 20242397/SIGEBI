@@ -16,5 +16,6 @@ namespace SIGEBI.Domain.Entitines.Configuration.Prestamos
         public DateTime FechaVencimiento { get; set; }
         public DateTime? FechaDevolucion { get; set; }
         public decimal? Penalizacion { get; set; }
+        public string Estado { get; set; }
     }
 }

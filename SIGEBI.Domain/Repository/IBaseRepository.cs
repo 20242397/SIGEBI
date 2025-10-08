@@ -10,6 +10,6 @@ namespace SIGEBI.Domain.Repository
         Task<OperationResult<IEnumerable<T>>> GetAllAsync();
         Task<OperationResult<T>> AddAsync(T entity);
         Task<OperationResult<T>> UpdateAsync(T entity);
-        Task<OperationResult<bool>> RemoveAsync(int id);
+        Task<OperationResult<T>> RemoveAsync(int id);
     }
 }

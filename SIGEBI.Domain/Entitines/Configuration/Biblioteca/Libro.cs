@@ -12,6 +12,6 @@
 
         //relacion con ejemplares
         public ICollection<Ejemplar> Ejemplares { get; set; } = new List<Ejemplar>();
-        public string Estado { get; set; }
+        public string Estado { get; set; } 
     }
 }

@@ -10,7 +10,7 @@ namespace SIGEBI.Domain.Entitines.Configuration.Notificaciones
         public Usuario Usuario { get; set; } = null!;
 
         public string Mensaje { get; set; } = null!;
-        public DateTime FechaEnvio { get; set; } = DateTime.UtcNow;
+        public DateTime FechaEnvio { get; set; } = DateTime.Now;
         public bool Enviado { get; set; } = false;
     }
 }

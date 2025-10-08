@@ -31,5 +31,13 @@ namespace SIGEBI.Application.Services
                 return ServiceResult<T>.Fail($"Excepción: {ex.Message}");
             }
         }
+
+        protected ServiceResult<T> SafeReturn<T>(OperationResult<T>? result)
+        {
+            if (result == null)
+                return ServiceResult<T>.Fail("Error interno: resultado nulo.");
+
+            return FromOperationResult(result);
+        }
     }
 }

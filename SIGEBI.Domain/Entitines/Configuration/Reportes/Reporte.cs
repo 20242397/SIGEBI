@@ -2,7 +2,7 @@
 {
     public sealed class Reporte : Base.BaseEntity
     {
-        public int UsuarioId { get; set; } = 01; // ID del usuario que generó el reporte
+        public int UsuarioId { get; set; } = 0; // ID del usuario que generó el reporte
 
         public string Tipo { get; set; } = null!; // Ejemplos: "Libros Prestados", "Usuarios Activos"
         public string Contenido { get; set; } = null!; 
