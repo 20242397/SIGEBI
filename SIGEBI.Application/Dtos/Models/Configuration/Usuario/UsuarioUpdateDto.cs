@@ -13,6 +13,6 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
         public string? Role { get; set; } = null; 
 
         public string? Estado { get; set; }
-        public dynamic Activo { get; internal set; }
+        public dynamic Activo { get;  set; }
     }
 }

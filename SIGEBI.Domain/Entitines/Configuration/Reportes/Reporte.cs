@@ -1,11 +1,17 @@
-﻿namespace SIGEBI.Domain.Entitines.Configuration.Reportes
+﻿using SIGEBI.Domain.Entitines.Configuration.Security;
+
+namespace SIGEBI.Domain.Entitines.Configuration.Reportes
 {
     public sealed class Reporte : Base.BaseEntity
     {
-        public int UsuarioId { get; set; } = 0; // ID del usuario que generó el reporte
+        public int Id { get; set; }
+        public int? UsuarioId { get; set; }
 
-        public string Tipo { get; set; } = null!; // Ejemplos: "Libros Prestados", "Usuarios Activos"
-        public string Contenido { get; set; } = null!; 
-        public DateTime FechaGeneracion { get; set; } = DateTime.UtcNow;
+        public string Tipo { get; set; } = string.Empty; // Prestamos, Libros, Usuarios, etc.
+        public string? Contenido { get; set; }
+
+        public DateTime FechaGeneracion { get; set; } = DateTime.Now;
+
+        public Usuario? Usuario { get; set; }
     }
 }

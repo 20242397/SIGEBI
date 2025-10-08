@@ -1,5 +1,8 @@
-﻿namespace SIGEBI.Domain.Entitines.Configuration.Biblioteca
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SIGEBI.Domain.Entitines.Configuration.Biblioteca
 {
+
     public enum EstadoEjemplar
     {
         Disponible,
@@ -9,11 +12,18 @@
         Dañado
     }
 
+   [Table("Ejemplar")]
+
     public sealed class Ejemplar : Base.BaseEntity
     {
-        public string CodigoBarras { get; set; } = null!;
-        public EstadoEjemplar Estado { get; set; } = EstadoEjemplar.Disponible;
+        public int Id { get; set; }
         public int LibroId { get; set; }
-        public Libro Libro { get; set; } = null!;
+        public string CodigoBarras { get; set; } = string.Empty;
+
+        public EstadoEjemplar Estado { get; set; } = EstadoEjemplar.Disponible;
+
+        // Propiedad de navegación opcional (solo lectura)
+        public Libro? Libro { get; set; }
     }
 }
+

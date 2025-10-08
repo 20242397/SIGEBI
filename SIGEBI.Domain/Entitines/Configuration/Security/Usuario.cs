@@ -5,22 +5,23 @@ namespace SIGEBI.Domain.Entitines.Configuration.Security
     public enum UserRole
     {
         Admin,
-        User,
-        Bibliotecario,
+        Estudiante,
+        Docente,
     }
     public sealed class Usuario : Base.BaseEntity
     {
-        public string Estado { get; set; } = "Activo"; // Activo, Inactivo
+        public int Id { get; set; }
 
-        public string Nombre { get; set; } = null!;
-        public string Apellido { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
+        // Datos personales
+        public string Nombre { get; set; } = string.Empty;
+        public string Apellido { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
 
-        public string? Role { get; set; } = UserRole.User.ToString();
-
-        public ICollection<Prestamo> Prestamos { get; set; } = new List<Prestamo>();
-        public bool Activo { get; set; }
+        // Control de acceso
+        public string Rol { get; set; } = "Estudiante"; // Admin / Docente / Estudiante
+        public string Estado { get; set; } = "Activo";  // Activo / Inactivo
+        public bool Activo { get; set; } = true;
     }
 }

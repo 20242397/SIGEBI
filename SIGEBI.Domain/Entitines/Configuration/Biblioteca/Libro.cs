@@ -2,16 +2,16 @@
 {
     public sealed  class Libro : Base.BaseEntity
     {
-        public string Titulo { get; set; } = null!;
-        public string Autor { get; set; } = null!;
-        public string ISBN { get; set; } = null!;
-        public string Editorial { get; set; } = null!;
-        public int AñoPublicacion { get; set; }
+        public int Id { get; set; }
+        public string Titulo { get; set; } = string.Empty;
+        public string Autor { get; set; } = string.Empty;
+        public string? Categoria { get; set; }
+        public string ISBN { get; set; } = string.Empty;
+        public string? Editorial { get; set; }
+        public int? AñoPublicacion { get; set; }
 
-        public string ? Categoria { get; set; }
-
-        //relacion con ejemplares
-        public ICollection<Ejemplar> Ejemplares { get; set; } = new List<Ejemplar>();
-        public string Estado { get; set; } 
+        // Estado de disponibilidad
+        public string Estado { get; set; } = "Disponible"; // Disponible / Prestado / Reservado / Dañado
+        
     }
 }

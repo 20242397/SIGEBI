@@ -1,16 +1,24 @@
 ﻿using SIGEBI.Domain.Entitines.Configuration.Security;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIGEBI.Domain.Entitines.Configuration.Notificaciones
 {
+    [Table("Notificacion")]
+
     public sealed class Notificacion : Base.BaseEntity
     {
-        public string Tipo { get; set; } = "Aviso";
-
+        public int Id { get; set; }
         public int UsuarioId { get; set; }
-        public Usuario Usuario { get; set; } = null!;
 
-        public string Mensaje { get; set; } = null!;
+        public string Tipo { get; set; } = "Aviso"; // Aviso, Recordatorio, Penalización
+        public string Mensaje { get; set; } = string.Empty;
+
         public DateTime FechaEnvio { get; set; } = DateTime.Now;
         public bool Enviado { get; set; } = false;
+
+        public Usuario? Usuario
+        {
+            get; set;
+        }
     }
 }
