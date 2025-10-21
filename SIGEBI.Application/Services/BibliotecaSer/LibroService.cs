@@ -68,6 +68,7 @@ namespace SIGEBI.Application.Services.Biblioteca
                 libro.Editorial = dto.Editorial;
                 libro.AñoPublicacion = dto.AñoPublicacion;
                 libro.Categoria = dto.Categoria;
+                libro.Estado = dto.Estado;
 
                 var validation = LibroValidator.Validar(libro);
                 if (!validation.Success)
@@ -160,12 +161,20 @@ namespace SIGEBI.Application.Services.Biblioteca
             ExecuteAsync(async () =>
             {
                 var result = await _libroRepository.GetByIdAsync(id);
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object)result.Data!
-                };
+
+                if (result.Success)
+                    _logger.LogInformation("Libro obtenido correctamente por ID:{Id}", id);
+
+                else
+                    _logger.LogWarning("Error al obtener libro por ID: {Id}", id);
+
+
+                    return new OperationResult<T>
+                    {
+                        Success = result.Success,
+                        Message = result.Message,
+                        Data = (T)(object)result.Data!
+                    };
             });
 
         // ✅ RF1.5 - Obtener todos los libros

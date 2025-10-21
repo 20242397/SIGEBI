@@ -26,7 +26,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
             try
             {
                 string query = @"
-                    INSERT INTO Usuarios (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado)
+                    INSERT INTO Usuario (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado)
                     OUTPUT INSERTED.Id
                     VALUES (@Nombre, @Apellido, @Email, @PasswordHash, @PhoneNumber, @Role, @Estado)";
 
@@ -68,7 +68,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
         {
             try
             {
-                var query = "SELECT Id, Nombre, Apellido, Email, PhoneNumber, Role, Estado FROM Usuarios";
+                var query = "SELECT Id, Nombre, Apellido, Email, PhoneNumber, Role, Estado FROM Usuario";
                 var rows = await _dbHelper.ExecuteQueryAsync(query);
 
                 var usuarios = rows.Select(EntityToModelMapper.ToUsuario).ToList();
@@ -99,7 +99,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
 
             try
             {
-                var query = @"SELECT TOP 1 * FROM Usuarios WHERE Id=@Id";
+                var query = @"SELECT TOP 1 * FROM Usuario WHERE Id=@Id";
                 var parameters = new Dictionary<string, object> { { "@Id", id } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -129,7 +129,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
 
             try
             {
-                var query = @"SELECT TOP 1 * FROM Usuarios WHERE Email=@Email";
+                var query = @"SELECT TOP 1 * FROM Usuario WHERE Email=@Email";
                 var parameters = new Dictionary<string, object> { { "@Email", email } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -160,7 +160,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
             try
             {
                 var query = @"
-                    UPDATE Usuarios
+                    UPDATE Usuario
                     SET Nombre=@Nombre, Apellido=@Apellido, Email=@Email, PasswordHash=@PasswordHash,
                         PhoneNumber=@PhoneNumber, Role=@Role, Estado=@Estado
                     WHERE Id=@Id";
@@ -234,7 +234,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
         {
             try
             {
-                var query = "UPDATE Usuarios SET Role=@Role WHERE Id=@Id";
+                var query = "UPDATE Usuario SET Role=@Role WHERE Id=@Id";
                 var parameters = new Dictionary<string, object>
                 {
                     {"@Role", rol},

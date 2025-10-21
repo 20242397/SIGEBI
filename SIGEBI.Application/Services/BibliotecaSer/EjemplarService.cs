@@ -152,10 +152,10 @@ namespace SIGEBI.Application.Services
             });
 
         // ✅ Marcar como dañado
-        public Task<ServiceResult<T>> MarcarComoDaniadoAsync<T>(int ejemplarId) =>
+        public Task<ServiceResult<T>> MarcarComoDañadoAsync<T>(int ejemplarId) =>
             ExecuteAsync<T>(async () =>
             {
-                var result = await _ejemplarRepository.MarcarComoDaniadoAsync(ejemplarId);
+                var result = await _ejemplarRepository.MarcarComoDañadoAsync(ejemplarId);
                 _logger.LogInformation("Ejemplar marcado como dañado: {Id}", ejemplarId);
 
                 return new OperationResult<T>

@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SIGEBI.Application.Repositories.Configuration.Reportes;
+using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Reportes;
-using SIGEBI.Application.Repositories.Configuration.Reportes;
 using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
-using SIGEBI.Application.Validators;
 using System.Text;
 
 namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
@@ -13,9 +13,9 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
     public sealed class ReporteRepository : BaseRepository<Reporte>, IReporteRepository
     {
         private readonly SIGEBIContext _context;
-        private readonly ILoggerService _logger;
+        private readonly ILoggerService<Reporte> _logger;
 
-        public ReporteRepository(SIGEBIContext context, ILoggerService logger)
+        public ReporteRepository(SIGEBIContext context, ILoggerService<Reporte> logger)
             : base(context, logger)
         {
             _context = context;
@@ -143,7 +143,10 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
                 contenido.AppendLine("--------------------------------------------------");
 
                 foreach (var p in prestamos)
-                    contenido.AppendLine($"Usuario: {p.Usuario?.Nombre} | Libro: {p.EjemplarId} | Fecha: {p.FechaPrestamo:dd/MM/yyyy}");
+                {
+                    contenido.AppendLine($"Usuario ID: {p.UsuarioId} | Ejemplar ID: {p.EjemplarId} | Fecha: {p.FechaPrestamo:dd/MM/yyyy}");
+                }
+
 
                 var reporte = new Reporte
                 {
@@ -174,54 +177,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
             }
         }
 
-        public async Task<OperationResult<Reporte>> GenerarReporteLibrosMasPrestadosAsync(int topN)
-        {
-            try
-            {
-                var librosMasPrestados = await _context.Prestamos
-                    .Include(p => p.Ejemplar)
-                    .ThenInclude(e => e.Libro)
-                    .GroupBy(p => p.Ejemplar.Libro.Titulo)
-                    .Select(g => new { Libro = g.Key, Total = g.Count() })
-                    .OrderByDescending(g => g.Total)
-                    .Take(topN)
-                    .ToListAsync();
-
-                var contenido = new StringBuilder();
-                contenido.AppendLine($"TOP {topN} LIBROS MÁS PRESTADOS");
-                contenido.AppendLine("--------------------------------------------------");
-
-                foreach (var l in librosMasPrestados)
-                    contenido.AppendLine($"Libro: {l.Libro} | Préstamos: {l.Total}");
-
-                var reporte = new Reporte
-                {
-                    Tipo = "Libros Más Prestados",
-                    Contenido = contenido.ToString(),
-                    FechaGeneracion = DateTime.Now,
-                    UsuarioId = 1
-                };
-
-                await _context.Reportes.AddAsync(reporte);
-                await _context.SaveChangesAsync();
-
-                return new OperationResult<Reporte>
-                {
-                    Success = true,
-                    Message = "Reporte de libros más prestados generado correctamente",
-                    Data = reporte
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al generar reporte de libros más prestados");
-                return new OperationResult<Reporte>
-                {
-                    Success = false,
-                    Message = "Error al generar reporte de libros más prestados"
-                };
-            }
-        }
+       
 
         public async Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync()
         {

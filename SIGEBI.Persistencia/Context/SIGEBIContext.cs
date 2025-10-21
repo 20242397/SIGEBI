@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Entitines.Configuration.Notificaciones;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
@@ -15,59 +13,31 @@ namespace SIGEBI.Persistence.Context
         {
         }
 
-        #region "Entidades del módulo de Configuración"
+        #region "Entidades EF Core (Persistencia)"
+        // Seguridad
         public DbSet<Usuario> Usuarios { get; set; }
-        #endregion
 
-        #region "Entidades del módulo de Biblioteca"
+        // Biblioteca
         public DbSet<Libro> Libros { get; set; }
         public DbSet<Ejemplar> Ejemplares { get; set; }
-        #endregion
 
-        #region "Entidades del módulo de Préstamos"
+        // Préstamos ✅
         public DbSet<Prestamo> Prestamos { get; set; }
-        #endregion
 
-        #region "Entidades del módulo de Notificaciones"
+        // Notificaciones
         public DbSet<Notificacion> Notificaciones { get; set; }
-        #endregion
 
-        #region "Entidades del módulo de Reportes"
+        // Reportes
         public DbSet<Reporte> Reportes { get; set; }
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Aplica automáticamente todas las configuraciones (Fluent API)
+            // Aplicar configuraciones Fluent API desde el ensamblado actual
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SIGEBIContext).Assembly);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

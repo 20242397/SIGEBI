@@ -13,7 +13,7 @@ namespace SIGEBI.Application.Repositories.Configuration.Reportes
 
         // 🔹 Generación de reportes
         Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(DateTime inicio, DateTime fin);
-        Task<OperationResult<Reporte>> GenerarReporteLibrosMasPrestadosAsync(int topN);
+        
         Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync();
 
         // 🔹 Actualización

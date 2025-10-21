@@ -1,6 +1,6 @@
 ﻿namespace SIGEBI.Infrastructure.Logging
 {
-    public interface ILoggerService
+    public interface ILoggerService<T>
     {
         void LogInfo(string message, params object[] args);
         void LogWarn(string message, params object[] args);

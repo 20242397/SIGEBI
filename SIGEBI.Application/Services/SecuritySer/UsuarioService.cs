@@ -31,7 +31,7 @@ namespace SIGEBI.Application.Services.Security
                     Email = dto.Email,
                     PasswordHash = dto.PasswordHash,
                     PhoneNumber = dto.PhoneNumber,
-                    Role = "User",
+                    Role = "Estudiante",
                     Estado = "Activo",
                     Activo = true
                 };

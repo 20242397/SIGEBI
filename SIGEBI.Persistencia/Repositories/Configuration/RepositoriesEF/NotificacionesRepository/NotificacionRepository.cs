@@ -12,9 +12,9 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Notificac
     public sealed class NotificacionRepository : BaseRepository<Notificacion>, INotificacionRepository
     {
         private readonly SIGEBIContext _context;
-        private readonly ILoggerService _logger;
+        private readonly ILoggerService<Notificacion> _logger;
 
-        public NotificacionRepository(SIGEBIContext context, ILoggerService logger)
+        public NotificacionRepository(SIGEBIContext context, ILoggerService<Notificacion> logger)
             : base(context, logger)
         {
             _context = context;

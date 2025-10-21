@@ -105,7 +105,7 @@ namespace SIGEBI.Persistence.Models
             Autor = e.Autor,
             ISBN = e.ISBN,
             Editorial = e.Editorial,
-            AñoPublicacion = e.AñoPublicacion,
+            AñoPublicacion = (int)e.AñoPublicacion,
             Categoria = e.Categoria
         };
 

@@ -16,7 +16,7 @@ namespace SIGEBI.Domain.Entitines.Configuration.Biblioteca
 
     public sealed class Ejemplar : Base.BaseEntity
     {
-        public int Id { get; set; }
+        
         public int LibroId { get; set; }
         public string CodigoBarras { get; set; } = string.Empty;
 

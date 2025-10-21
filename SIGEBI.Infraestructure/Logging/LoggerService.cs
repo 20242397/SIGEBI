@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace SIGEBI.Infrastructure.Logging
 {
-    public class LoggerService<T> : ILoggerService
+    public class LoggerService<T> : ILoggerService<T>
     {
         private readonly ILogger<T> _logger;
 

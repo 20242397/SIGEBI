@@ -43,9 +43,6 @@ namespace SIGEBI.Application.Services.Reportes
                     case "prestamos":
                         result = await _reporteRepository.GenerarReportePrestamosAsync(dto.FechaInicio, dto.FechaFin);
                         break;
-                    case "libros más prestados":
-                        result = await _reporteRepository.GenerarReporteLibrosMasPrestadosAsync(dto.TopN ?? 5);
-                        break;
                     case "usuarios activos":
                         result = await _reporteRepository.GenerarReporteUsuariosActivosAsync();
                         break;

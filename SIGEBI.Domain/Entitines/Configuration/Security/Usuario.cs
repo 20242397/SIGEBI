@@ -1,6 +1,4 @@
-﻿using SIGEBI.Domain.Entitines.Configuration.Prestamos;
-
-namespace SIGEBI.Domain.Entitines.Configuration.Security
+﻿namespace SIGEBI.Domain.Entitines.Configuration.Security
 {
     public enum UserRole
     {
@@ -20,8 +18,9 @@ namespace SIGEBI.Domain.Entitines.Configuration.Security
         public string? PhoneNumber { get; set; }
 
         // Control de acceso
-        public string Rol { get; set; } = "Estudiante"; // Admin / Docente / Estudiante
+        public string Role { get; set; } = "Estudiante"; // Admin / Docente / Estudiante
         public string Estado { get; set; } = "Activo";  // Activo / Inactivo
         public bool Activo { get; set; } = true;
+       
     }
 }

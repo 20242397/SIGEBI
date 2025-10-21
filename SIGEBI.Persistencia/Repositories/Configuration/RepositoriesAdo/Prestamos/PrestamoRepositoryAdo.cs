@@ -28,7 +28,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
             try
             {
                 string query = @"
-                    INSERT INTO Prestamos (UsuarioId, LibroId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion)
+                    INSERT INTO Prestamo (UsuarioId, LibroId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion)
                     OUTPUT INSERTED.Id
                     VALUES (@UsuarioId, @LibroId, @FechaPrestamo, @FechaVencimiento, @FechaDevolucion, @Penalizacion)";
 
@@ -36,10 +36,11 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
                 {
                     {"@UsuarioId", entity.UsuarioId},
                     {"@LibroId", entity.LibroId},
+                    {"@EjemplarID", entity.EjemplarId },
                     {"@FechaPrestamo", entity.FechaPrestamo},
                     {"@FechaVencimiento", entity.FechaVencimiento},
                     {"@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value},
-                    {"@Penalizacion", entity.Penalizacion ?? (object)DBNull.Value}
+                    {"@Penalizacion", entity.Penalizacion ?? 0}
                 };
 
                 var id = await _dbHelper.ExecuteScalarAsync(query, parameters);

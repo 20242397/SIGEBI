@@ -141,5 +141,38 @@ namespace SIGEBI.Application.Services.Notificaciones
                     Data = default!
                 };
             });
+
+        public Task<ServiceResult<T>> EnviarNotificacionAsync<T>(NotificacionCreateDto dto) =>
+            ExecuteAsync(async () =>
+            {
+                // Aquí se implementaría la lógica para enviar la notificación (por email, SMS, etc.)
+                // Por simplicidad, asumimos que la notificación se envía correctamente.
+                var entity = new Notificacion
+                {
+                    UsuarioId = dto.UsuarioId,
+                    Tipo = dto.Tipo,
+                    Mensaje = dto.Mensaje,
+                    FechaEnvio = DateTime.Now,
+                    Enviado = true
+                };
+                var validation = NotificacionValidator.Validar(entity);
+                if (!validation.Success)
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = validation.Message
+                    };
+                var result = await _notificacionRepository.AddAsync(entity);
+                if (result.Success)
+                    _logger.LogInformation("Notificación enviada correctamente para usuario ID {UsuarioId}", dto.UsuarioId);
+                else
+                    _logger.LogWarning("Error al enviar notificación para usuario ID {UsuarioId}", dto.UsuarioId);
+                return new OperationResult<T>
+                {
+                    Success = result.Success,
+                    Message = result.Message,
+                    Data = (T)(object?)result.Data!
+                };
+            });
     }
 }

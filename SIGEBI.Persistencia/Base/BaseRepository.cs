@@ -3,24 +3,29 @@ using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Context;
+using SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Biblioteca;
+using SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.NotificacionesRepository;
+using SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes;
 
 namespace SIGEBI.Persistence.Base
 {
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        private readonly SIGEBIContext _context;
-        private readonly DbSet<T> _entities;
-        private readonly ILoggerService _logger;
-
-        protected BaseRepository(SIGEBIContext context, ILoggerService logger)
+        protected readonly SIGEBIContext _context;
+        protected readonly DbSet<T> _entities;
+        protected readonly ILoggerService<T> _logger;
+       
+        protected BaseRepository(SIGEBIContext context, ILoggerService<T> logger)
         {
             _context = context;
             _entities = _context.Set<T>();
             _logger = logger;
         }
 
+        
+
         /// <summary>
-        /// Ejecuta una acción con try/catch, logueando y retornando un OperationResult.
+        /// Ejecuta una acción asíncrona con manejo de errores centralizado.
         /// </summary>
         protected async Task<OperationResult<TResult>> ExecuteAsync<TResult>(
             Func<Task<OperationResult<TResult>>> action,
@@ -41,6 +46,7 @@ namespace SIGEBI.Persistence.Base
             }
         }
 
+        // ✅ Agregar entidad
         public virtual async Task<OperationResult<T>> AddAsync(T entity)
         {
             return await ExecuteAsync(async () =>
@@ -51,6 +57,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al agregar entidad.");
         }
 
+        // ✅ Obtener todas las entidades
         public virtual async Task<OperationResult<IEnumerable<T>>> GetAllAsync()
         {
             return await ExecuteAsync(async () =>
@@ -60,6 +67,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al obtener entidades.");
         }
 
+        // ✅ Buscar por ID
         public virtual async Task<OperationResult<T>> GetByIdAsync(int id)
         {
             return await ExecuteAsync(async () =>
@@ -71,6 +79,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al buscar entidad.");
         }
 
+        // ✅ Actualizar
         public virtual async Task<OperationResult<T>> UpdateAsync(T entity)
         {
             return await ExecuteAsync(async () =>
@@ -81,6 +90,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al actualizar entidad.");
         }
 
+        // ✅ Eliminar
         public virtual async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             return await ExecuteAsync(async () =>
@@ -95,9 +105,9 @@ namespace SIGEBI.Persistence.Base
             }, "Error al eliminar entidad.");
         }
 
+        // Implementación explícita para IBaseRepository
         Task<OperationResult<T>> IBaseRepository<T>.RemoveAsync(int id)
         {
-            // Call RemoveAsync and map the result to OperationResult<T>
             return RemoveAsync(id).ContinueWith(task =>
             {
                 var result = task.Result;
@@ -105,7 +115,7 @@ namespace SIGEBI.Persistence.Base
                 {
                     Success = result.Success,
                     Message = result.Message,
-                    Data = default // No entity to return, so default(T)
+                    Data = default
                 };
             });
         }

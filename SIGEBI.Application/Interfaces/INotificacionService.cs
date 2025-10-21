@@ -8,6 +8,8 @@ namespace SIGEBI.Application.Interfaces
         // RF4.1 - Registrar una nueva notificación (por penalización, aviso o recordatorio)
         Task<ServiceResult<T>> RegistrarNotificacionAsync<T>(NotificacionCreateDto dto);
 
+        Task<ServiceResult<T>> EnviarNotificacionAsync<T>(NotificacionCreateDto dto);
+
         // RF4.2 - Obtener notificaciones de un usuario
         Task<ServiceResult<T>> ObtenerPorUsuarioAsync<T>(int usuarioId);
 
@@ -22,6 +24,7 @@ namespace SIGEBI.Application.Interfaces
 
         // RF4.3 - Filtrar notificaciones por tipo (Aviso, Recordatorio, Penalización)
         Task<ServiceResult<T>> ObtenerPorTipoAsync<T>(string tipo);
+        
     }
 }
 

@@ -28,7 +28,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
             try
             {
                 string query = @"
-                    INSERT INTO Libros (Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria, Estado)
+                    INSERT INTO Libro (Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria, Estado)
                     OUTPUT INSERTED.Id
                     VALUES (@Titulo, @Autor, @ISBN, @Editorial, @AñoPublicacion, @Categoria, @Estado)";
 
@@ -70,7 +70,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
         {
             try
             {
-                var query = "SELECT Id, Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria, Estado FROM Libros";
+                var query = "SELECT Id, Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria, Estado FROM Libro";
                 var rows = await _dbHelper.ExecuteQueryAsync(query);
 
                 var libros = rows.Select(EntityToModelMapper.ToLibro).ToList();
@@ -101,7 +101,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
             try
             {
-                var query = "SELECT TOP 1 * FROM Libros WHERE Id=@Id";
+                var query = "SELECT TOP 1 * FROM Libro WHERE Id=@Id";
                 var parameters = new Dictionary<string, object> { { "@Id", id } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -135,7 +135,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
             try
             {
-                var query = "SELECT * FROM Libros WHERE Autor LIKE @Autor";
+                var query = "SELECT * FROM Libro WHERE Autor LIKE @Autor";
                 var parameters = new Dictionary<string, object> { { "@Autor", $"%{autor}%" } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -171,7 +171,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
             try
             {
-                var query = "SELECT * FROM Libros WHERE Categoria LIKE @Categoria";
+                var query = "SELECT * FROM Libro WHERE Categoria LIKE @Categoria";
                 var parameters = new Dictionary<string, object> { { "@Categoria", $"%{categoria}%" } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -207,7 +207,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
             try
             {
-                var query = "SELECT * FROM Libros WHERE Titulo LIKE @Titulo";
+                var query = "SELECT * FROM Libro WHERE Titulo LIKE @Titulo";
                 var parameters = new Dictionary<string, object> { { "@Titulo", $"%{titulo}%" } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -232,22 +232,33 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
         #endregion
 
         #region ✅ Update
+
         public async Task<OperationResult<Libro>> UpdateAsync(Libro entity)
         {
             if (entity.Id <= 0)
-                return new OperationResult<Libro> { Success = false, Message = "El ID es inválido." };
+                return new OperationResult<Libro>
+                {
+                    Success = false,
+                    Message = "El ID es inválido."
+                };
 
             try
             {
                 var query = @"
-                    UPDATE Libros
-                    SET Titulo=@Titulo, Autor=@Autor, ISBN=@ISBN, Editorial=@Editorial,
-                        AñoPublicacion=@AñoPublicacion, Categoria=@Categoria, Estado=@Estado
-                    WHERE Id=@Id";
+                   UPDATE Libro
+                   SET 
+                   Titulo = @Titulo,
+                   Autor = @Autor,
+                   ISBN = @ISBN,
+                   Editorial = @Editorial,
+                   AñoPublicacion = @AñoPublicacion,
+                   Categoria = @Categoria,
+                   Estado = @Estado
+                   WHERE Id = @Id";
 
                 var parameters = new Dictionary<string, object>
                 {
-                    {"@Titulo", entity.Titulo},
+                    { "@Titulo", entity.Titulo},
                     {"@Autor", entity.Autor},
                     {"@ISBN", entity.ISBN},
                     {"@Editorial", entity.Editorial},
@@ -259,10 +270,22 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
 
+                if (rows > 0)
+                {
+                    // 🔹 Refrescamos el registro desde la base para devolver datos actualizados
+                    var refreshed = await GetByIdAsync(entity.Id);
+                    return new OperationResult<Libro>
+                    {
+                        Success = true,
+                        Message = "Libro actualizado correctamente.",
+                        Data = refreshed.Data
+                    };
+                }
+
                 return new OperationResult<Libro>
                 {
-                    Success = rows > 0,
-                    Message = rows > 0 ? "Libro actualizado correctamente." : "No se actualizó el registro.",
+                    Success = false,
+                    Message = "No se actualizó el registro.",
                     Data = entity
                 };
             }
@@ -276,6 +299,9 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
                 };
             }
         }
+
+
+
         #endregion
 
         #region ✅ Remove
@@ -286,7 +312,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
             try
             {
-                var query = "DELETE FROM Libros WHERE Id=@Id";
+                var query = "DELETE FROM Libro WHERE Id=@Id";
                 var parameters = new Dictionary<string, object> { { "@Id", id } };
 
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
@@ -321,7 +347,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Bibliote
 
             try
             {
-                string query = "SELECT TOP 1 * FROM Libros WHERE ISBN = @ISBN";
+                string query = "SELECT TOP 1 * FROM Libro WHERE ISBN = @ISBN";
                 var parameters = new Dictionary<string, object> { { "@ISBN", isbn } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);

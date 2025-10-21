@@ -5,17 +5,17 @@ using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
-using SIGEBI.Application.Validators; 
+using SIGEBI.Application.Validators;
 
 namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Biblioteca
 {
     public sealed class EjemplarRepository : BaseRepository<Ejemplar>, IEjemplarRepository
     {
         private readonly SIGEBIContext _context;
-        private readonly ILoggerService _logger;
+        private readonly ILoggerService<Ejemplar> _logger;
 
-        public EjemplarRepository(SIGEBIContext context, ILoggerService logger)
-            : base(context, logger)
+        public EjemplarRepository(SIGEBIContext context, ILoggerService<Ejemplar> logger)
+            : base(context ,logger)
         {
             _context = context;
             _logger = logger;
@@ -100,7 +100,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Bibliotec
             }
         }
 
-        public async Task<OperationResult<bool>> MarcarComoDaniadoAsync(int ejemplarId)
+        public async Task<OperationResult<bool>> MarcarComoDañadoAsync(int ejemplarId)
         {
             try
             {
