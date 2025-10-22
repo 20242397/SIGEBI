@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Data.SqlClient;
 
-namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo
+namespace SIGEBI.Persistence.Repositories.RepositoriesAdo
 {
     public class DbHelper
     {

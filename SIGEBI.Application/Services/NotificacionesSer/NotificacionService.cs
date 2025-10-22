@@ -6,7 +6,8 @@ using SIGEBI.Application.Repositories.Configuration.INotificacion;
 using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Notificaciones;
-namespace SIGEBI.Application.Services.Notificaciones
+
+namespace SIGEBI.Application.Services.NotificacionesSer
 {
     public sealed class NotificacionService : BaseService, INotificacionService
     {

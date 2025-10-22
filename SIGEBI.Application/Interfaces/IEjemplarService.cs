@@ -25,7 +25,8 @@ namespace SIGEBI.Application.Interfaces
 
         // Marcar ejemplar como perdido o dañado
         Task<ServiceResult<T>> MarcarComoPerdidoAsync<T>(int ejemplarId);
-        Task<ServiceResult<T>> MarcarComoDañadoAsync<T>(int ejemplarId);
+
+
     }
 }
 

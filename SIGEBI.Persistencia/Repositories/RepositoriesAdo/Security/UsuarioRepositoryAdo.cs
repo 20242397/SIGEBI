@@ -4,7 +4,8 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 using SIGEBI.Persistence.Models;
-namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security
+using SIGEBI.Persistence.Repositories.RepositoriesAdo;
+namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
 {
     public sealed class UsuarioRepositoryAdo : IUsuarioRepository
     {

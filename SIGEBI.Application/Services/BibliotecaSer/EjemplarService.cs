@@ -7,7 +7,7 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 
-namespace SIGEBI.Application.Services
+namespace SIGEBI.Application.Services.BibliotecaSer
 {
     public sealed class EjemplarService : BaseService, IEjemplarService
     {
@@ -142,21 +142,6 @@ namespace SIGEBI.Application.Services
             {
                 var result = await _ejemplarRepository.MarcarComoPerdidoAsync(ejemplarId);
                 _logger.LogInformation("Ejemplar marcado como perdido: {Id}", ejemplarId);
-
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = default!
-                };
-            });
-
-        // ✅ Marcar como dañado
-        public Task<ServiceResult<T>> MarcarComoDañadoAsync<T>(int ejemplarId) =>
-            ExecuteAsync<T>(async () =>
-            {
-                var result = await _ejemplarRepository.MarcarComoDañadoAsync(ejemplarId);
-                _logger.LogInformation("Ejemplar marcado como dañado: {Id}", ejemplarId);
 
                 return new OperationResult<T>
                 {

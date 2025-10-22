@@ -5,8 +5,9 @@ using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Models;
 using SIGEBI.Application.Validators;
+using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 
-namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Biblioteca
+namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 {
     public sealed class LibroRepositoryAdo : ILibroRepository
     {

@@ -7,7 +7,7 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Reportes;
 
-namespace SIGEBI.Application.Services.Reportes
+namespace SIGEBI.Application.Services.ReportesSer
 {
     public sealed class ReporteService : BaseService, IReporteService
     {

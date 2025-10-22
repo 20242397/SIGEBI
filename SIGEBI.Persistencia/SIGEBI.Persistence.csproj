@@ -14,7 +14,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SIGEBI.Application\SIGEBI.Application.csproj" />
+    <ProjectReference Include="..\SIGEBI.Domain\SIGEBI.Domain.csproj" />
     <ProjectReference Include="..\SIGEBI.Infraestructure\SIGEBI.Infraestructure.csproj" />
+	  
   </ItemGroup>
 
 </Project>

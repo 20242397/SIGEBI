@@ -3,9 +3,6 @@ using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Context;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Biblioteca;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.NotificacionesRepository;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes;
 
 namespace SIGEBI.Persistence.Base
 {

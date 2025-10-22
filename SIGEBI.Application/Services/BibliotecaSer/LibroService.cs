@@ -7,7 +7,7 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 
-namespace SIGEBI.Application.Services.Biblioteca
+namespace SIGEBI.Application.Services.BibliotecaSer
 {
     public sealed class LibroService : BaseService, ILibroService
     {

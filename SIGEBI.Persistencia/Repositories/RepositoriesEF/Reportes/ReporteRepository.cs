@@ -8,7 +8,7 @@ using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 using System.Text;
 
-namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
+namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 {
     public sealed class ReporteRepository : BaseRepository<Reporte>, IReporteRepository
     {
@@ -50,7 +50,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
         {
             try
             {
-                var reportes = await _context.Reportes
+                var reportes = await _context.Reporte
                     .Where(r => r.FechaGeneracion >= fechaInicio && r.FechaGeneracion <= fechaFin)
                     .OrderByDescending(r => r.FechaGeneracion)
                     .ToListAsync();
@@ -76,7 +76,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
         {
             try
             {
-                var reportes = await _context.Reportes
+                var reportes = await _context.Reporte
                     .Where(r => r.Tipo == tipo)
                     .OrderByDescending(r => r.FechaGeneracion)
                     .ToListAsync();
@@ -102,7 +102,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
         {
             try
             {
-                var reportes = await _context.Reportes
+                var reportes = await _context.Reporte
                     .Where(r => string.IsNullOrWhiteSpace(r.Contenido))
                     .ToListAsync();
 
@@ -131,7 +131,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
         {
             try
             {
-                var prestamos = await _context.Prestamos
+                var prestamos = await _context.Prestamo
                     .Include(p => p.Usuario)
                     .Include(p => p.Ejemplar)
                     .Where(p => p.FechaPrestamo >= inicio && p.FechaPrestamo <= fin)
@@ -156,7 +156,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
                     UsuarioId = 1
                 };
 
-                await _context.Reportes.AddAsync(reporte);
+                await _context.Reporte.AddAsync(reporte);
                 await _context.SaveChangesAsync();
 
                 return new OperationResult<Reporte>
@@ -183,7 +183,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
         {
             try
             {
-                var usuariosActivos = await _context.Usuarios
+                var usuariosActivos = await _context.Usuario
                     .Where(u => u.Estado == "Activo")
                     .ToListAsync();
 
@@ -203,7 +203,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
                     UsuarioId = 1
                 };
 
-                await _context.Reportes.AddAsync(reporte);
+                await _context.Reporte.AddAsync(reporte);
                 await _context.SaveChangesAsync();
 
                 return new OperationResult<Reporte>
@@ -232,7 +232,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
         {
             try
             {
-                var reporte = await _context.Reportes.FindAsync(reporteId);
+                var reporte = await _context.Reporte.FindAsync(reporteId);
                 if (reporte == null)
                     return new OperationResult<bool>
                     {
@@ -272,7 +272,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
                 DateTime fin = Convert.ToDateTime(fechaFin);
 
                 // 2️⃣ Consultar los préstamos dentro del rango de fechas
-                var prestamos = await _context.Prestamos
+                var prestamos = await _context.Prestamo
                     .Where(p => p.FechaPrestamo >= inicio && p.FechaPrestamo <= fin)
                     .Select(p => new
                     {
@@ -324,7 +324,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Reportes
                 };
 
                 // 6️⃣ Guardar en base de datos
-                _context.Reportes.Add(reporte);
+                _context.Reporte.Add(reporte);
                 await _context.SaveChangesAsync();
 
                 // 7️⃣ Retornar resultado exitoso

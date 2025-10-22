@@ -7,7 +7,7 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 
-namespace SIGEBI.Application.Services.Prestamos
+namespace SIGEBI.Application.Services.PrestamosSer
 {
     public sealed class PrestamoService : BaseService, IPrestamoService
     {
@@ -28,6 +28,7 @@ namespace SIGEBI.Application.Services.Prestamos
                 {
                     UsuarioId = dto.UsuarioId,
                     EjemplarId = dto.EjemplarId,
+                    LibroId = dto.LibroId,
                     FechaPrestamo = DateTime.Now,
                     FechaVencimiento = dto.FechaVencimiento,
                     Penalizacion = 0,

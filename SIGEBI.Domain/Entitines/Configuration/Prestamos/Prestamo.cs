@@ -1,4 +1,7 @@
-﻿namespace SIGEBI.Domain.Entitines.Configuration.Prestamos
+﻿using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
+using SIGEBI.Domain.Entitines.Configuration.Security;
+
+namespace SIGEBI.Domain.Entitines.Configuration.Prestamos
 {
     public sealed class Prestamo : Base.BaseEntity
     {
@@ -12,8 +15,8 @@
 
         public decimal? Penalizacion { get; set; }
         public string Estado { get; set; } = "Activo"; // Activo / Vencido / Devuelto
-        public string? LibroId { get; set; }
-        public object Usuario { get; set; }
-        public object Ejemplar { get; set; }
+        public int LibroId { get; set; }
+        public Usuario Usuario { get; set; }
+        public Ejemplar Ejemplar { get; set; }
     }
 }

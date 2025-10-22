@@ -1,15 +1,12 @@
-﻿
-using SIGEBI.Application.Interfaces;
-using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
-using SIGEBI.Application.Repositories.Configuration.IPrestamo;
-using SIGEBI.Application.Repositories.Configuration.ISecurity;
-using SIGEBI.Application.Services.Biblioteca;
-using SIGEBI.Application.Services.Prestamos;
-using SIGEBI.Application.Services.Security;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Biblioteca;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamos;
-using SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Security;
+﻿using Microsoft.EntityFrameworkCore;
+using SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Libro;
+using SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Prestamo;
+using SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Usuario;
+using SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Ejemplar;
+using SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Notificacion;
+using SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Reporte;
+using SIGEBI.Persistence.Context;
+using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 
 namespace SIGEBI.Configuracion.Api
 {
@@ -18,7 +15,6 @@ namespace SIGEBI.Configuracion.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
 
 
             // 1️⃣ Add Controllers and Swagger
@@ -31,17 +27,24 @@ namespace SIGEBI.Configuracion.Api
             builder.Logging.AddConsole();
 
             // 3️⃣ Add Database Helper
-            builder.Services.AddScoped<DbHelper>();
+            builder.Services.AddTransient<DbHelper>();
 
-            // 4️⃣ Add Repositories (Ado.NET)
-            builder.Services.AddScoped<IUsuarioRepository, UsuarioRepositoryAdo>();
-            builder.Services.AddScoped<ILibroRepository, LibroRepositoryAdo>();
-            builder.Services.AddScoped<IPrestamoRepository, PrestamoRepositoryAdo>();
+            builder.Services.AddUsuarioDependency();
+            builder.Services.AddLibroDependency();
+            builder.Services.AddPrestamoDependency();
 
-            // 5️⃣ Add Services (Application Layer)
-            builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-            builder.Services.AddScoped<ILibroService, LibroService>();
-            builder.Services.AddScoped<IPrestamoService, PrestamoService>();
+
+            // 6️⃣ Add Entity Framework Core
+            builder.Services.AddDbContext<SIGEBIContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SIGEBIConnString")));
+
+            builder.Services.AddEjemplarDependency();
+            builder.Services.AddNotificacionDependency();
+            builder.Services.AddReporteDependency();
+
+            builder.Services.AddSingleton(typeof(SIGEBI.Infrastructure.Logging.ILoggerService<>),
+                              typeof(SIGEBI.Infrastructure.Logging.LoggerService<>));
+
 
             var app = builder.Build();
 

@@ -1,0 +1,19 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using SIGEBI.Application.Interfaces;
+using SIGEBI.Application.Repositories.Configuration.Reportes;
+using SIGEBI.Application.Services.ReportesSer;
+using SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes;
+
+
+namespace SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Reporte
+{
+    public static class ReporteDependency
+    {
+        public static void AddReporteDependency(this IServiceCollection services)
+        {
+            // Add ReporteRepositoryEF dependency
+          services.AddScoped<IReporteRepository, ReporteRepository>();
+          services.AddTransient<IReporteService, ReporteService>();
+        }
+    }
+}

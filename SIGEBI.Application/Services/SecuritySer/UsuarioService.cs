@@ -7,7 +7,7 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 
-namespace SIGEBI.Application.Services.Security
+namespace SIGEBI.Application.Services.SecuritySer
 {
     public sealed class UsuarioService : BaseService, IUsuarioService
     {

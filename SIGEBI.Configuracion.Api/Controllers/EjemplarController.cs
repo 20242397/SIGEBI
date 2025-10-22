@@ -73,13 +73,5 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-
-        [HttpPut("dañado/{id}")]
-        public async Task<IActionResult> MarcarComoDañado(int id)
-        {
-            var result = await _ejemplarService.MarcarComoDañadoAsync<object>(id);
-            return result.Success ? Ok(result) : BadRequest(result);
-        }
-
     }
 }

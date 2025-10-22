@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Notificaciones;
-using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 using SIGEBI.Application.Repositories.Configuration.INotificacion;
 using SIGEBI.Application.Validators;
+using SIGEBI.Infrastructure.Logging;
 
-namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.NotificacionesRepository
+namespace SIGEBI.Persistence.Repositories.RepositoriesEF.NotificacionesRepository
 {
     public sealed class NotificacionRepository : BaseRepository<Notificacion>, INotificacionRepository
     {
@@ -49,7 +49,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Notificac
         {
             try
             {
-                var notificaciones = await _context.Notificaciones
+                var notificaciones = await _context.Notificacion
                     .Where(n => n.UsuarioId == usuarioId)
                     .OrderByDescending(n => n.FechaEnvio)
                     .ToListAsync();
@@ -75,7 +75,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Notificac
         {
             try
             {
-                var notificaciones = await _context.Notificaciones
+                var notificaciones = await _context.Notificacion
                     .Where(n => n.UsuarioId == usuarioId && !n.Enviado)
                     .OrderByDescending(n => n.FechaEnvio)
                     .ToListAsync();
@@ -101,7 +101,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Notificac
         {
             try
             {
-                var pendientes = await _context.Notificaciones
+                var pendientes = await _context.Notificacion
                     .Where(n => !n.Enviado)
                     .OrderBy(n => n.FechaEnvio)
                     .ToListAsync();
@@ -127,7 +127,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Notificac
         {
             try
             {
-                var notificaciones = await _context.Notificaciones
+                var notificaciones = await _context.Notificacion
                     .Where(n => n.Tipo == tipo)
                     .OrderByDescending(n => n.FechaEnvio)
                     .ToListAsync();
@@ -153,7 +153,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesEF.Notificac
         {
             try
             {
-                var notificacion = await _context.Notificaciones.FindAsync(notificacionId);
+                var notificacion = await _context.Notificacion.FindAsync(notificacionId);
 
                 if (notificacion == null)
                 {

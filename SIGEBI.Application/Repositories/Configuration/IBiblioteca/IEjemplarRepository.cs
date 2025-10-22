@@ -13,7 +13,6 @@ namespace SIGEBI.Application.Repositories.Configuration.IBiblioteca
 
         // Ahora devuelven OperationResult<bool> para incluir mensajes y control de errores
         Task<OperationResult<bool>> MarcarComoPerdidoAsync(int ejemplarId);
-        Task<OperationResult<bool>> MarcarComoDañadoAsync(int ejemplarId);
     }
 }
 

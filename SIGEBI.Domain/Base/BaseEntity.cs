@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+
 namespace SIGEBI.Domain.Base
 {
     public  class BaseEntity
@@ -11,6 +13,7 @@ namespace SIGEBI.Domain.Base
         public DateTime? ModifiedAt { get; set; }
         public string? ModifiedBy { get; set; }
 
+        [Timestamp]
         public byte[]? RowVersion { get; set; }
     }
 }

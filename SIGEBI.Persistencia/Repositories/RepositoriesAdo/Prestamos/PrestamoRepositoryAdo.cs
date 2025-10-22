@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using SIGEBI.Application.Repositories.Configuration.IPrestamo;
-using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Models;
 
-namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamos
+namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 {
     public sealed class PrestamoRepositoryAdo : IPrestamoRepository
     {
@@ -28,9 +27,9 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
             try
             {
                 string query = @"
-                    INSERT INTO Prestamo (UsuarioId, LibroId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion)
+                    INSERT INTO Prestamo (UsuarioId, LibroId, EjemplarId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion)
                     OUTPUT INSERTED.Id
-                    VALUES (@UsuarioId, @LibroId, @FechaPrestamo, @FechaVencimiento, @FechaDevolucion, @Penalizacion)";
+                    VALUES (@UsuarioId, @LibroId, @EjemplarId, @FechaPrestamo, @FechaVencimiento, @FechaDevolucion, @Penalizacion)";
 
                 var parameters = new Dictionary<string, object>
                 {
@@ -68,7 +67,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
         {
             try
             {
-                string query = "SELECT Id, UsuarioId, LibroId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamos";
+                string query = "SELECT Id, UsuarioId, LibroId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamo";
                 var rows = await _dbHelper.ExecuteQueryAsync(query);
 
                 var prestamos = rows.Select(EntityToModelMapper.ToPrestamo).ToList();
@@ -93,7 +92,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
 
             try
             {
-                string query = "SELECT TOP 1 * FROM Prestamos WHERE Id=@Id";
+                string query = "SELECT TOP 1 * FROM Prestamo WHERE Id=@Id";
                 var parameters = new Dictionary<string, object> { { "@Id", id } };
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
@@ -122,7 +121,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
             try
             {
                 string query = @"
-                    UPDATE Prestamos 
+                    UPDATE Prestamo
                     SET UsuarioId=@UsuarioId, LibroId=@LibroId, FechaPrestamo=@FechaPrestamo,
                         FechaVencimiento=@FechaVencimiento, FechaDevolucion=@FechaDevolucion, Penalizacion=@Penalizacion
                     WHERE Id=@Id";
@@ -164,7 +163,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
 
             try
             {
-                string query = "DELETE FROM Prestamos WHERE Id=@Id";
+                string query = "DELETE FROM Prestamo WHERE Id=@Id";
                 var rows = await _dbHelper.ExecuteCommandAsync(query, new() { { "@Id", id } });
 
                 return new OperationResult<bool>
@@ -231,7 +230,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
         {
             try
             {
-                string query = "SELECT * FROM Prestamos WHERE Penalizacion IS NOT NULL AND Penalizacion > 0";
+                string query = "SELECT * FROM Prestamo WHERE Penalizacion IS NOT NULL AND Penalizacion > 0";
                 var rows = await _dbHelper.ExecuteQueryAsync(query);
                 var prestamos = rows.Select(EntityToModelMapper.ToPrestamo).ToList();
 
@@ -277,7 +276,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
 
             try
             {
-                string query = "SELECT * FROM Prestamos WHERE UsuarioId=@UsuarioId";
+                string query = "SELECT * FROM Prestamo WHERE UsuarioId=@UsuarioId";
                 var rows = await _dbHelper.ExecuteQueryAsync(query, new() { { "@UsuarioId", usuarioId } });
                 var prestamos = rows.Select(EntityToModelMapper.ToPrestamo).ToList();
 
@@ -300,7 +299,7 @@ namespace SIGEBI.Persistence.Repositories.Configuration.RepositoriesAdo.Prestamo
             {
                 string query = @"
                     SELECT COUNT(*) AS Penalizados 
-                    FROM Prestamos 
+                    FROM Prestamo
                     WHERE UsuarioId=@UsuarioId AND Penalizacion IS NOT NULL AND Penalizacion > 0";
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, new() { { "@UsuarioId", usuarioId } });
