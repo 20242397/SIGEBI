@@ -3,7 +3,6 @@ using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Prestamo;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Application.Repositories.Configuration.IPrestamo;
-using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 
@@ -38,6 +37,19 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 var validation = PrestamoValidator.Validar(entity);
                 if (!validation.Success)
                     return new OperationResult<T> { Success = false, Message = validation.Message };
+
+                var restriccion = await _prestamoRepository.RestringirPrestamoSiPenalizadoAsync(dto.UsuarioId);
+                if (restriccion.Success && restriccion.Data)
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "El usuario tiene préstamos con penalización activa. No puede realizar nuevos préstamos."
+                    };
+                }
+           
+
+
 
                 var result = await _prestamoRepository.RegistrarPrestamoAsync(entity);
 

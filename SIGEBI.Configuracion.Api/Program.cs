@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Libro;
-using SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Prestamo;
-using SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Usuario;
-using SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Ejemplar;
-using SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Notificacion;
-using SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Reporte;
+using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Libro;
+using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Prestamo;
+using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario;
+using SIGEBI.Infraestructure.Dependencies.DependenciasEF.Ejemplar;
+using SIGEBI.Infraestructure.Dependencies.DependenciasEF.Notificacion;
+using SIGEBI.Infraestructure.Dependencies.DependenciasEF.Reporte;
 using SIGEBI.Persistence.Context;
 using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 
@@ -16,53 +16,57 @@ namespace SIGEBI.Configuracion.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // ✅ JSON Config
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DefaultIgnoreCondition =
+                        System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+                });
 
-            // 1️⃣ Add Controllers and Swagger
-            builder.Services.AddControllers();
+            // ✅ Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // 2️⃣ Add Logging
+            // ✅ Logging oficial de .NET
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
 
-            // 3️⃣ Add Database Helper
+            // ✅ Database Helper (ADO)
             builder.Services.AddTransient<DbHelper>();
 
+            // ✅ Dependencias ADO
             builder.Services.AddUsuarioDependency();
             builder.Services.AddLibroDependency();
             builder.Services.AddPrestamoDependency();
 
-
-            // 6️⃣ Add Entity Framework Core
+            // ✅ Entity Framework Core
             builder.Services.AddDbContext<SIGEBIContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SIGEBIConnString")));
 
+            // ✅ Dependencias EF
             builder.Services.AddEjemplarDependency();
             builder.Services.AddNotificacionDependency();
             builder.Services.AddReporteDependency();
 
-            builder.Services.AddSingleton(typeof(SIGEBI.Infrastructure.Logging.ILoggerService<>),
-                              typeof(SIGEBI.Infrastructure.Logging.LoggerService<>));
-
+            // ✅ Logger personalizado (solo para capa Persistence)
+            builder.Services.AddSingleton(typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
+                                          typeof(SIGEBI.Persistence.Logging.LoggerService<>));
 
             var app = builder.Build();
 
-            // 6️⃣ Enable Swagger in Development
+            // ✅ Swagger en entorno Development
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // 7️⃣ Routing and Authorization
+            // ✅ Routing
             app.UseRouting();
             app.UseAuthorization();
-
-            // 8️⃣ Map Controllers
             app.MapControllers();
-
-            // 9️⃣ Run the API
             app.Run();
         }
     }

@@ -44,6 +44,18 @@ namespace SIGEBI.Application.Services.SecuritySer
                         Message = validation.Message
                     };
 
+                // Verificar si el correo ya está registrado
+                var existingUser = await _usuarioRepository.GetByEmailAsync(dto.Email);
+                if (existingUser.Success && existingUser.Data != null)
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "Ya existe un usuario registrado con ese correo electrónico."
+                    };
+                }
+
+
                 var result = await _usuarioRepository.AddAsync(entity);
 
                 if (result.Success)
@@ -109,6 +121,17 @@ namespace SIGEBI.Application.Services.SecuritySer
                 var usuario = usuarioResult.Data;
                 usuario.Role = rol;
 
+                var rolesValidos = new[] { "Admin", "Docente", "Estudiante" };
+                if (!rolesValidos.Contains(rol))
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "El rol especificado no es válido."
+                    };
+                }
+
+
                 var result = await _usuarioRepository.UpdateAsync(usuario);
                 _logger.LogInformation("Rol asignado al usuario {Id}: {Rol}", id, rol);
 
@@ -129,8 +152,20 @@ namespace SIGEBI.Application.Services.SecuritySer
                     return new OperationResult<T> { Success = false, Message = "Usuario no encontrado" };
 
                 var usuario = usuarioResult.Data;
+
+                if (usuario.Estado == (activo ? "Activo" : "Inactivo"))
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = $"El usuario ya está {(activo ? "activo" : "inactivo")}."
+                    };
+                }
+
+                // Solo si pasa la validación, actualiza
                 usuario.Activo = activo;
                 usuario.Estado = activo ? "Activo" : "Inactivo";
+
 
                 var result = await _usuarioRepository.UpdateAsync(usuario);
                 _logger.LogInformation("Estado actualizado para el usuario {Id}: {Estado}", id, (object)usuario.Estado);
@@ -175,5 +210,10 @@ namespace SIGEBI.Application.Services.SecuritySer
                     Data = (T)(object)result.Data!
                 };
             });
+
+        public async Task<OperationResult<Usuario>> RemoveAsync(int id)
+        {
+            return await _usuarioRepository.RemoveAsync(id);
+        }
     }
 }

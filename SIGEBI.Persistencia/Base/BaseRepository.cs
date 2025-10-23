@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Repository;
-using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Context;
+using SIGEBI.Persistence.Logging;
 
 namespace SIGEBI.Persistence.Base
 {

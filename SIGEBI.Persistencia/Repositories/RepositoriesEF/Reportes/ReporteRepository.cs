@@ -3,9 +3,11 @@ using SIGEBI.Application.Repositories.Configuration.Reportes;
 using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Reportes;
-using SIGEBI.Infrastructure.Logging;
+using SIGEBI.Domain.Entitines.Configuration.Security;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
+using SIGEBI.Persistence.Logging;
+using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 using System.Text;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
@@ -127,7 +129,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
         #region 🧾 Generación de reportes automáticos
 
-        public async Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(DateTime inicio, DateTime fin)
+        public async Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(DateTime inicio, DateTime fin, int usuarioId)
         {
             try
             {
@@ -150,10 +152,10 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
                 var reporte = new Reporte
                 {
+                    UsuarioId = usuarioId,
                     Tipo = "Reporte de Préstamos",
                     Contenido = contenido.ToString(),
                     FechaGeneracion = DateTime.Now,
-                    UsuarioId = 1
                 };
 
                 await _context.Reporte.AddAsync(reporte);
@@ -179,7 +181,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
        
 
-        public async Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync()
+        public async Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync(int usuarioId)
         {
             try
             {
@@ -197,10 +199,11 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
                 var reporte = new Reporte
                 {
+                    UsuarioId = usuarioId,
                     Tipo = "Usuarios Activos",
                     Contenido = contenido.ToString(),
                     FechaGeneracion = DateTime.Now,
-                    UsuarioId = 1
+                    
                 };
 
                 await _context.Reporte.AddAsync(reporte);
@@ -224,9 +227,77 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
-        #endregion
+        // 🔹 Reporte de penalizaciones
+        public async Task<OperationResult<Reporte>> GenerarReportePenalizacionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
+        {
+            try
+            {
+                var total = await _context.Prestamo
+                    .Where(p => p.Penalizacion > 0 && p.FechaPrestamo >= fechaInicio && p.FechaPrestamo <= fechaFin)
+                    .CountAsync();
 
-        #region ⚙️ Actualización de estado
+                var reporte = new Reporte
+                {
+                    UsuarioId = usuarioId,
+                    Tipo = "Penalizaciones",
+                    Contenido = $"Penalizaciones registradas entre {fechaInicio:d} y {fechaFin:d}: {total}",
+                    FechaGeneracion = DateTime.Now
+                };
+
+                await _context.Reporte.AddAsync(reporte);
+                await _context.SaveChangesAsync();
+
+
+                return new OperationResult<Reporte>
+                {
+                    Success = true,
+                    Message = "Reporte de penalizaciones generado correctamente.",
+                    Data = reporte
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al generar reporte de penalizaciones");
+                return new OperationResult<Reporte> { Success = false, Message = ex.Message };
+            }
+        }
+
+        // 🔹 Reporte de devoluciones
+        public async Task<OperationResult<Reporte>> GenerarReporteDevolucionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
+        {
+            try
+            {
+                var total = await _context.Prestamo
+                    .Where(p => p.FechaDevolucion != null &&
+                                p.FechaDevolucion >= fechaInicio &&
+                                p.FechaDevolucion <= fechaFin)
+                    .CountAsync();
+
+                var reporte = new Reporte
+                {
+                    UsuarioId = usuarioId,
+                    Tipo = "Devoluciones",
+                    Contenido = $"Total de devoluciones entre {fechaInicio:d} y {fechaFin:d}: {total}",
+                    FechaGeneracion = DateTime.Now
+                };
+
+                await _context.Reporte.AddAsync(reporte);
+                await _context.SaveChangesAsync();
+
+
+                return new OperationResult<Reporte>
+                {
+                    Success = true,
+                    Message = "Reporte de devoluciones generado correctamente.",
+                    Data = reporte
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al generar reporte de devoluciones");
+                return new OperationResult<Reporte> { Success = false, Message = ex.Message };
+            }
+        }
 
         public async Task<OperationResult<bool>> MarcarComoResueltoAsync(int reporteId)
         {
@@ -263,92 +334,11 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
-        public async Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(object fechaInicio, object fechaFin)
-        {
-            try
-            {
-                // 1️⃣ Convertir los parámetros a DateTime (con validación)
-                DateTime inicio = Convert.ToDateTime(fechaInicio);
-                DateTime fin = Convert.ToDateTime(fechaFin);
 
-                // 2️⃣ Consultar los préstamos dentro del rango de fechas
-                var prestamos = await _context.Prestamo
-                    .Where(p => p.FechaPrestamo >= inicio && p.FechaPrestamo <= fin)
-                    .Select(p => new
-                    {
-                        p.Id,
-                        p.UsuarioId,
-                        p.EjemplarId,
-                        p.FechaPrestamo,
-                        p.FechaVencimiento,
-                        p.FechaDevolucion,
-                        p.Penalizacion
-                    })
-                    .ToListAsync();
-
-                // 3️⃣ Validar si se encontraron datos
-                if (!prestamos.Any())
-                {
-                    return new OperationResult<Reporte>
-                    {
-                        Success = false,
-                        Message = "No se encontraron préstamos en el rango de fechas especificado."
-                    };
-                }
-
-                // 4️⃣ Crear el contenido del reporte
-                var contenido = new StringBuilder();
-                contenido.AppendLine("===== REPORTE DE PRÉSTAMOS =====");
-                contenido.AppendLine($"Periodo: {inicio:dd/MM/yyyy} - {fin:dd/MM/yyyy}");
-                contenido.AppendLine($"Generado el: {DateTime.Now:dd/MM/yyyy HH:mm}");
-                contenido.AppendLine("=================================\n");
-
-                foreach (var p in prestamos)
-                {
-                    contenido.AppendLine($"ID Préstamo: {p.Id}");
-                    contenido.AppendLine($"Usuario ID: {p.UsuarioId}");
-                    contenido.AppendLine($"Ejemplar ID: {p.EjemplarId}");
-                    contenido.AppendLine($"Fecha préstamo: {p.FechaPrestamo:dd/MM/yyyy}");
-                    contenido.AppendLine($"Fecha vencimiento: {p.FechaVencimiento:dd/MM/yyyy}");
-                    contenido.AppendLine($"Devolución: {(p.FechaDevolucion.HasValue ? p.FechaDevolucion.Value.ToString("dd/MM/yyyy") : "Pendiente")}");
-                    contenido.AppendLine($"Penalización: {p.Penalizacion:C}");
-                    contenido.AppendLine("---------------------------------\n");
-                }
-
-                // 5️⃣ Crear el objeto Reporte
-                var reporte = new Reporte
-                {
-                    Tipo = "Préstamos",
-                    Contenido = contenido.ToString(),
-                    FechaGeneracion = DateTime.Now
-                };
-
-                // 6️⃣ Guardar en base de datos
-                _context.Reporte.Add(reporte);
-                await _context.SaveChangesAsync();
-
-                // 7️⃣ Retornar resultado exitoso
-                return new OperationResult<Reporte>
-                {
-                    Success = true,
-                    Message = "Reporte de préstamos generado correctamente.",
-                    Data = reporte
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al generar reporte de préstamos.");
-                return new OperationResult<Reporte>
-                {
-                    Success = false,
-                    Message = "Error al generar el reporte de préstamos."
-                };
-            }
-        }
-
-
-        #endregion
     }
 }
 
+      
+
+        #endregion
 

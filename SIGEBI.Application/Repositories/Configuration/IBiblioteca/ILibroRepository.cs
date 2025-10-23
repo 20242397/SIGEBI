@@ -29,6 +29,6 @@ namespace SIGEBI.Application.Repositories.Configuration.IBiblioteca
 
         // 🔹 Eliminar un libro
         Task<OperationResult<bool>> RemoveAsync(int id);
-        Task<OperationResult<bool>> GetByISBNAsync(string isbn);
+        Task<OperationResult<Libro>> GetByISBNAsync(string isbn);
     }
 }

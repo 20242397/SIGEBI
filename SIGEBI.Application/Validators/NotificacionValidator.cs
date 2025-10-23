@@ -22,6 +22,15 @@ namespace SIGEBI.Application.Validators
             if (entity.FechaEnvio == default)
                 return new OperationResult<Notificacion> { Success = false, Message = "La fecha de envío no es válida." };
 
+            var tiposValidos = new[] { "Préstamo", "Devolución", "Penalización", "Recordatorio" };
+            if (!tiposValidos.Contains(entity.Tipo))
+                return new OperationResult<Notificacion>
+                {
+                    Success = false,
+                    Message = "El tipo de notificación no es válido. Debe ser: Préstamo, Devolución, Penalización o Recordatorio."
+                };
+
+
             return new OperationResult<Notificacion> { Success = true, Data = entity };
         }
     }

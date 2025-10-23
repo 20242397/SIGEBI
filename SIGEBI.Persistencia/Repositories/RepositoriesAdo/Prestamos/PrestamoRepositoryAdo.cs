@@ -35,7 +35,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
                 {
                     {"@UsuarioId", entity.UsuarioId},
                     {"@LibroId", entity.LibroId},
-                    {"@EjemplarID", entity.EjemplarId },
+                    {"@EjemplarId", entity.EjemplarId },
                     {"@FechaPrestamo", entity.FechaPrestamo},
                     {"@FechaVencimiento", entity.FechaVencimiento},
                     {"@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value},
@@ -115,39 +115,52 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 
         public async Task<OperationResult<Prestamo>> UpdateAsync(Prestamo entity)
         {
+            // Validar ID
             if (entity.Id <= 0)
-                return new OperationResult<Prestamo> { Success = false, Message = "El ID es inválido." };
+                return new OperationResult<Prestamo>
+                {
+                    Success = false,
+                    Message = "El ID del préstamo es inválido."
+                };
 
             try
             {
+                // ✅ Consulta SQL: solo actualiza los campos que pueden cambiar
                 string query = @"
-                    UPDATE Prestamo
-                    SET UsuarioId=@UsuarioId, LibroId=@LibroId, FechaPrestamo=@FechaPrestamo,
-                        FechaVencimiento=@FechaVencimiento, FechaDevolucion=@FechaDevolucion, Penalizacion=@Penalizacion
-                    WHERE Id=@Id";
+                  UPDATE Prestamo
+                  SET 
+                   FechaVencimiento = @FechaVencimiento,
+                   FechaDevolucion = @FechaDevolucion,
+                   Penalizacion = @Penalizacion
+                   WHERE Id = @Id";
 
+                // ✅ Diccionario de parámetros (solo los campos necesarios)
                 var parameters = new Dictionary<string, object>
                 {
-                    {"@UsuarioId", entity.UsuarioId},
-                    {"@LibroId", entity.LibroId},
-                    {"@FechaPrestamo", entity.FechaPrestamo},
-                    {"@FechaVencimiento", entity.FechaVencimiento},
-                    {"@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value},
-                    {"@Penalizacion", entity.Penalizacion ?? (object)DBNull.Value},
-                    {"@Id", entity.Id}
+                 { "@FechaVencimiento", entity.FechaVencimiento },
+                 { "@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value },
+                 { "@Penalizacion", entity.Penalizacion ?? (object)DBNull.Value },
+                 { "@Id", entity.Id }
                 };
 
+                // ✅ Ejecutar la actualización
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+                // ✅ Retornar resultado
                 return new OperationResult<Prestamo>
                 {
                     Success = rows > 0,
-                    Message = rows > 0 ? "Préstamo actualizado correctamente." : "No se actualizó el registro.",
+                    Message = rows > 0
+                        ? "Préstamo actualizado correctamente."
+                        : "No se encontró el préstamo o no se realizaron cambios.",
                     Data = entity
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar préstamo");
+                // ✅ Manejo de errores y logging
+                _logger.LogError(ex, "Error al actualizar préstamo (ID: {Id})", entity.Id);
+
                 return new OperationResult<Prestamo>
                 {
                     Success = false,
@@ -156,33 +169,53 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
             }
         }
 
+
         public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             if (id <= 0)
-                return new OperationResult<bool> { Success = false, Message = "El ID debe ser mayor que 0." };
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "El ID del préstamo no es válido."
+                };
 
             try
             {
-                string query = "DELETE FROM Prestamo WHERE Id=@Id";
-                var rows = await _dbHelper.ExecuteCommandAsync(query, new() { { "@Id", id } });
+                // Solo permite cancelarlo si aún no se ha devuelto
+                string query = @"
+            UPDATE Prestamo
+            SET Estado = 'Cancelado'
+            WHERE Id = @Id AND FechaDevolucion IS NULL";
+
+                var parameters = new Dictionary<string, object> { { "@Id", id } };
+                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+                if (rows == 0)
+                    return new OperationResult<bool>
+                    {
+                        Success = false,
+                        Message = "El préstamo no se puede eliminar (ya devuelto o no existe).",
+                        Data = false
+                    };
 
                 return new OperationResult<bool>
                 {
-                    Success = rows > 0,
-                    Data = rows > 0,
-                    Message = rows > 0 ? "Préstamo eliminado correctamente." : "No se encontró el préstamo."
+                    Success = true,
+                    Message = "Préstamo cancelado correctamente.",
+                    Data = true
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al eliminar préstamo");
+                _logger.LogError(ex, "Error al cancelar préstamo");
                 return new OperationResult<bool>
                 {
                     Success = false,
-                    Message = $"Error al eliminar préstamo: {ex.Message}"
+                    Message = $"Error al cancelar préstamo: {ex.Message}"
                 };
             }
         }
+
         #endregion
 
         #region MÉTODOS ESPECÍFICOS
@@ -254,20 +287,32 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
                 return new OperationResult<bool> { Success = false, Message = "Préstamo no encontrado." };
 
             var prestamo = prestamoResult.Data;
-            if (prestamo.FechaDevolucion != null)
-                return new OperationResult<bool> { Success = false, Message = "El préstamo ya fue devuelto." };
 
-            int diasAtraso = (DateTime.Now - prestamo.FechaVencimiento).Days;
-            decimal penalizacion = diasAtraso > 0 ? diasAtraso * 1.00m : 0;
+            // ✅ Ahora permite calcular penalización incluso si ya fue devuelto
+            DateTime fechaComparacion = prestamo.FechaDevolucion ?? DateTime.Now;
+            int diasAtraso = (fechaComparacion - prestamo.FechaVencimiento).Days;
 
-            var devolucion = await RegistrarDevolucionAsync(prestamoId, DateTime.Now, penalizacion);
+            if (diasAtraso <= 0)
+                return new OperationResult<bool> { Success = false, Message = "No hay atraso, no se aplica penalización." };
+
+            decimal penalizacion = diasAtraso * 1.00m;
+            prestamo.Penalizacion = penalizacion;
+
+            // ✅ Si no tiene fecha de devolución, la establece a hoy
+            if (prestamo.FechaDevolucion == null)
+                prestamo.FechaDevolucion = DateTime.Now;
+
+            var update = await UpdateAsync(prestamo);
             return new OperationResult<bool>
             {
-                Success = devolucion.Success,
-                Data = devolucion.Success,
-                Message = devolucion.Message
+                Success = update.Success,
+                Message = update.Success
+                    ? $"Penalización aplicada correctamente: {penalizacion:C}"
+                    : "No se pudo aplicar la penalización.",
+                Data = update.Success
             };
         }
+
 
         public async Task<OperationResult<IEnumerable<Prestamo>>> GetHistorialPorUsuarioAsync(int usuarioId)
         {

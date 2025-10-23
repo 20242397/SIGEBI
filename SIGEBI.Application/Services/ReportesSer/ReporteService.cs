@@ -21,89 +21,152 @@ namespace SIGEBI.Application.Services.ReportesSer
         }
 
         // ✅ RF5.1–RF5.3 - Generar un nuevo reporte
-        public Task<ServiceResult<T>> GenerarReporteAsync<T>(ReporteCreateDto dto) =>
-            ExecuteAsync(async () =>
-            {
-                var entity = new Reporte
-                {
-                    UsuarioId = dto.UsuarioId,
-                    Tipo = dto.Tipo,
-                    Contenido = dto.Contenido ?? "",
-                    FechaGeneracion = DateTime.Now
-                };
+       public Task<ServiceResult<T>> GenerarReporteAsync<T>(ReporteCreateDto dto) =>
+      ExecuteAsync(async () =>
+      {
+        // 1️⃣ Crear entidad base
+        var entity = new Reporte
+        {
+            UsuarioId = dto.UsuarioId,
+            Tipo = dto.Tipo,
+            Contenido = dto.Contenido ?? "",
+            FechaGeneracion = DateTime.Now
+        };
 
-                var validation = ReporteValidator.Validar(entity);
-                if (!validation.Success)
-                    return new OperationResult<T> { Success = false, Message = validation.Message };
+        // 2️⃣ Validar los campos básicos
+        var validation = ReporteValidator.Validar(entity);
+        if (!validation.Success)
+            return new OperationResult<T> { Success = false, Message = validation.Message };
 
-                OperationResult<Reporte> result;
+        // 3️⃣ Inicializar resultado por defecto
+        OperationResult<Reporte> result = new OperationResult<Reporte>
+        {
+            Success = false,
+            Message = "Tipo de reporte no reconocido."
+        };
 
-                switch (dto.Tipo.ToLower())
-                {
-                    case "prestamos":
-                        result = await _reporteRepository.GenerarReportePrestamosAsync(dto.FechaInicio, dto.FechaFin);
-                        break;
-                    case "usuarios activos":
-                        result = await _reporteRepository.GenerarReporteUsuariosActivosAsync();
-                        break;
-                    default:
-                        result = new OperationResult<Reporte>
-                        {
-                            Success = false,
-                            Message = "Tipo de reporte no reconocido"
-                        };
-                        break;
-                }
+        // 4️⃣ Tipos de reporte disponibles
+        switch (dto.Tipo.ToLower())
+        {
+            case "prestamos":
+                result = await _reporteRepository.GenerarReportePrestamosAsync(dto.FechaInicio, dto.FechaFin, dto.UsuarioId);
+                break;
 
-                _logger.LogInformation("Reporte generado: {Tipo} por usuario {UsuarioId}", dto.Tipo, dto.UsuarioId);
+            case "usuarios activos":
+                result = await _reporteRepository.GenerarReporteUsuariosActivosAsync(dto.UsuarioId);
+                break;
 
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object?)result.Data!
-                };
-            });
+            case "penalizaciones":
+                result = await _reporteRepository.GenerarReportePenalizacionesAsync(dto.FechaInicio, dto.FechaFin, dto.UsuarioId);
+                break;
+
+            case "devoluciones":
+                result = await _reporteRepository.GenerarReporteDevolucionesAsync(dto.FechaInicio, dto.FechaFin, dto.UsuarioId);
+                break;
+        }
+
+        // 5️⃣ Log de auditoría
+        _logger.LogInformation("Reporte generado de tipo {tipo} por usuario con ID {usuarioId}", dto.Tipo, dto.UsuarioId);
+
+        // 6️⃣ Devolver resultado genérico
+        return new OperationResult<T>
+        {
+            Success = result.Success,
+            Message = result.Message ?? "Sin mensaje.",
+            Data = (T?)(object?)result.Data!
+        };
+      });
+
 
         // ✅ RF5.4 - Exportar reporte en PDF o Excel
         public Task<ServiceResult<T>> ExportarReporteAsync<T>(int reporteId, string formato) =>
-            ExecuteAsync(async () =>
-            {
-                var reporteResult = await _reporteRepository.GetByIdAsync(reporteId);
-                if (!reporteResult.Success || reporteResult.Data == null)
-                    return new OperationResult<T> { Success = false, Message = "Reporte no encontrado" };
+      ExecuteAsync(async () =>
+      {
+          // 🧩 1️⃣ VALIDACIÓN DE NEGOCIO (ENTRADA)
+          // --------------------------------------
+          if (string.IsNullOrWhiteSpace(formato))
+          {
+              _logger.LogWarning("Intento de exportar reporte sin especificar formato. ID: {Id}", reporteId);
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "Debe especificar un formato de exportación."
+              };
+          }
 
-                var reporte = reporteResult.Data;
-                string exportPath = Path.Combine(Environment.CurrentDirectory, "Exportados");
+          if (formato.ToLower() != "pdf" && formato.ToLower() != "xlsx" && formato.ToLower() != "txt")
+          {
+              _logger.LogWarning("Formato no permitido para reporte {Id}: {Formato}", reporteId, formato);
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "Formato no permitido. Solo se admiten PDF, XLSX o TXT."
+              };
+          }
 
-                if (!Directory.Exists(exportPath))
-                    Directory.CreateDirectory(exportPath);
 
-                string filePath = Path.Combine(exportPath, $"Reporte_{reporteId}_{DateTime.Now:yyyyMMddHHmmss}.{formato.ToLower()}");
+          // 🔍 2️⃣ VALIDACIÓN DE EXISTENCIA
+          // --------------------------------------
+          var reporteResult = await _reporteRepository.GetByIdAsync(reporteId);
+          if (!reporteResult.Success || reporteResult.Data == null)
+          {
+              _logger.LogWarning("Intento de exportar un reporte inexistente. ID: {Id}", reporteId);
+              return new OperationResult<T> { Success = false, Message = "Reporte no encontrado" };
+          }
 
-                try
-                {
-                    await File.WriteAllTextAsync(filePath, reporte.Contenido);
+          var reporte = reporteResult.Data;
 
-                    _logger.LogInformation("Reporte exportado en formato {Formato}: {Ruta}", formato, filePath);
 
-                    return new OperationResult<T>
-                    {
-                        Success = true,
-                        Message = $"Reporte exportado correctamente en formato {formato}",
-                        Data = (T)(object)filePath!
-                    };
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error al exportar el reporte {Id}", reporteId);
-                    return new OperationResult<T>
-                    {
-                        Success = false,
-                        Message = "Error al exportar el reporte."
-                    };
-                }
-            });
+          // 📁 3️⃣ PREPARACIÓN DE ENTORNO
+          // --------------------------------------
+          string exportPath = Path.Combine(Environment.CurrentDirectory, "Exportados");
+          if (!Directory.Exists(exportPath))
+          {
+              Directory.CreateDirectory(exportPath);
+              _logger.LogInformation("Carpeta 'Exportados' creada automáticamente en {Ruta}", exportPath);
+          }
+
+          string filePath = Path.Combine(exportPath, $"Reporte_{reporteId}_{DateTime.Now:yyyyMMddHHmmss}.{formato.ToLower()}");
+
+
+          // 💾 4️⃣ EJECUCIÓN PRINCIPAL
+          // --------------------------------------
+          try
+          {
+              await File.WriteAllTextAsync(filePath, reporte.Contenido);
+
+
+              // 🧠 5️⃣ LOG CORRECTO (OPERACIÓN EXITOSA)
+              // --------------------------------------
+              _logger.LogInformation(
+                  "Reporte exportado correctamente. ID: {Id}, Formato: {Formato}, Ruta: {Ruta}",
+                  reporteId, formato, filePath
+              );
+
+
+              // 📤 6️⃣ RESPUESTA FINAL
+              // --------------------------------------
+              return new OperationResult<T>
+              {
+                  Success = true,
+                  Message = $"Reporte exportado correctamente en formato {formato}",
+                  Data = (T)(object)filePath!
+              };
+          }
+          catch (Exception ex)
+          {
+              // 🧠 LOG DE ERROR (FALLA DE NEGOCIO O IO)
+              // --------------------------------------
+              _logger.LogError(ex, "Error al exportar el reporte ID {Id} en formato {Formato}", reporteId, formato);
+
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "Error al exportar el reporte. Intente nuevamente."
+              };
+          }
+      });
+
 
         // ✅ Editar reporte existente (Marcar como resuelto)
         public Task<ServiceResult<T>> ActualizarReporteAsync<T>(ReporteUpdateDto dto) =>
@@ -135,7 +198,7 @@ namespace SIGEBI.Application.Services.ReportesSer
             ExecuteAsync(async () =>
             {
                 var result = await _reporteRepository.ObtenerReportesPorFechaAsync(inicio, fin);
-                _logger.LogInformation("Reportes obtenidos entre {Inicio} y {Fin}: {Count}", (inicio, fin, result.Data?.Count() ?? 0));
+                _logger.LogInformation("Reportes obtenidos entre {Inicio} y {Fin}: {Count}", new object?[] { inicio, fin, result.Data?.Count ?? 0 });
 
                 return new OperationResult<T>
                 {
@@ -150,7 +213,8 @@ namespace SIGEBI.Application.Services.ReportesSer
             ExecuteAsync(async () =>
             {
                 var result = await _reporteRepository.ObtenerReportesPorTipoAsync(tipo);
-                _logger.LogInformation("Reportes obtenidos por tipo {Tipo}: {Count}", (tipo, result.Data?.Count() ?? 0));
+                _logger.LogInformation("Reportes obtenidos por tipo {Tipo}: {Count}", new object?[] { tipo, result.Data?.Count ?? 0 });
+
 
                 return new OperationResult<T>
                 {
@@ -165,7 +229,8 @@ namespace SIGEBI.Application.Services.ReportesSer
             ExecuteAsync(async () =>
             {
                 var result = await _reporteRepository.GetAllAsync();
-                _logger.LogInformation("Consulta de todos los reportes completada: {Count}", (result.Data?.Count() ?? 0) is int count ? count : 0);
+                _logger.LogInformation("Consulta de todos los reportes completada: {Count}", new object?[] { result.Data?.Count ?? 0 });
+
 
                 return new OperationResult<T>
                 {

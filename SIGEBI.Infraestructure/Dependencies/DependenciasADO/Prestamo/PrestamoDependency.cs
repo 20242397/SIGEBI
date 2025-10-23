@@ -4,7 +4,7 @@ using SIGEBI.Application.Repositories.Configuration.IPrestamo;
 using SIGEBI.Application.Services.PrestamosSer;
 using SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos;
 
-namespace SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Prestamo
+namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Prestamo
 {
     public static class PrestamoDependency
     {

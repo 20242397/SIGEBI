@@ -27,11 +27,13 @@ namespace SIGEBI.Configuracion.Api.Controllers
 
 
         [HttpPut("actualizar")]
-        public async Task<IActionResult> Actualizar([FromBody] EjemplarUpdateDto dto)
+        public async Task<IActionResult> ActualizarEjemplar([FromBody] EjemplarUpdateDto dto)
         {
-            var result = await _ejemplarService.ActualizarEjemplarAsync<object>(dto);
+            var result = await _ejemplarService.ActualizarEjemplarAsync(dto);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+
 
 
         [HttpGet("por-libro/{libroId}")]

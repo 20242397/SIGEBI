@@ -12,13 +12,12 @@ namespace SIGEBI.Application.Repositories.Configuration.Reportes
         Task<OperationResult<IEnumerable<Reporte>>> ObtenerReportesPendientesAsync();
 
         // 🔹 Generación de reportes
-        Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(DateTime inicio, DateTime fin);
-        
-        Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync();
-
+        Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId);
+        Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync(int usuarioId);
+        Task<OperationResult<Reporte>> GenerarReportePenalizacionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId);
+        Task<OperationResult<Reporte>> GenerarReporteDevolucionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId);
         // 🔹 Actualización
         Task<OperationResult<bool>> MarcarComoResueltoAsync(int reporteId);
-        Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(object fechaInicio, object fechaFin);
     }
 }
 

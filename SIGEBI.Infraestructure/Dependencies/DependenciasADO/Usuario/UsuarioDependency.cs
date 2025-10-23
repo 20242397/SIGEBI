@@ -5,7 +5,7 @@ using SIGEBI.Application.Services.SecuritySer;
 using SIGEBI.Persistence.Repositories.RepositoriesAdo.Security;
 
 
-namespace SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Usuario
+namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario
 {
     public static class UsuarioDependency
     {

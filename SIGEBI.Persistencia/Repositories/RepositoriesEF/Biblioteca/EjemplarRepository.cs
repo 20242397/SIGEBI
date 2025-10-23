@@ -2,10 +2,10 @@
 using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
-using SIGEBI.Infrastructure.Logging;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 using SIGEBI.Application.Validators;
+using SIGEBI.Persistence.Logging;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 {
@@ -80,6 +80,16 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
         public override async Task<OperationResult<Ejemplar>> UpdateAsync(Ejemplar entity)
         {
+
+            var original = await _context.Ejemplar.AsNoTracking().FirstOrDefaultAsync(e => e.Id == entity.Id);
+            if (original != null && original.Estado == entity.Estado)
+                return new OperationResult<Ejemplar>
+                {
+                    Success = false,
+                    Message = "El ejemplar ya se encuentra en ese estado.",
+                    Data = entity
+                };
+
             var validacion = EjemplarValidator.Validar(entity);
             if (!validacion.Success)
                 return validacion;
@@ -129,8 +139,18 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                 if (ejemplar == null)
                     return new OperationResult<bool> { Success = false, Message = "Ejemplar no encontrado.", Data = false };
 
+                if (ejemplar.Estado == EstadoEjemplar.Perdido)
+                    return new OperationResult<bool>
+                    {
+                        Success = false,
+                        Message = "El ejemplar ya está marcado como perdido.",
+                        Data = false
+                    };
+
+
                 ejemplar.Estado = EstadoEjemplar.Perdido;
                 await _context.SaveChangesAsync();
+
 
                 return new OperationResult<bool> { Success = true, Message = "Ejemplar marcado como perdido.", Data = true };
             }

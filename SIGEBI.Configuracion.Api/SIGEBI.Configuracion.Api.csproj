@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SIGEBI.Application\SIGEBI.Application.csproj" />
-    <ProjectReference Include="..\SIGEBI.Persistencia\SIGEBI.Persistence.csproj" />
+    <ProjectReference Include="..\SIGEBI.Infraestructure\SIGEBI.Infraestructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,6 +10,15 @@ namespace SIGEBI.Application.Validators
             if (entity == null)
                 return new OperationResult<Reporte> { Success = false, Message = "El reporte no puede ser nulo." };
 
+            var tiposValidos = new[] { "Préstamos", "Usuarios Activos", "Ejemplares", "Penalizaciones" };
+            if (!tiposValidos.Contains(entity.Tipo))
+                return new OperationResult<Reporte>
+                {
+                    Success = false,
+                    Message = "Tipo de reporte no válido. Debe ser Préstamos, Usuarios Activos, Ejemplares o Penalizaciones."
+                };
+
+
             if (entity.UsuarioId <= 0)
                 return new OperationResult<Reporte> { Success = false, Message = "Debe indicar el usuario que generó el reporte." };
 

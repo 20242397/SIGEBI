@@ -4,7 +4,7 @@ using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
 using SIGEBI.Application.Services.BibliotecaSer;
 using SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca;
 
-namespace SIGEBI.Configuracion.Api.Dependencies.DependenciasADO.Libro
+namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Libro
 {
     public static class LibroDependency
     {

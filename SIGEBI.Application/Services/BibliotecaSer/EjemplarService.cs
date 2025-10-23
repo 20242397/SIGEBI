@@ -55,30 +55,27 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             });
 
         // ✅ Actualizar ejemplar
-        public Task<ServiceResult<T>> ActualizarEjemplarAsync<T>(EjemplarUpdateDto dto) =>
-            ExecuteAsync<T>(async () =>
-            {
-                var ejemplarResult = await _ejemplarRepository.GetByIdAsync(dto.Id);
-                if (!ejemplarResult.Success || ejemplarResult.Data == null)
-                    return new OperationResult<T> { Success = false, Message = "Ejemplar no encontrado" };
+        public Task<ServiceResult<Ejemplar>> ActualizarEjemplarAsync(EjemplarUpdateDto dto) =>
+      ExecuteAsync<Ejemplar>(async () =>
+      {
+          var ejemplarResult = await _ejemplarRepository.GetByIdAsync(dto.Id);
+          if (!ejemplarResult.Success || ejemplarResult.Data == null)
+              return new OperationResult<Ejemplar> { Success = false, Message = "Ejemplar no encontrado." };
 
-                var ejemplar = ejemplarResult.Data;
-                ejemplar.Estado = dto.Estado ?? ejemplar.Estado;
+          var ejemplar = ejemplarResult.Data;
+          ejemplar.Estado = Enum.Parse<EstadoEjemplar>(dto.Estado, true);
 
-                var validation = EjemplarValidator.Validar(ejemplar);
-                if (!validation.Success)
-                    return new OperationResult<T> { Success = false, Message = validation.Message };
+          var validation = EjemplarValidator.Validar(ejemplar);
+          if (!validation.Success)
+              return new OperationResult<Ejemplar> { Success = false, Message = validation.Message };
 
-                var updateResult = await _ejemplarRepository.UpdateAsync(ejemplar);
-                _logger.LogInformation("Ejemplar actualizado (ID {Id})", dto.Id);
+          var updateResult = await _ejemplarRepository.UpdateAsync(ejemplar);
+          _logger.LogInformation($"Ejemplar actualizado (ID: {dto.Id})");
 
-                return new OperationResult<T>
-                {
-                    Success = updateResult.Success,
-                    Message = updateResult.Message,
-                    Data = (T)(object)updateResult.Data!
-                };
-            });
+          return updateResult;
+      });
+
+
 
         // ✅ Obtener ejemplares por libro
         public Task<ServiceResult<T>> ObtenerPorLibroAsync<T>(int libroId) =>

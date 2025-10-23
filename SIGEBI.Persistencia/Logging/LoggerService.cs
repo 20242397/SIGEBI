@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace SIGEBI.Infrastructure.Logging
+namespace SIGEBI.Persistence.Logging
 {
     public class LoggerService<T> : ILoggerService<T>
     {

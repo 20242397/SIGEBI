@@ -1,9 +1,11 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Application.Repositories.Configuration.INotificacion;
 using SIGEBI.Application.Services.NotificacionesSer;
 using SIGEBI.Persistence.Repositories.RepositoriesEF.NotificacionesRepository;
-namespace SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Notificacion
+
+namespace SIGEBI.Infraestructure.Dependencies.DependenciasEF.Notificacion
 {
     public static class NotificacionDependency
     {

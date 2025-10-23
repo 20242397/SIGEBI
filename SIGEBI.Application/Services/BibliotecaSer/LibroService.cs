@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using NPOI.SS.Formula.Functions;
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
 using SIGEBI.Application.Interfaces;
@@ -38,6 +39,18 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 if (!validation.Success)
                     return new OperationResult<T> { Success = false, Message = validation.Message };
 
+                // Verificar ISBN único
+                var existing = await _libroRepository.GetByISBNAsync(dto.ISBN);
+                if (existing.Success && existing.Data)
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "Ya existe un libro registrado con este ISBN."
+                    };
+                }
+
+
                 var result = await _libroRepository.AddAsync(entity);
 
                 if (result.Success)
@@ -74,6 +87,15 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 if (!validation.Success)
                     return new OperationResult<T> { Success = false, Message = validation.Message };
 
+                if (libro.Estado == "Inactivo")
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "No se puede modificar un libro inactivo."
+                    };
+                }
+
                 var updateResult = await _libroRepository.UpdateAsync(libro);
                 _logger.LogInformation("Libro actualizado correctamente: {Titulo}", (object)libro.Titulo);
 
@@ -86,23 +108,10 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             });
 
         // ✅ RF1.3 - Eliminar lógicamente un libro
-        public Task<ServiceResult<T>> EliminarLibroAsync<T>(int id) =>
-            ExecuteAsync(async () =>
-            {
-                var result = await _libroRepository.RemoveAsync(id);
-
-                if (result.Success)
-                    _logger.LogInformation("Libro eliminado lógicamente: ID {Id}", id);
-                else
-                    _logger.LogWarning("Error al eliminar libro: ID {Id}", id);
-
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object)result.Data!
-                };
-            });
+        public async Task<OperationResult<bool>> RemoveAsync(int id)
+        {
+            return await _libroRepository.RemoveAsync(id);
+        }
 
         // ✅ RF1.4 - Buscar por título
         public Task<ServiceResult<T>> BuscarPorTituloAsync<T>(string titulo) =>
@@ -144,17 +153,10 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             });
 
         // ✅ RF1.4 - Buscar por ISBN
-        public Task<ServiceResult<T>> BuscarPorISBNAsync<T>(string isbn) =>
-            ExecuteAsync(async () =>
-            {
-                var result = await _libroRepository.GetByISBNAsync(isbn);
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object)result.Data!
-                };
-            });
+        public async Task<OperationResult<Libro>> BuscarPorISBNAsync(string isbn)
+        {
+            return await _libroRepository.GetByISBNAsync(isbn);
+        }
 
         // ✅ RF1.5 - Obtener libro por ID
         public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>

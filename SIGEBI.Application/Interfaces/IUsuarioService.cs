@@ -1,5 +1,8 @@
 ﻿using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
+using SIGEBI.Domain.Base;
+using SIGEBI.Domain.Entitines.Configuration.Security;
+using System.Threading.Tasks;
 
 namespace SIGEBI.Application.Interfaces
 {
@@ -20,6 +23,8 @@ namespace SIGEBI.Application.Interfaces
         // RF2.5 - Consultas
         Task<ServiceResult<T>> ObtenerPorEmailAsync<T>(string email);
         Task<ServiceResult<T>> ObtenerTodosAsync<T>();
+
+        Task<OperationResult<Usuario>> RemoveAsync(int id);
     }
 }
 

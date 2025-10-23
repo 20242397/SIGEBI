@@ -4,7 +4,7 @@ using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
 using SIGEBI.Application.Services.BibliotecaSer;
 using SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca;
 
-namespace SIGEBI.Configuracion.Api.Dependencies.DependenciasEF.Ejemplar
+namespace SIGEBI.Infraestructure.Dependencies.DependenciasEF.Ejemplar
 {
     public static class EjemplarDependency
     {

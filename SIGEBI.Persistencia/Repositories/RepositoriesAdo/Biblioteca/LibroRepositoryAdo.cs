@@ -306,35 +306,51 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         #endregion
 
         #region ✅ Remove
+        #region ✅ Remove (Eliminación Lógica)
         public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             if (id <= 0)
-                return new OperationResult<bool> { Success = false, Message = "El ID debe ser mayor que 0." };
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "El ID del libro no es válido."
+                };
 
             try
             {
-                var query = "DELETE FROM Libro WHERE Id=@Id";
+                // Cambiamos el estado a 'Inactivo' en lugar de eliminar físicamente
+                var query = "UPDATE Libro SET Estado = 'Inactivo' WHERE Id = @Id";
                 var parameters = new Dictionary<string, object> { { "@Id", id } };
 
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
 
+                if (rows == 0)
+                    return new OperationResult<bool>
+                    {
+                        Success = false,
+                        Message = "No se encontró el libro o ya está inactivo.",
+                        Data = false
+                    };
+
                 return new OperationResult<bool>
                 {
-                    Success = rows > 0,
-                    Data = rows > 0,
-                    Message = rows > 0 ? "Libro eliminado correctamente." : "No se encontró el libro."
+                    Success = true,
+                    Message = "Libro desactivado correctamente.",
+                    Data = true
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al eliminar libro");
+                _logger.LogError(ex, "Error al desactivar libro");
                 return new OperationResult<bool>
                 {
                     Success = false,
-                    Message = $"Error al eliminar libro: {ex.Message}"
+                    Message = $"Error al desactivar libro: {ex.Message}"
                 };
             }
         }
+        #endregion
+
 
         #region ✅ GetByISBN
         public async Task<OperationResult<Libro>> GetByISBNAsync(string isbn)
@@ -393,21 +409,11 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
             });
         }
 
-        Task<OperationResult<bool>> ILibroRepository.GetByISBNAsync(string isbn)
-        {
-            return GetByISBNAsync(isbn).ContinueWith(task =>
-            {
-                var libroResult = task.Result;
-                return new OperationResult<bool>
-                {
-                    Success = libroResult.Success,
-                    Message = libroResult.Message,
-                    Data = libroResult.Data != null // Return true if a book was found
-                };
-            });
-        }
+        
 
-        #endregion
     }
+
+    #endregion
+
 }
 

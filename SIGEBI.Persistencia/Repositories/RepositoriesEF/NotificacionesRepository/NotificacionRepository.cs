@@ -5,7 +5,7 @@ using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 using SIGEBI.Application.Repositories.Configuration.INotificacion;
 using SIGEBI.Application.Validators;
-using SIGEBI.Infrastructure.Logging;
+using SIGEBI.Persistence.Logging;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesEF.NotificacionesRepository
 {
@@ -44,6 +44,40 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.NotificacionesRepositor
         #endregion
 
         #region Métodos personalizados
+
+        public async Task<OperationResult<int>> MarcarTodasComoEnviadasPorUsuarioAsync(int usuarioId)
+        {
+            try
+            {
+                var pendientes = await _context.Notificacion
+                    .Where(n => n.UsuarioId == usuarioId && !n.Enviado)
+                    .ToListAsync();
+
+                if (!pendientes.Any())
+                    return new OperationResult<int>
+                    { Success = false, Message = "No hay notificaciones pendientes para este usuario.", Data = 0 };
+
+                pendientes.ForEach(n => n.Enviado = true);
+                var count = await _context.SaveChangesAsync();
+
+                return new OperationResult<int>
+                {
+                    Success = true,
+                    Data = count,
+                    Message = $"{count} notificaciones marcadas como enviadas para el usuario {usuarioId}."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al marcar todas las notificaciones como enviadas.");
+                return new OperationResult<int>
+                {
+                    Success = false,
+                    Message = "Error al actualizar notificaciones pendientes."
+                };
+            }
+        }
+
 
         public async Task<OperationResult<IEnumerable<Notificacion>>> ObtenerNotificacionesPorUsuarioAsync(int usuarioId)
         {

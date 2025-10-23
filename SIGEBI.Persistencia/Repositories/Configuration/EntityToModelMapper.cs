@@ -40,10 +40,12 @@ namespace SIGEBI.Persistence.Models
             Id = (int)r["Id"],
             UsuarioId = (int)r["UsuarioId"],
             EjemplarId = (int)r["EjemplarId"],
+            LibroId = r.ContainsKey("LibroId") && r["LibroId"] != DBNull.Value ? Convert.ToInt32(r["LibroId"]) : 0,
             FechaPrestamo = (DateTime)r["FechaPrestamo"],
             FechaVencimiento = (DateTime)r["FechaVencimiento"],
             FechaDevolucion = r["FechaDevolucion"] as DateTime?,
-            Penalizacion = r["Penalizacion"] as decimal?
+            Penalizacion = r["Penalizacion"] as decimal?,
+            Estado = r.ContainsKey("Estado") && r["Estado"] != DBNull.Value ? r["Estado"].ToString()! : "Activo"
         };
 
         // ============

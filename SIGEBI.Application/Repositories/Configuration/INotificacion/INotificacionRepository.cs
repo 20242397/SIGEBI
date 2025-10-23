@@ -20,6 +20,8 @@ namespace SIGEBI.Application.Repositories.Configuration.INotificacion
 
         // Marcar una notificación como enviada
         Task<OperationResult<bool>> MarcarComoEnviadaAsync(int notificacionId);
+
+        Task<OperationResult<int>> MarcarTodasComoEnviadasPorUsuarioAsync(int usuarioId);
     }
 }
 

@@ -63,7 +63,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerNotificacionesPorUsuarioAsync(usuarioId);
 
                 _logger.LogInformation("Consulta de notificaciones para usuario {UsuarioId}: {Count}",
-                    (object)usuarioId, (object)(result.Data?.Count() ?? 0));
+                    (object)usuarioId, (object)(result.Data?.Count ?? 0));
 
                 return new OperationResult<T>
                 {
@@ -80,7 +80,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerNotificacionesNoLeidasPorUsuarioAsync(usuarioId);
 
                 _logger.LogInformation("Consulta de notificaciones no leídas del usuario {UsuarioId}: {Count}",
-                    (object)usuarioId, (object)(result.Data?.Count() ?? 0));
+                    (object)usuarioId, (object)(result.Data?.Count ?? 0));
 
                 return new OperationResult<T>
                 {
@@ -97,7 +97,8 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerPendientesAsync();
 
                 _logger.LogInformation("Consulta de notificaciones pendientes: {Count}",
-                    (object)(result.Data?.Count() ?? 0));
+                    (object)(result.Data?.Count ?? 0));
+               
 
                 return new OperationResult<T>
                 {
@@ -114,7 +115,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerPorTipoAsync(tipo);
 
                 _logger.LogInformation("Consulta de notificaciones tipo {Tipo}: {Count}",
-                    (object)tipo, (object)(result.Data?.Count() ?? 0));
+                    (object)tipo, (object)(result.Data?.Count ?? 0));
 
                 return new OperationResult<T>
                 {
@@ -174,6 +175,37 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                     Message = result.Message,
                     Data = (T)(object?)result.Data!
                 };
+
+
+
             });
+
+        // ✅ RF5.x - Marcar todas las notificaciones como enviadas por usuario
+        public Task<ServiceResult<T>> MarcarTodasComoEnviadasPorUsuarioAsync<T>(int usuarioId) =>
+            ExecuteAsync(async () =>
+            {
+                if (usuarioId <= 0)
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "El ID de usuario no es válido."
+                    };
+
+                var result = await _notificacionRepository.MarcarTodasComoEnviadasPorUsuarioAsync(usuarioId);
+
+                if (result.Success)
+                    _logger.LogInformation("Se marcaron {Cantidad} notificaciones como enviadas para el usuario {UsuarioId}.", (int)(object)result.Data, usuarioId);
+
+                else
+                    _logger.LogWarning("Error al marcar notificaciones enviadas para usuario {UsuarioId}: {Mensaje}", usuarioId, result.Message);
+
+                return new OperationResult<T>
+                {
+                    Success = result.Success,
+                    Message = result.Message,
+                    Data = (T)(object)result.Data!
+                };
+            });
+
     }
 }

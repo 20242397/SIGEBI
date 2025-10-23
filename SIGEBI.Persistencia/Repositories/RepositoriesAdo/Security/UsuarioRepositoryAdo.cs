@@ -4,7 +4,6 @@ using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 using SIGEBI.Persistence.Models;
-using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
 {
     public sealed class UsuarioRepositoryAdo : IUsuarioRepository
@@ -261,14 +260,49 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
             }
         }
 
-        public Task<OperationResult<Usuario>> RemoveAsync(int id)
+        #region ✅ Remove Usuario (Eliminación Lógica)
+        public async Task<OperationResult<Usuario>> RemoveAsync(int id)
         {
-           return Task.FromResult(new OperationResult<Usuario>
+            if (id <= 0)
+                return new OperationResult<Usuario>
+                {
+                    Success = false,
+                    Message = "El ID del usuario no es válido."
+                };
+
+            try
             {
-                Success = false,
-                Message = "Eliminación de usuarios no permitida."
-            });
+                var query = "UPDATE Usuario SET Estado = 'Inactivo' WHERE Id = @Id";
+                var parameters = new Dictionary<string, object> { { "@Id", id } };
+
+                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+                if (rows == 0)
+                {
+                    return new OperationResult<Usuario>
+                    {
+                        Success = false,
+                        Message = "Usuario no encontrado o ya inactivo."
+                    };
+                }
+
+                return new OperationResult<Usuario>
+                {
+                    Success = true,
+                    Message = "Usuario desactivado correctamente."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al desactivar usuario");
+                return new OperationResult<Usuario>
+                {
+                    Success = false,
+                    Message = $"Error al desactivar usuario: {ex.Message}"
+                };
+            }
         }
+        #endregion
+
         #endregion
     }
 }

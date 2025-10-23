@@ -31,10 +31,14 @@ namespace SIGEBI.Configuracion.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Eliminar(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = await _libroService.EliminarLibroAsync<object>(id);
-            return result.Success ? Ok(result) : BadRequest(result);
+            var result = await _libroService.RemoveAsync(id);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
         }
 
         [HttpGet("titulo/{titulo}")]
@@ -61,11 +65,11 @@ namespace SIGEBI.Configuracion.Api.Controllers
         [HttpGet("isbn/{isbn}")]
         public async Task<IActionResult> BuscarPorISBN(string isbn)
         {
-            var result = await _libroService.BuscarPorISBNAsync<object>(isbn);
+            var result = await _libroService.BuscarPorISBNAsync(isbn);
             return result.Success ? Ok(result) : NotFound(result);
         }
 
-        [HttpGet("{id:int}")]
+            [HttpGet("{id:int}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
             var result = await _libroService.ObtenerPorIdAsync<object>(id);

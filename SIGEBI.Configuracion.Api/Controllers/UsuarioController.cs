@@ -55,6 +55,18 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var result = await _usuarioService.RemoveAsync(id);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
+        }
+
+
         [HttpGet("todos")]
         public async Task<IActionResult> ObtenerTodos()
         {

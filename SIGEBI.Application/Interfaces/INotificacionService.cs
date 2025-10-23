@@ -24,7 +24,9 @@ namespace SIGEBI.Application.Interfaces
 
         // RF4.3 - Filtrar notificaciones por tipo (Aviso, Recordatorio, Penalización)
         Task<ServiceResult<T>> ObtenerPorTipoAsync<T>(string tipo);
-        
+        Task<ServiceResult<T>> MarcarTodasComoEnviadasPorUsuarioAsync<T>(int usuarioId);
+
+
     }
 }
 

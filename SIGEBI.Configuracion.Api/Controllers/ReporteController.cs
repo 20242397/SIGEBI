@@ -47,9 +47,13 @@ namespace SIGEBI.Configuracion.Api.Controllers
         [HttpGet("tipo/{tipo}")]
         public async Task<IActionResult> ObtenerPorTipo(string tipo)
         {
-            var result = await _reporteService.ObtenerPorTipoAsync<object>(tipo);
-            return result.Success ? Ok(result) : NotFound(result);
+            var result = await _reporteService.ObtenerPorTipoAsync<IEnumerable<object>>(tipo);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Data);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)

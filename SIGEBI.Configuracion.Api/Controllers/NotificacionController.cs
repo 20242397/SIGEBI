@@ -15,6 +15,14 @@ namespace SIGEBI.Configuracion.Api.Controllers
             _notificacionService = notificacionService;
         }
 
+        [HttpPost("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] NotificacionCreateDto dto)
+        {
+            var result = await _notificacionService.RegistrarNotificacionAsync<object>(dto);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+
         [HttpPost("enviar")]
         public async Task<IActionResult> Enviar([FromBody] NotificacionCreateDto dto)
         {
@@ -35,5 +43,13 @@ namespace SIGEBI.Configuracion.Api.Controllers
             var result = await _notificacionService.ObtenerPendientesAsync<object>();
             return result.Success ? Ok(result) : NotFound(result);
         }
+
+        [HttpPut("MarcarTodasComoEnviadas/{usuarioId}")]
+        public async Task<IActionResult> MarcarTodasComoEnviadas(int usuarioId)
+        {
+            var result = await _notificacionService.MarcarTodasComoEnviadasPorUsuarioAsync<object>(usuarioId);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
     }
 }

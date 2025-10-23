@@ -1,5 +1,7 @@
 ﻿using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
+using SIGEBI.Domain.Base;
+using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 
 namespace SIGEBI.Application.Interfaces
 {
@@ -9,7 +11,7 @@ namespace SIGEBI.Application.Interfaces
         Task<ServiceResult<T>> RegistrarEjemplarAsync<T>(EjemplarCreateDto dto);
 
         // Actualizar estado o información del ejemplar
-        Task<ServiceResult<T>> ActualizarEjemplarAsync<T>(EjemplarUpdateDto dto);
+        Task<ServiceResult<Ejemplar>> ActualizarEjemplarAsync(EjemplarUpdateDto dto);
 
         // Obtener todos los ejemplares de un libro
         Task<ServiceResult<T>> ObtenerPorLibroAsync<T>(int libroId);
