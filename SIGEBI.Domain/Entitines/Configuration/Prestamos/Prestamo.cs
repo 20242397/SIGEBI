@@ -18,5 +18,6 @@ namespace SIGEBI.Domain.Entitines.Configuration.Prestamos
         public int LibroId { get; set; }
         public Usuario Usuario { get; set; }
         public Ejemplar Ejemplar { get; set; }
+        public Libro Libro { get; set; }
     }
 }

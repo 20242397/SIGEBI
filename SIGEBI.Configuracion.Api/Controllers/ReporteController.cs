@@ -6,7 +6,6 @@ namespace SIGEBI.Configuracion.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-
     public class ReporteController : ControllerBase
     {
         private readonly IReporteService _reporteService;
@@ -16,6 +15,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             _reporteService = reporteService;
         }
 
+        // ✅ RF5.1–RF5.4: Generar reporte general (Prestamos, Usuarios, Penalizaciones, Devoluciones)
         [HttpPost("generar")]
         public async Task<IActionResult> Generar([FromBody] ReporteCreateDto dto)
         {
@@ -23,6 +23,22 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        // ✅ RF5.1: Libros más prestados (reporte directo)
+        [HttpGet("libros-mas-prestados")]
+        public async Task<IActionResult> GenerarLibrosMasPrestados([FromQuery] DateTime inicio, [FromQuery] DateTime fin)
+        {
+            var result = await _reporteService.GenerarReporteAsync<object>(new ReporteCreateDto
+            {
+                Tipo = "libros mas prestados",
+                FechaInicio = inicio,
+                FechaFin = fin,
+                UsuarioId = 1 // ⚠️ Puedes reemplazar esto luego con el ID real del usuario logueado
+            });
+
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        // ✅ RF5.3 - Actualizar reporte (marcar como resuelto)
         [HttpPut("actualizar")]
         public async Task<IActionResult> Actualizar([FromBody] ReporteUpdateDto dto)
         {
@@ -30,6 +46,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        // ✅ RF5.4 - Exportar reporte
         [HttpGet("exportar/{id}")]
         public async Task<IActionResult> Exportar(int id, [FromQuery] string formato)
         {
@@ -37,6 +54,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        // ✅ Consultar reportes por fecha
         [HttpGet("fecha")]
         public async Task<IActionResult> ObtenerPorFecha([FromQuery] DateTime inicio, [FromQuery] DateTime fin)
         {
@@ -44,6 +62,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
+        // ✅ Consultar reportes por tipo
         [HttpGet("tipo/{tipo}")]
         public async Task<IActionResult> ObtenerPorTipo(string tipo)
         {
@@ -54,7 +73,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return Ok(result.Data);
         }
 
-
+        // ✅ Consultar por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
@@ -62,6 +81,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
+        // ✅ Consultar todos
         [HttpGet("todos")]
         public async Task<IActionResult> ObtenerTodos()
         {
@@ -70,3 +90,4 @@ namespace SIGEBI.Configuracion.Api.Controllers
         }
     }
 }
+

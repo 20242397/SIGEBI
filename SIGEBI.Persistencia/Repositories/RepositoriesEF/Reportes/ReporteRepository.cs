@@ -179,7 +179,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
-       
+
 
         public async Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync(int usuarioId)
         {
@@ -203,7 +203,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     Tipo = "Usuarios Activos",
                     Contenido = contenido.ToString(),
                     FechaGeneracion = DateTime.Now,
-                    
+
                 };
 
                 await _context.Reporte.AddAsync(reporte);
@@ -226,6 +226,8 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                 };
             }
         }
+
+
 
         // 🔹 Reporte de penalizaciones
         public async Task<OperationResult<Reporte>> GenerarReportePenalizacionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
@@ -334,9 +336,98 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
+    
+
+      
+          public async Task<OperationResult<Reporte>> GenerarReporteLibrosMasPrestadosAsync(DateTime inicio, DateTime fin)
+        {
+            try
+            {
+                // 🔍 Aseguramos que las fechas sean válidas
+                if (inicio == default || fin == default || fin < inicio)
+                {
+                    return new OperationResult<Reporte>
+                    {
+                        Success = false,
+                        Message = "El rango de fechas no es válido."
+                    };
+                }
+
+                // 📘 Consultar préstamos con relación a los libros
+                var prestamosAgrupados = await _context.Prestamo
+                    .Include(p => p.Libro) // asegúrate de tener la propiedad Libro en la entidad Prestamo
+                    .Where(p => p.FechaPrestamo >= inicio && p.FechaPrestamo <= fin)
+                    .GroupBy(p => new { p.LibroId, p.Libro.Titulo })
+                    .Select(g => new
+                    {
+                        g.Key.LibroId,
+                        g.Key.Titulo,
+                        TotalPrestamos = g.Count()
+                    })
+                    .OrderByDescending(x => x.TotalPrestamos)
+                    .Take(10)
+                    .ToListAsync();
+
+                if (prestamosAgrupados == null || !prestamosAgrupados.Any())
+                {
+                    return new OperationResult<Reporte>
+                    {
+                        Success = false,
+                        Message = "No se encontraron préstamos en el rango de fechas especificado."
+                    };
+                }
+
+                // 🧾 Construir el contenido del reporte
+                var sb = new StringBuilder();
+                sb.AppendLine("📚 REPORTE DE LIBROS MÁS PRESTADOS");
+                sb.AppendLine($"Periodo: {inicio:dd/MM/yyyy} - {fin:dd/MM/yyyy}");
+                sb.AppendLine("------------------------------------------");
+
+                int contador = 1;
+                foreach (var libro in prestamosAgrupados)
+                {
+                    sb.AppendLine($"{contador++}. {libro.Titulo} — {libro.TotalPrestamos} préstamos");
+                }
+
+                // 🧠 Crear el objeto Reporte
+                var reporte = new Reporte
+                {
+                    Tipo = "Libros más prestados",
+                    Contenido = sb.ToString(),
+                    FechaGeneracion = DateTime.Now,
+                    UsuarioId = 1 // ⚠️ cámbialo si tu sistema maneja autenticación
+                };
+
+                // 💾 Guardar el reporte
+                await _context.Reporte.AddAsync(reporte);
+                await _context.SaveChangesAsync();
+
+                return new OperationResult<Reporte>
+                {
+                    Success = true,
+                    Message = "Reporte generado correctamente.",
+                    Data = reporte
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al generar reporte de libros más prestados.");
+                return new OperationResult<Reporte>
+                {
+                    Success = false,
+                    Message = "Error al generar el reporte. Intente nuevamente."
+                };
+            }
+        }
 
     }
 }
+
+
+
+
+    
+
 
       
 

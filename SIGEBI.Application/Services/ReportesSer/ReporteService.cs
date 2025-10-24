@@ -21,61 +21,74 @@ namespace SIGEBI.Application.Services.ReportesSer
         }
 
         // ✅ RF5.1–RF5.3 - Generar un nuevo reporte
-       public Task<ServiceResult<T>> GenerarReporteAsync<T>(ReporteCreateDto dto) =>
-      ExecuteAsync(async () =>
-      {
-        // 1️⃣ Crear entidad base
-        var entity = new Reporte
-        {
-            UsuarioId = dto.UsuarioId,
-            Tipo = dto.Tipo,
-            Contenido = dto.Contenido ?? "",
-            FechaGeneracion = DateTime.Now
-        };
+        public Task<ServiceResult<T>> GenerarReporteAsync<T>(ReporteCreateDto dto) =>
+     ExecuteAsync(async () =>
+     {
+         var entity = new Reporte
+         {
+             UsuarioId = dto.UsuarioId,
+             Tipo = dto.Tipo ?? "Desconocido",
+             Contenido = dto.Contenido ?? "",
+             FechaGeneracion = DateTime.Now
+         };
 
-        // 2️⃣ Validar los campos básicos
-        var validation = ReporteValidator.Validar(entity);
-        if (!validation.Success)
-            return new OperationResult<T> { Success = false, Message = validation.Message };
+         var validation = ReporteValidator.Validar(entity);
+         if (!validation.Success)
+             return new OperationResult<T> { Success = false, Message = validation.Message };
 
-        // 3️⃣ Inicializar resultado por defecto
-        OperationResult<Reporte> result = new OperationResult<Reporte>
-        {
-            Success = false,
-            Message = "Tipo de reporte no reconocido."
-        };
+         // 👇 Aquí el tipo corregido
+         OperationResult<Reporte> result = new OperationResult<Reporte>
+         {
+             Success = false,
+             Message = "Tipo de reporte no reconocido."
+         };
 
-        // 4️⃣ Tipos de reporte disponibles
-        switch (dto.Tipo.ToLower())
-        {
-            case "prestamos":
-                result = await _reporteRepository.GenerarReportePrestamosAsync(dto.FechaInicio, dto.FechaFin, dto.UsuarioId);
-                break;
+         switch (dto.Tipo?.ToLower())
+         {
+             case "prestamos":
+             case "libros mas prestados":
+                 result = await _reporteRepository.GenerarReporteLibrosMasPrestadosAsync(
+                     dto.FechaInicio ?? DateTime.MinValue,
+                     dto.FechaFin ?? DateTime.Now
+                 );
+                 break;
 
-            case "usuarios activos":
-                result = await _reporteRepository.GenerarReporteUsuariosActivosAsync(dto.UsuarioId);
-                break;
+             case "usuarios activos":
+                 result = await _reporteRepository.GenerarReporteUsuariosActivosAsync(dto.UsuarioId);
+                 break;
 
-            case "penalizaciones":
-                result = await _reporteRepository.GenerarReportePenalizacionesAsync(dto.FechaInicio, dto.FechaFin, dto.UsuarioId);
-                break;
+             case "penalizaciones":
+                 result = await _reporteRepository.GenerarReportePenalizacionesAsync(
+                     dto.FechaInicio ?? DateTime.MinValue,
+                     dto.FechaFin ?? DateTime.Now,
+                     dto.UsuarioId
+                 );
+                 break;
 
-            case "devoluciones":
-                result = await _reporteRepository.GenerarReporteDevolucionesAsync(dto.FechaInicio, dto.FechaFin, dto.UsuarioId);
-                break;
-        }
+             case "devoluciones":
+                 result = await _reporteRepository.GenerarReporteDevolucionesAsync(
+                     dto.FechaInicio ?? DateTime.MinValue,
+                     dto.FechaFin ?? DateTime.Now,
+                     dto.UsuarioId
+                 );
+                 break;
 
-        // 5️⃣ Log de auditoría
-        _logger.LogInformation("Reporte generado de tipo {tipo} por usuario con ID {usuarioId}", dto.Tipo, dto.UsuarioId);
+             default:
+                 _logger.LogWarning("Tipo de reporte no reconocido: {Tipo}", dto.Tipo);
+                 break;
+         }
 
-        // 6️⃣ Devolver resultado genérico
-        return new OperationResult<T>
-        {
-            Success = result.Success,
-            Message = result.Message ?? "Sin mensaje.",
-            Data = (T?)(object?)result.Data!
-        };
-      });
+         _logger.LogInformation("Reporte generado de tipo {Tipo} por usuario con ID {UsuarioId}",
+             dto.Tipo, dto.UsuarioId);
+
+         return new OperationResult<T>
+         {
+             Success = result.Success,
+             Message = result.Message ?? "Sin mensaje.",
+             Data = (T?)(object?)result.Data!
+         };
+     });
+
 
 
         // ✅ RF5.4 - Exportar reporte en PDF o Excel

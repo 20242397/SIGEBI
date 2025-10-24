@@ -16,6 +16,9 @@ namespace SIGEBI.Application.Repositories.Configuration.Reportes
         Task<OperationResult<Reporte>> GenerarReporteUsuariosActivosAsync(int usuarioId);
         Task<OperationResult<Reporte>> GenerarReportePenalizacionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId);
         Task<OperationResult<Reporte>> GenerarReporteDevolucionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId);
+
+        Task<OperationResult<Reporte>> GenerarReporteLibrosMasPrestadosAsync(DateTime inicio, DateTime fin);
+
         // 🔹 Actualización
         Task<OperationResult<bool>> MarcarComoResueltoAsync(int reporteId);
     }
