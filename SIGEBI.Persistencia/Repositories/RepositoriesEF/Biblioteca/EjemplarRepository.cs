@@ -80,8 +80,15 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
         public override async Task<OperationResult<Ejemplar>> UpdateAsync(Ejemplar entity)
         {
+            // ✅ 1️⃣ Validar primero los datos
+            var validacion = EjemplarValidator.Validar(entity);
+            if (!validacion.Success)
+                return validacion;
 
-            var original = await _context.Ejemplar.AsNoTracking().FirstOrDefaultAsync(e => e.Id == entity.Id);
+            // ✅ 2️⃣ Luego verificar si el estado ya es el mismo
+            var original = await _context.Ejemplar.AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == entity.Id);
+
             if (original != null && original.Estado == entity.Estado)
                 return new OperationResult<Ejemplar>
                 {
@@ -90,12 +97,41 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                     Data = entity
                 };
 
-            var validacion = EjemplarValidator.Validar(entity);
-            if (!validacion.Success)
-                return validacion;
+            // ✅ 3️⃣ Realizar actualización
+            try
+            {
+                _context.Entry(entity).State = EntityState.Modified;
 
-            return await base.UpdateAsync(entity);
+                var rows = await _context.SaveChangesAsync();
+
+                if (rows > 0)
+                {
+                    return new OperationResult<Ejemplar>
+                    {
+                        Success = true,
+                        Message = "Ejemplar actualizado correctamente.",
+                        Data = entity
+                    };
+                }
+
+                return new OperationResult<Ejemplar>
+                {
+                    Success = false,
+                    Message = "No se realizaron cambios en el ejemplar."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar ejemplar");
+                return new OperationResult<Ejemplar>
+                {
+                    Success = false,
+                    Message = $"Error al actualizar ejemplar: {ex.Message}"
+                };
+            }
         }
+
+
 
         #region Métodos personalizados
 

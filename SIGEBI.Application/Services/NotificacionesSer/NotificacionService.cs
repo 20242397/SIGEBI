@@ -63,7 +63,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerNotificacionesPorUsuarioAsync(usuarioId);
 
                 _logger.LogInformation("Consulta de notificaciones para usuario {UsuarioId}: {Count}",
-                    (object)usuarioId, (object)(result.Data?.Count ?? 0));
+                    (object)usuarioId, (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0));
 
                 return new OperationResult<T>
                 {
@@ -80,7 +80,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerNotificacionesNoLeidasPorUsuarioAsync(usuarioId);
 
                 _logger.LogInformation("Consulta de notificaciones no leídas del usuario {UsuarioId}: {Count}",
-                    (object)usuarioId, (object)(result.Data?.Count ?? 0));
+                    (object)usuarioId, (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0));
 
                 return new OperationResult<T>
                 {
@@ -96,9 +96,8 @@ namespace SIGEBI.Application.Services.NotificacionesSer
             {
                 var result = await _notificacionRepository.ObtenerPendientesAsync();
 
-                _logger.LogInformation("Consulta de notificaciones pendientes: {Count}",
-                    (object)(result.Data?.Count ?? 0));
-               
+                _logger.LogInformation( "Consulta de notificaciones pendientes: {Count}", (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0));
+
 
                 return new OperationResult<T>
                 {
@@ -115,7 +114,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 var result = await _notificacionRepository.ObtenerPorTipoAsync(tipo);
 
                 _logger.LogInformation("Consulta de notificaciones tipo {Tipo}: {Count}",
-                    (object)tipo, (object)(result.Data?.Count ?? 0));
+                    (object)tipo, (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0));
 
                 return new OperationResult<T>
                 {

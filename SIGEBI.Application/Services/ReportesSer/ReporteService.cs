@@ -211,7 +211,8 @@ namespace SIGEBI.Application.Services.ReportesSer
             ExecuteAsync(async () =>
             {
                 var result = await _reporteRepository.ObtenerReportesPorFechaAsync(inicio, fin);
-                _logger.LogInformation("Reportes obtenidos entre {Inicio} y {Fin}: {Count}", new object?[] { inicio, fin, result.Data?.Count ?? 0 });
+                _logger.LogInformation(  "Reportes obtenidos entre {Inicio} y {Fin}: {Count}", inicio, fin, (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0) );
+
 
                 return new OperationResult<T>
                 {
@@ -226,8 +227,7 @@ namespace SIGEBI.Application.Services.ReportesSer
             ExecuteAsync(async () =>
             {
                 var result = await _reporteRepository.ObtenerReportesPorTipoAsync(tipo);
-                _logger.LogInformation("Reportes obtenidos por tipo {Tipo}: {Count}", new object?[] { tipo, result.Data?.Count ?? 0 });
-
+                _logger.LogInformation( "Reportes obtenidos por tipo {Tipo}: {Count}", tipo, (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0));
 
                 return new OperationResult<T>
                 {
@@ -242,7 +242,8 @@ namespace SIGEBI.Application.Services.ReportesSer
             ExecuteAsync(async () =>
             {
                 var result = await _reporteRepository.GetAllAsync();
-                _logger.LogInformation("Consulta de todos los reportes completada: {Count}", new object?[] { result.Data?.Count ?? 0 });
+                _logger.LogInformation( "Consulta de todos los reportes completada: {Count}", (result.Data is IEnumerable<object> enumerable ? enumerable.Count() : 0));
+
 
 
                 return new OperationResult<T>

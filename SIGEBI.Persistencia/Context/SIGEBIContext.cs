@@ -12,6 +12,9 @@ namespace SIGEBI.Persistence.Context
         public SIGEBIContext(DbContextOptions<SIGEBIContext> options) : base(options)
         {
         }
+        public SIGEBIContext(DbContextOptionsBuilder<SIGEBIContext> options)
+        {
+        }
 
         #region "Entidades EF Core (Persistencia)"
         // Seguridad

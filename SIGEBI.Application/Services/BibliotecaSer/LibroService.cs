@@ -41,7 +41,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
 
                 // Verificar ISBN único
                 var existing = await _libroRepository.GetByISBNAsync(dto.ISBN);
-                if (existing.Success && existing.Data)
+                if (existing.Success && existing.Data is not null)
                 {
                     return new OperationResult<T>
                     {

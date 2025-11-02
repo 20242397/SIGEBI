@@ -12,6 +12,5 @@
 
         // Estado de disponibilidad
         public string Estado { get; set; } = "Disponible"; // Disponible / Prestado / Reservado / Dañado
-        
     }
 }
