@@ -3,11 +3,9 @@ using SIGEBI.Application.Repositories.Configuration.Reportes;
 using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Reportes;
-using SIGEBI.Domain.Entitines.Configuration.Security;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
 using SIGEBI.Persistence.Logging;
-using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 using System.Text;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
