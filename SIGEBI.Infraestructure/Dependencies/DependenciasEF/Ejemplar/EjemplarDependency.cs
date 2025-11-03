@@ -10,7 +10,7 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasEF.Ejemplar
     {
         public static void AddEjemplarDependency(this IServiceCollection services)
         {
-            // Add EjemplarRepositoryEF dependency
+            
          services.AddScoped<IEjemplarRepository, EjemplarRepository>();
          services.AddTransient<IEjemplarService, EjemplarService>();
         }

@@ -11,7 +11,7 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasEF.Notificacion
     {
         public static void AddNotificacionDependency(this IServiceCollection services)
         {
-            // Add NotificacionRepositoryEF dependency
+            
             services.AddScoped<INotificacionRepository, NotificacionRepository>();
            services.AddTransient<INotificacionService, NotificacionService>();
         }

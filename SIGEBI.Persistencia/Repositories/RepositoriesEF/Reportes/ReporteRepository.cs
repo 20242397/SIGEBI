@@ -22,7 +22,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             _logger = logger;
         }
 
-        #region ✅ Validación con ReporteValidator
+        #region  Validación con ReporteValidator
 
         public override async Task<OperationResult<Reporte>> AddAsync(Reporte entity)
         {
@@ -44,7 +44,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
         #endregion
 
-        #region 🔍 Consultas generales
+        #region  Consultas generales
 
         public async Task<OperationResult<IEnumerable<Reporte>>> ObtenerReportesPorFechaAsync(DateTime fechaInicio, DateTime fechaFin)
         {
@@ -125,7 +125,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
         #endregion
 
-        #region 🧾 Generación de reportes automáticos
+        #region  Generación de reportes automáticos
 
         public async Task<OperationResult<Reporte>> GenerarReportePrestamosAsync(DateTime inicio, DateTime fin, int usuarioId)
         {
@@ -227,7 +227,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
 
 
 
-        // 🔹 Reporte de penalizaciones
+        //  Reporte de penalizaciones
         public async Task<OperationResult<Reporte>> GenerarReportePenalizacionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
         {
             try
@@ -262,7 +262,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
-        // 🔹 Reporte de devoluciones
+        //  Reporte de devoluciones
         public async Task<OperationResult<Reporte>> GenerarReporteDevolucionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
         {
             try
@@ -341,7 +341,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
         {
             try
             {
-                // 🔍 Aseguramos que las fechas sean válidas
+                //  Aseguramos que las fechas sean válidas
                 if (inicio == default || fin == default || fin < inicio)
                 {
                     return new OperationResult<Reporte>
@@ -351,7 +351,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     };
                 }
 
-                // 📘 Consultar préstamos con relación a los libros
+                //  Consultar préstamos con relación a los libros
                 var prestamosAgrupados = await _context.Prestamo
                     .Include(p => p.Libro) // asegúrate de tener la propiedad Libro en la entidad Prestamo
                     .Where(p => p.FechaPrestamo >= inicio && p.FechaPrestamo <= fin)
@@ -375,7 +375,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     };
                 }
 
-                // 🧾 Construir el contenido del reporte
+                //  Construir el contenido del reporte
                 var sb = new StringBuilder();
                 sb.AppendLine("📚 REPORTE DE LIBROS MÁS PRESTADOS");
                 sb.AppendLine($"Periodo: {inicio:dd/MM/yyyy} - {fin:dd/MM/yyyy}");
@@ -387,7 +387,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     sb.AppendLine($"{contador++}. {libro.Titulo} — {libro.TotalPrestamos} préstamos");
                 }
 
-                // 🧠 Crear el objeto Reporte
+                //  Crear el objeto Reporte
                 var reporte = new Reporte
                 {
                     Tipo = "Libros más prestados",
@@ -396,7 +396,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     UsuarioId = 1 // ⚠️ cámbialo si tu sistema maneja autenticación
                 };
 
-                // 💾 Guardar el reporte
+                // Guardar el reporte
                 await _context.Reporte.AddAsync(reporte);
                 await _context.SaveChangesAsync();
 

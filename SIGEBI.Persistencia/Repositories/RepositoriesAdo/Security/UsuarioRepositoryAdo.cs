@@ -17,7 +17,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
             _logger = logger;
         }
 
-        #region ✅ Add Usuario
+        #region  Add Usuario
         public async Task<OperationResult<Usuario>> AddAsync(Usuario entity)
         {
             var validacion = UsuarioValidator.Validar(entity);
@@ -63,7 +63,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
         }
         #endregion
 
-        #region ✅ GetAll Usuarios
+        #region  GetAll Usuarios
         public async Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync()
         {
             try
@@ -91,7 +91,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
         }
         #endregion
 
-        #region ✅ GetById Usuario
+        #region  GetById Usuario
         public async Task<OperationResult<Usuario>> GetByIdAsync(int id)
         {
             if (id <= 0)
@@ -121,7 +121,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
         }
         #endregion
 
-        #region ✅ GetByEmail Usuario
+        #region  GetByEmail Usuario
         public async Task<OperationResult<Usuario>> GetByEmailAsync(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -151,7 +151,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
         }
         #endregion
 
-        #region ✅ Update Usuario
+        #region  Update Usuario
         public async Task<OperationResult<Usuario>> UpdateAsync(Usuario entity)
         {
             if (entity.Id <= 0)
@@ -197,7 +197,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
         }
         #endregion
 
-        #region ✅ Cambiar Estado
+        #region  Cambiar Estado
         public async Task<OperationResult<bool>> CambiarEstadoAsync(int id, bool activo)
         {
             try
@@ -229,7 +229,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
         }
         #endregion
 
-        #region ✅ Asignar Rol
+        #region  Asignar Rol
         public async Task<OperationResult<bool>> AsignarRolAsync(int id, string rol)
         {
             try
@@ -260,7 +260,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
             }
         }
 
-        #region ✅ Remove Usuario (Eliminación Lógica)
+        #region  Remove Usuario (Eliminación Lógica)
         public async Task<OperationResult<Usuario>> RemoveAsync(int id)
         {
             if (id <= 0)

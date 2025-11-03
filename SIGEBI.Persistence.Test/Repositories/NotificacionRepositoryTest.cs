@@ -17,15 +17,15 @@ namespace SIGEBI.Persistence.Test.Repositories
 
         public NotificacionRepositoryTest()
         {
-            // ✅ Configurar base de datos en memoria única por prueba
+           
             var options = new DbContextOptionsBuilder<SIGEBIContext>()
                 .UseInMemoryDatabase(databaseName: $"SIGEBI_TestDB_{Guid.NewGuid()}")
                 .Options; // <- importante
 
-            // ✅ Crear contexto con las opciones configuradas
+           
             _context = new SIGEBIContext(options);
 
-            // ✅ Configurar logger real
+        
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddFilter("Microsoft", LogLevel.Warning)
@@ -34,7 +34,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
             _logger = loggerFactory.CreateLogger<Notificacion>();
 
-            // ✅ Crear instancia del repositorio a probar
+          
             _notificacionRepository = new NotificacionRepository(_context, new LoggerService<Notificacion>(_logger));
         }
 
@@ -74,7 +74,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
             var notificacion = new Notificacion
             {
-                Tipo = "Alerta", // ❌ No permitido
+                Tipo = "Alerta", //  No permitido
                 UsuarioId = 1,
                 Mensaje = "Mensaje inválido.",
                 FechaEnvio = DateTime.Now,
@@ -141,7 +141,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             actualizado!.Enviado.Should().BeTrue();
         }
 
-        // ✅ 5️⃣ Marcar todas como enviadas por usuario
+        // Marcar todas como enviadas por usuario
         [Fact]
         public async Task MarcarTodasComoEnviadasPorUsuarioAsync_Should_Mark_All_As_True()
         {
@@ -163,7 +163,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             result.Data.Should().Be(2);
         }
 
-        // ✅ 6️⃣ Obtener notificaciones por usuario
+        // Obtener notificaciones por usuario
         [Fact]
         public async Task ObtenerNotificacionesPorUsuarioAsync_Should_Return_User_Notifications()
         {
@@ -184,7 +184,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             result.Data.Should().HaveCount(2);
         }
 
-        // ✅ 7️⃣ Obtener notificaciones no leídas
+        // Obtener notificaciones no leídas
         [Fact]
         public async Task ObtenerNotificacionesNoLeidasPorUsuarioAsync_Should_Return_Unsent_Only()
         {
@@ -206,7 +206,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             result.Data.First().Enviado.Should().BeFalse();
         }
 
-        // ✅ 8️⃣ Obtener notificaciones pendientes
+        // Obtener notificaciones pendientes
         [Fact]
         public async Task ObtenerPendientesAsync_Should_Return_Unsent_Notifications()
         {
@@ -227,7 +227,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             result.Data.Should().HaveCount(1);
         }
 
-        // ✅ 9️⃣ Obtener notificaciones por tipo
+        // Obtener notificaciones por tipo
         [Fact]
         public async Task ObtenerPorTipoAsync_Should_Return_Filtered_By_Type()
         {

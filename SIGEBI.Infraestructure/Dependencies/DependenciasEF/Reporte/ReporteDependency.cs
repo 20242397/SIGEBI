@@ -10,7 +10,7 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasEF.Reporte
     {
         public static void AddReporteDependency(this IServiceCollection services)
         {
-            // Add ReporteRepositoryEF dependency
+            
             services.AddScoped<IReporteRepository, ReporteRepository>();
             services.AddTransient<IReporteService, ReporteService>();
         }

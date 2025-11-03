@@ -40,7 +40,6 @@ namespace SIGEBI.Application.Validators
 
 
 
-            // Fix: Use EstadoEjemplar enum array for comparison
             if (!new[] { EstadoEjemplar.Disponible, EstadoEjemplar.Prestado, EstadoEjemplar.Reservado }.Contains(entity.Estado))
                 return new OperationResult<Ejemplar> { Success = false, Message = "El estado del ejemplar no es válido." };
 

@@ -23,12 +23,12 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
         public override async Task<OperationResult<Ejemplar>> AddAsync(Ejemplar entity)
         {
-            // ✅ Validación con EjemplarValidator
+            //  Validación con EjemplarValidator
             var validacion = EjemplarValidator.Validar(entity);
             if (!validacion.Success)
                 return validacion;
 
-            // ✅ Validar si el código de barras ya existe
+            //  Validar si el código de barras ya existe
             if (await _context.Ejemplar.AnyAsync(e => e.CodigoBarras == entity.CodigoBarras))
                 return new OperationResult<Ejemplar>
                 {
@@ -36,7 +36,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                     Message = "El código de barras ya está registrado."
                 };
 
-            // ✅ Validar si el libro asociado existe
+            //  Validar si el libro asociado existe
             if (!await _context.Libro.AnyAsync(l => l.Id == entity.LibroId))
                 return new OperationResult<Ejemplar>
                 {
@@ -46,7 +46,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
             try
             {
-                // ✅ Insertar registro
+                //  Insertar registro
                 await _context.Ejemplar.AddAsync(entity);
                 var rows = await _context.SaveChangesAsync();
 
@@ -80,12 +80,12 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
         public override async Task<OperationResult<Ejemplar>> UpdateAsync(Ejemplar entity)
         {
-            // ✅ 1️⃣ Validar primero los datos
+            //  Validar primero los datos
             var validacion = EjemplarValidator.Validar(entity);
             if (!validacion.Success)
                 return validacion;
 
-            // ✅ 2️⃣ Luego verificar si el estado ya es el mismo
+            //  Luego verificar si el estado ya es el mismo
             var original = await _context.Ejemplar.AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == entity.Id);
 
@@ -97,7 +97,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                     Data = entity
                 };
 
-            // ✅ 3️⃣ Realizar actualización
+            //  Realizar actualización
             try
             {
                 _context.Entry(entity).State = EntityState.Modified;

@@ -10,8 +10,6 @@ namespace SIGEBI.Application.Repositories.Configuration.IBiblioteca
         Task<IEnumerable<Ejemplar>> ObtenerDisponiblesPorLibroAsync(int libroId);
         Task<IEnumerable<Ejemplar>> ObtenerReservadosAsync();
         Task<IEnumerable<Ejemplar>> ObtenerPrestadosAsync();
-
-        // Ahora devuelven OperationResult<bool> para incluir mensajes y control de errores
         Task<OperationResult<bool>> MarcarComoPerdidoAsync(int ejemplarId);
     }
 }

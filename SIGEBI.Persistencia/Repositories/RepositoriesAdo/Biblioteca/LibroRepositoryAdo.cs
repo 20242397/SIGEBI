@@ -5,7 +5,6 @@ using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
 using SIGEBI.Persistence.Models;
 using SIGEBI.Application.Validators;
-using SIGEBI.Persistence.Repositories.RepositoriesAdo;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 {
@@ -20,7 +19,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
             _logger = logger;
         }
 
-        #region ✅ Add
+        #region  Add
         public async Task<OperationResult<Libro>> AddAsync(Libro entity)
         {
             var validacion = LibroValidator.Validar(entity);
@@ -66,7 +65,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         }
         #endregion
 
-        #region ✅ GetAll
+        #region  GetAll
         public async Task<OperationResult<IEnumerable<Libro>>> GetAllAsync()
         {
             try
@@ -94,7 +93,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         }
         #endregion
 
-        #region ✅ GetById
+        #region  GetById
         public async Task<OperationResult<Libro>> GetByIdAsync(int id)
         {
             if (id <= 0)
@@ -124,7 +123,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         }
         #endregion
 
-        #region ✅ GetByAuthor
+        #region  GetByAuthor
         public async Task<OperationResult<IEnumerable<Libro>>> GetByAuthorAsync(string autor)
         {
             if (string.IsNullOrWhiteSpace(autor))
@@ -160,7 +159,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         }
         #endregion
 
-        #region ✅ GetByCategory
+        #region  GetByCategory
         public async Task<OperationResult<IEnumerable<Libro>>> GetByCategoryAsync(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria))
@@ -196,7 +195,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         }
         #endregion
 
-        #region ✅ SearchByTitle
+        #region  SearchByTitle
         public async Task<OperationResult<IEnumerable<Libro>>> SearchByTitleAsync(string titulo)
         {
             if (string.IsNullOrWhiteSpace(titulo))
@@ -232,7 +231,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         }
         #endregion
 
-        #region ✅ Update
+        #region  Update
 
         public async Task<OperationResult<Libro>> UpdateAsync(Libro entity)
         {
@@ -273,7 +272,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 
                 if (rows > 0)
                 {
-                    // 🔹 Refrescamos el registro desde la base para devolver datos actualizados
+                    //  Refrescamos el registro desde la base para devolver datos actualizados
                     var refreshed = await GetByIdAsync(entity.Id);
                     return new OperationResult<Libro>
                     {
@@ -305,8 +304,9 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 
         #endregion
 
-        #region ✅ Remove
-        #region ✅ Remove (Eliminación Lógica)
+        #region  Remove
+
+        #region  Remove (Eliminación Lógica)
         public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             if (id <= 0)
@@ -352,7 +352,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
         #endregion
 
 
-        #region ✅ GetByISBN
+        #region  GetByISBN
         public async Task<OperationResult<Libro>> GetByISBNAsync(string isbn)
         {
             if (string.IsNullOrWhiteSpace(isbn))

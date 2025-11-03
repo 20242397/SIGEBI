@@ -2,7 +2,7 @@
 
 namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro
 {
-    // Obtener libro
+    
     public record LibroGetDto
     {
         public int Id { get; set; }

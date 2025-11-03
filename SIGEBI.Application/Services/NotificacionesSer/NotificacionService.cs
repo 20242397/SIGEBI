@@ -20,7 +20,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
             _logger = logger;
         }
 
-        // ✅ RF4.1 - Registrar notificación
+        // Registrar notificación
         public Task<ServiceResult<T>> RegistrarNotificacionAsync<T>(NotificacionCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -56,7 +56,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 };
             });
 
-        // ✅ RF4.2 - Obtener notificaciones por usuario
+        // Obtener notificaciones por usuario
         public Task<ServiceResult<T>> ObtenerPorUsuarioAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {
@@ -73,7 +73,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 };
             });
 
-        // ✅ RF4.2 - Obtener notificaciones no leídas
+        // Obtener notificaciones no leídas
         public Task<ServiceResult<T>> ObtenerNoLeidasAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {
@@ -90,7 +90,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 };
             });
 
-        // ✅ RF4.3 - Obtener notificaciones pendientes
+        // Obtener notificaciones pendientes
         public Task<ServiceResult<T>> ObtenerPendientesAsync<T>() =>
             ExecuteAsync(async () =>
             {
@@ -107,7 +107,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 };
             });
 
-        // ✅ RF4.3 - Filtrar notificaciones por tipo
+        // Filtrar notificaciones por tipo
         public Task<ServiceResult<T>> ObtenerPorTipoAsync<T>(string tipo) =>
             ExecuteAsync(async () =>
             {
@@ -124,7 +124,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
                 };
             });
 
-        // ✅ RF4.3 - Marcar notificación como enviada
+        // Marcar notificación como enviada
         public Task<ServiceResult<T>> MarcarComoEnviadaAsync<T>(int notificacionId) =>
             ExecuteAsync(async () =>
             {
@@ -179,7 +179,7 @@ namespace SIGEBI.Application.Services.NotificacionesSer
 
             });
 
-        // ✅ RF5.x - Marcar todas las notificaciones como enviadas por usuario
+        // Marcar todas las notificaciones como enviadas por usuario
         public Task<ServiceResult<T>> MarcarTodasComoEnviadasPorUsuarioAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {

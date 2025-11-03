@@ -16,24 +16,24 @@ namespace SIGEBI.Persistence.Test.Repositories
 
         public EjemplarRepositoryTests()
         {
-            // ✅ Base de datos en memoria única por ejecución
+            
             var options = new DbContextOptionsBuilder<SIGEBIContext>()
                 .UseInMemoryDatabase(databaseName: $"SIGEBI_TestDB_{Guid.NewGuid()}")
                 .Options;
 
             _context = new SIGEBIContext(options);
 
-            // ✅ Crear instancia real de ILogger usando LoggerFactory
+          
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
                     .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddConsole(); // Puedes quitar AddConsole() si no quieres salida en tests
+                    .AddConsole(); 
             });
 
             _logger = loggerFactory.CreateLogger<Ejemplar>();
 
-            // ✅ Instanciar el repositorio bajo prueba
+            
             _ejemplarRepository = new EjemplarRepository(_context, new LoggerService<Ejemplar>(_logger));
         }
         #region "Pruebas para AddAsync"
@@ -216,7 +216,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             var ejemplar = new Ejemplar
             {
                 Id = 1,
-                CodigoBarras = "UPD002AA", // ✅ ahora tiene 8 caracteres
+                CodigoBarras = "UPD002AA", // ahora tiene 8 caracteres
                 Estado = EstadoEjemplar.Reservado,
                 LibroId = 1
             };
@@ -259,7 +259,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.SaveChangesAsync();
 
             // Act — invalidar el código de barras para forzar error del validator
-            ejemplar.CodigoBarras = ""; // ❌ inválido
+            ejemplar.CodigoBarras = ""; // inválido
             var result = await _ejemplarRepository.UpdateAsync(ejemplar);
 
             // Assert
@@ -270,8 +270,8 @@ namespace SIGEBI.Persistence.Test.Repositories
         private async Task ResetDatabaseAsync()
         {
 
-            await _context.Database.EnsureDeletedAsync();  // ✅ elimina la BD InMemory
-            await _context.Database.EnsureCreatedAsync();  // ✅ la recrea limpia
+            await _context.Database.EnsureDeletedAsync();  // elimina la BD InMemory
+            await _context.Database.EnsureCreatedAsync();  // la recrea limpia
 
         }
 
@@ -341,12 +341,12 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // ✅ 1️⃣ Insertar el libro primero
+            //  Insertar el libro primero
             var libro = new Libro { Id = 1, Titulo = "Libro de Prueba Reservados" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
 
-            // ✅ 2️⃣ Agregar ejemplares con diferentes estados
+            //  Agregar ejemplares con diferentes estados
             var ejemplares = new[]
             {
                new Ejemplar { CodigoBarras = "RES001AA", Estado = EstadoEjemplar.Reservado, LibroId = 1 },
@@ -356,10 +356,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddRangeAsync(ejemplares);
             await _context.SaveChangesAsync();
 
-            // ✅ 3️⃣ Ejecutar método del repositorio
+            // Ejecutar método del repositorio
             var result = (await _ejemplarRepository.ObtenerReservadosAsync()).ToList();
 
-            // ✅ 4️⃣ Validar resultado
+            // Validar resultado
             result.Should().HaveCount(1, "porque solo uno tiene estado 'Reservado'");
             result.First().Estado.Should().Be(EstadoEjemplar.Reservado);
         }
@@ -372,7 +372,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // ✅ Primero insertamos un libro válido
+            // Primero insertamos un libro válido
             var libro = new Libro { Id = 1, Titulo = "Libro de Prueba" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();

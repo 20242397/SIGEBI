@@ -11,7 +11,7 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario
     {
         public static void AddUsuarioDependency(this IServiceCollection services)
         {
-            // Add UsuarioRepositoryAdo dependency
+            
          services.AddScoped<IUsuarioRepository, UsuarioRepositoryAdo>();
          services.AddTransient<IUsuarioService, UsuarioService>();
         }

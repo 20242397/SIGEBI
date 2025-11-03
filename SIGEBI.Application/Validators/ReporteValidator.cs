@@ -16,7 +16,7 @@ namespace SIGEBI.Application.Validators
                     Message = "El reporte no puede ser nulo."
                 };
 
-            // ✅ Lista normalizada (sin tildes, en minúsculas)
+            // Lista normalizada (sin tildes, en minúsculas)
             var tiposValidos = new[]
             {
                 "prestamos",
@@ -26,10 +26,10 @@ namespace SIGEBI.Application.Validators
                 "libros mas prestados"
             };
 
-            // ✅ Normalizar el texto recibido (minúsculas, sin tildes)
+            // Normalizar el texto recibido (minúsculas, sin tildes)
             string tipoNormalizado = RemoverTildes(entity.Tipo?.ToLower() ?? string.Empty);
 
-            // 🔍 Validar tipo
+            //  Validar tipo
             if (!tiposValidos.Contains(tipoNormalizado))
             {
                 return new OperationResult<Reporte>
@@ -39,7 +39,7 @@ namespace SIGEBI.Application.Validators
                 };
             }
 
-            // 🔍 Validar usuario
+            // Validar usuario
             if (entity.UsuarioId <= 0)
                 return new OperationResult<Reporte>
                 {
@@ -47,7 +47,7 @@ namespace SIGEBI.Application.Validators
                     Message = "Debe indicar el usuario que generó el reporte."
                 };
 
-            // 🔍 Validar tipo (no vacío)
+            // Validar tipo (no vacío)
             if (string.IsNullOrWhiteSpace(entity.Tipo))
                 return new OperationResult<Reporte>
                 {
@@ -55,7 +55,7 @@ namespace SIGEBI.Application.Validators
                     Message = "El tipo de reporte es obligatorio."
                 };
 
-            // 🔍 Validar contenido (solo si no es un tipo de reporte generado automáticamente)
+            // Validar contenido (solo si no es un tipo de reporte generado automáticamente)
             if (string.IsNullOrWhiteSpace(entity.Contenido) &&
                 tipoNormalizado != "prestamos" &&
                 tipoNormalizado != "usuarios activos" &&
@@ -70,7 +70,7 @@ namespace SIGEBI.Application.Validators
                 };
             }
 
-            // 🔍 Validar fecha
+            // Validar fecha
             if (entity.FechaGeneracion == default)
                 return new OperationResult<Reporte>
                 {
@@ -81,7 +81,7 @@ namespace SIGEBI.Application.Validators
             return new OperationResult<Reporte> { Success = true, Data = entity };
         }
 
-        // 🔧 Método auxiliar para remover tildes
+        // Método auxiliar para remover tildes
         private static string RemoverTildes(string texto)
         {
             var normalized = texto.Normalize(NormalizationForm.FormD);

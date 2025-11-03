@@ -19,7 +19,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
             _logger = logger;
         }
 
-        // ✅ RF3.1 - Registrar préstamo
+        // Registrar préstamo
         public Task<ServiceResult<T>> RegistrarPrestamoAsync<T>(PrestamoCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -66,7 +66,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 };
             });
 
-        // ✅ RF3.2 - Extender préstamo
+        // Extender préstamo
         public Task<ServiceResult<T>> ExtenderPrestamoAsync<T>(PrestamoUpdateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -89,7 +89,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 };
             });
 
-        // ✅ RF3.3 - Registrar devolución
+        // Registrar devolución
         public Task<ServiceResult<T>> RegistrarDevolucionAsync<T>(int prestamoId, DateTime fechaDevolucion) =>
             ExecuteAsync(async () =>
             {
@@ -108,7 +108,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 };
             });
 
-        // ✅ RF3.4 - Calcular penalización
+        // Calcular penalización
         public Task<ServiceResult<T>> CalcularPenalizacionAsync<T>(int prestamoId) =>
             ExecuteAsync(async () =>
             {
@@ -127,7 +127,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 };
             });
 
-        // ✅ RF3.5 - Restringir préstamo si penalizado
+        // Restringir préstamo si penalizado
         public Task<ServiceResult<T>> RestringirPrestamoSiPenalizadoAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {
@@ -146,7 +146,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 };
             });
 
-        // ✅ RF2.5 - Obtener historial del usuario
+        // Obtener historial del usuario
         public Task<ServiceResult<T>> ObtenerHistorialUsuarioAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {

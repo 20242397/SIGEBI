@@ -125,7 +125,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 
             try
             {
-                // ✅ Consulta SQL: solo actualiza los campos que pueden cambiar
+                //  Consulta SQL: solo actualiza los campos que pueden cambiar
                 string query = @"
                   UPDATE Prestamo
                   SET 
@@ -134,7 +134,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
                    Penalizacion = @Penalizacion
                    WHERE Id = @Id";
 
-                // ✅ Diccionario de parámetros (solo los campos necesarios)
+                //  Diccionario de parámetros (solo los campos necesarios)
                 var parameters = new Dictionary<string, object>
                 {
                  { "@FechaVencimiento", entity.FechaVencimiento },
@@ -143,10 +143,10 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
                  { "@Id", entity.Id }
                 };
 
-                // ✅ Ejecutar la actualización
+                // Ejecutar la actualización
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
 
-                // ✅ Retornar resultado
+                // Retornar resultado
                 return new OperationResult<Prestamo>
                 {
                     Success = rows > 0,
@@ -158,7 +158,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
             }
             catch (Exception ex)
             {
-                // ✅ Manejo de errores y logging
+                // Manejo de errores y logging
                 _logger.LogError(ex, "Error al actualizar préstamo (ID: {Id})", entity.Id);
 
                 return new OperationResult<Prestamo>
@@ -288,7 +288,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 
             var prestamo = prestamoResult.Data;
 
-            // ✅ Ahora permite calcular penalización incluso si ya fue devuelto
+            //  Ahora permite calcular penalización incluso si ya fue devuelto
             DateTime fechaComparacion = prestamo.FechaDevolucion ?? DateTime.Now;
             int diasAtraso = (fechaComparacion - prestamo.FechaVencimiento).Days;
 
@@ -298,7 +298,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
             decimal penalizacion = diasAtraso * 1.00m;
             prestamo.Penalizacion = penalizacion;
 
-            // ✅ Si no tiene fecha de devolución, la establece a hoy
+            //  Si no tiene fecha de devolución, la establece a hoy
             if (prestamo.FechaDevolucion == null)
                 prestamo.FechaDevolucion = DateTime.Now;
 

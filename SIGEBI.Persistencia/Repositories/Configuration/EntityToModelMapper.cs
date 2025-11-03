@@ -9,9 +9,8 @@ namespace SIGEBI.Persistence.Models
 {
     public static class EntityToModelMapper
     {
-        // ============
         // From ROW (DB) -> ENTITY
-        // ============
+       
         public static Usuario ToUsuario(Dictionary<string, object> r) => new Usuario
         {
             Id = (int)r["Id"],
@@ -48,9 +47,9 @@ namespace SIGEBI.Persistence.Models
             Estado = r.ContainsKey("Estado") && r["Estado"] != DBNull.Value ? r["Estado"].ToString()! : "Activo"
         };
 
-        // ============
+        
         // From ROW (DB) -> MODEL (DTO)
-        // ============
+        
         public static UsuarioGetDto ToUsuarioGetModel(Dictionary<string, object> r) => new UsuarioGetDto
         {
 
@@ -86,9 +85,9 @@ namespace SIGEBI.Persistence.Models
             Penalizacion = r["Penalizacion"] as decimal?
         };
 
-        // ============
+        
         // From ENTITY -> MODEL (DTO)
-        // ============
+        
         public static UsuarioGetDto ToModel(this Usuario e) => new UsuarioGetDto
         {
             Id = e.Id,
@@ -144,9 +143,9 @@ namespace SIGEBI.Persistence.Models
                Estado = "Disponible"
            };
 
-        // ======================================
+        
         // USUARIO: DTO → ENTIDAD
-        // ======================================
+        
         public static Usuario ToEntity(this UsuarioCreateDto dto) =>
             new Usuario
             {

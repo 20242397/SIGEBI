@@ -10,7 +10,7 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Prestamo
     {
         public static void AddPrestamoDependency(this IServiceCollection services)
         {
-            // Add PrestamoRepositoryAdo dependency
+            
           services.AddScoped<IPrestamoRepository, PrestamoRepositoryAdo>();
           services.AddTransient<IPrestamoService, PrestamoService>();
         }

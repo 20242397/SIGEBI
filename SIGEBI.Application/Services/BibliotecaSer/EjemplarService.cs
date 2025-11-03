@@ -20,7 +20,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             _logger = logger;
         }
 
-        // ✅ Registrar nuevo ejemplar
+        //  Registrar nuevo ejemplar
         public Task<ServiceResult<T>> RegistrarEjemplarAsync<T>(EjemplarCreateDto dto) =>
             ExecuteAsync<T>(async () =>
             {
@@ -54,7 +54,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ Actualizar ejemplar
+        //  Actualizar ejemplar
         public Task<ServiceResult<Ejemplar>> ActualizarEjemplarAsync(EjemplarUpdateDto dto) =>
       ExecuteAsync<Ejemplar>(async () =>
       {
@@ -77,7 +77,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
 
 
 
-        // ✅ Obtener ejemplares por libro
+        //  Obtener ejemplares por libro
         public Task<ServiceResult<T>> ObtenerPorLibroAsync<T>(int libroId) =>
             ExecuteAsync<T>(async () =>
             {
@@ -91,7 +91,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ Obtener disponibles por libro
+        //  Obtener disponibles por libro
         public Task<ServiceResult<T>> ObtenerDisponiblesPorLibroAsync<T>(int libroId) =>
             ExecuteAsync<T>(async () =>
             {
@@ -105,7 +105,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ Listar prestados
+        //  Listar prestados
         public Task<ServiceResult<T>> ObtenerPrestadosAsync<T>() =>
             ExecuteAsync<T>(async () =>
             {
@@ -119,7 +119,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ Listar reservados
+        //  Listar reservados
         public Task<ServiceResult<T>> ObtenerReservadosAsync<T>() =>
             ExecuteAsync<T>(async () =>
             {
@@ -133,7 +133,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ Marcar como perdido
+        //  Marcar como perdido
         public Task<ServiceResult<T>> MarcarComoPerdidoAsync<T>(int ejemplarId) =>
             ExecuteAsync<T>(async () =>
             {

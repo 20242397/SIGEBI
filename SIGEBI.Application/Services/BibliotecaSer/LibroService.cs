@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using NPOI.SS.Formula.Functions;
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
 using SIGEBI.Application.Interfaces;
@@ -21,7 +20,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             _logger = logger;
         }
 
-        // ✅ RF1.1 - Registrar libro
+        // Registrar libro
         public Task<ServiceResult<T>> RegistrarLibroAsync<T>(LibroCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -66,7 +65,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ RF1.2 - Modificar datos
+        // Modificar datos
         public Task<ServiceResult<T>> ModificarLibroAsync<T>(LibroUpdateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -107,13 +106,13 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ RF1.3 - Eliminar lógicamente un libro
+        // Eliminar lógicamente un libro
         public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             return await _libroRepository.RemoveAsync(id);
         }
 
-        // ✅ RF1.4 - Buscar por título
+        // Buscar por título
         public Task<ServiceResult<T>> BuscarPorTituloAsync<T>(string titulo) =>
             ExecuteAsync(async () =>
             {
@@ -126,7 +125,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ RF1.4 - Buscar por autor
+        // Buscar por autor
         public Task<ServiceResult<T>> BuscarPorAutorAsync<T>(string autor) =>
             ExecuteAsync(async () =>
             {
@@ -139,7 +138,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ RF1.4 - Buscar por categoría
+        // Buscar por categoría
         public Task<ServiceResult<T>> BuscarPorCategoriaAsync<T>(string categoria) =>
             ExecuteAsync(async () =>
             {
@@ -152,13 +151,13 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // ✅ RF1.4 - Buscar por ISBN
+        // Buscar por ISBN
         public async Task<OperationResult<Libro>> BuscarPorISBNAsync(string isbn)
         {
             return await _libroRepository.GetByISBNAsync(isbn);
         }
 
-        // ✅ RF1.5 - Obtener libro por ID
+        // Obtener libro por ID
         public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>
             ExecuteAsync(async () =>
             {
@@ -179,7 +178,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                     };
             });
 
-        // ✅ RF1.5 - Obtener todos los libros
+        // Obtener todos los libros
         public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
             ExecuteAsync(async () =>
             {

@@ -20,7 +20,7 @@ namespace SIGEBI.Application.Services.ReportesSer
             _logger = logger;
         }
 
-        // ✅ RF5.1–RF5.3 - Generar un nuevo reporte
+        //  Generar un nuevo reporte
         public Task<ServiceResult<T>> GenerarReporteAsync<T>(ReporteCreateDto dto) =>
      ExecuteAsync(async () =>
      {
@@ -36,7 +36,7 @@ namespace SIGEBI.Application.Services.ReportesSer
          if (!validation.Success)
              return new OperationResult<T> { Success = false, Message = validation.Message };
 
-         // 👇 Aquí el tipo corregido
+         
          OperationResult<Reporte> result = new OperationResult<Reporte>
          {
              Success = false,
@@ -91,12 +91,11 @@ namespace SIGEBI.Application.Services.ReportesSer
 
 
 
-        // ✅ RF5.4 - Exportar reporte en PDF o Excel
+        // Exportar reporte en PDF o Excel
         public Task<ServiceResult<T>> ExportarReporteAsync<T>(int reporteId, string formato) =>
       ExecuteAsync(async () =>
       {
-          // 🧩 1️⃣ VALIDACIÓN DE NEGOCIO (ENTRADA)
-          // --------------------------------------
+          // VALIDACIÓN DE NEGOCIO (ENTRADA)
           if (string.IsNullOrWhiteSpace(formato))
           {
               _logger.LogWarning("Intento de exportar reporte sin especificar formato. ID: {Id}", reporteId);
@@ -118,8 +117,7 @@ namespace SIGEBI.Application.Services.ReportesSer
           }
 
 
-          // 🔍 2️⃣ VALIDACIÓN DE EXISTENCIA
-          // --------------------------------------
+          // VALIDACIÓN DE EXISTENCIA
           var reporteResult = await _reporteRepository.GetByIdAsync(reporteId);
           if (!reporteResult.Success || reporteResult.Data == null)
           {
@@ -130,8 +128,7 @@ namespace SIGEBI.Application.Services.ReportesSer
           var reporte = reporteResult.Data;
 
 
-          // 📁 3️⃣ PREPARACIÓN DE ENTORNO
-          // --------------------------------------
+          //  PREPARACIÓN DE ENTORNO
           string exportPath = Path.Combine(Environment.CurrentDirectory, "Exportados");
           if (!Directory.Exists(exportPath))
           {
@@ -142,23 +139,20 @@ namespace SIGEBI.Application.Services.ReportesSer
           string filePath = Path.Combine(exportPath, $"Reporte_{reporteId}_{DateTime.Now:yyyyMMddHHmmss}.{formato.ToLower()}");
 
 
-          // 💾 4️⃣ EJECUCIÓN PRINCIPAL
-          // --------------------------------------
+          // EJECUCIÓN PRINCIPAL
           try
           {
               await File.WriteAllTextAsync(filePath, reporte.Contenido);
 
 
-              // 🧠 5️⃣ LOG CORRECTO (OPERACIÓN EXITOSA)
-              // --------------------------------------
+              // LOG CORRECTO (OPERACIÓN EXITOSA)
               _logger.LogInformation(
                   "Reporte exportado correctamente. ID: {Id}, Formato: {Formato}, Ruta: {Ruta}",
                   reporteId, formato, filePath
               );
 
 
-              // 📤 6️⃣ RESPUESTA FINAL
-              // --------------------------------------
+              //  RESPUESTA FINAL
               return new OperationResult<T>
               {
                   Success = true,
@@ -168,8 +162,7 @@ namespace SIGEBI.Application.Services.ReportesSer
           }
           catch (Exception ex)
           {
-              // 🧠 LOG DE ERROR (FALLA DE NEGOCIO O IO)
-              // --------------------------------------
+              //  LOG DE ERROR (FALLA DE NEGOCIO O IO)
               _logger.LogError(ex, "Error al exportar el reporte ID {Id} en formato {Formato}", reporteId, formato);
 
               return new OperationResult<T>
@@ -181,7 +174,7 @@ namespace SIGEBI.Application.Services.ReportesSer
       });
 
 
-        // ✅ Editar reporte existente (Marcar como resuelto)
+        // Editar reporte existente (Marcar como resuelto)
         public Task<ServiceResult<T>> ActualizarReporteAsync<T>(ReporteUpdateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -206,7 +199,7 @@ namespace SIGEBI.Application.Services.ReportesSer
                 };
             });
 
-        // ✅ RF5.3 - Filtros: obtener por fecha
+        // Filtros: obtener por fecha
         public Task<ServiceResult<T>> ObtenerPorFechaAsync<T>(DateTime inicio, DateTime fin) =>
             ExecuteAsync(async () =>
             {
@@ -222,7 +215,7 @@ namespace SIGEBI.Application.Services.ReportesSer
                 };
             });
 
-        // ✅ RF5.3 - Filtros: obtener por tipo
+        // Filtros: obtener por tipo
         public Task<ServiceResult<T>> ObtenerPorTipoAsync<T>(string tipo) =>
             ExecuteAsync(async () =>
             {
@@ -237,7 +230,7 @@ namespace SIGEBI.Application.Services.ReportesSer
                 };
             });
 
-        // ✅ Consultar todos los reportes
+        // Consultar todos los reportes
         public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
             ExecuteAsync(async () =>
             {
@@ -254,7 +247,7 @@ namespace SIGEBI.Application.Services.ReportesSer
                 };
             });
 
-        // ✅ Consultar un reporte específico
+        // Consultar un reporte específico
         public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>
             ExecuteAsync(async () =>
             {

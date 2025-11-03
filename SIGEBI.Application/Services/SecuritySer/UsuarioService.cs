@@ -20,7 +20,7 @@ namespace SIGEBI.Application.Services.SecuritySer
             _logger = logger;
         }
 
-        // ✅ RF2.1 - Registrar usuario
+        // Registrar usuario
         public Task<ServiceResult<T>> RegistrarUsuarioAsync<T>(UsuarioCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -71,7 +71,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // ✅ RF2.3 - Editar usuario
+        // Editar usuario
         public Task<ServiceResult<T>> EditarUsuarioAsync<T>(UsuarioUpdateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -110,7 +110,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // ✅ RF2.2 - Asignar rol
+        //  Asignar rol
         public Task<ServiceResult<T>> AsignarRolAsync<T>(int id, string rol) =>
             ExecuteAsync(async () =>
             {
@@ -143,7 +143,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // ✅ RF2.4 - Activar o desactivar usuario
+        // Activar o desactivar usuario
         public Task<ServiceResult<T>> CambiarEstadoAsync<T>(int id, bool activo) =>
             ExecuteAsync(async () =>
             {
@@ -178,7 +178,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // ✅ RF2.5 - Obtener usuario por email
+        //  Obtener usuario por email
         public Task<ServiceResult<T>> ObtenerPorEmailAsync<T>(string email) =>
             ExecuteAsync(async () =>
             {
@@ -194,7 +194,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // ✅ RF2.5 - Obtener todos los usuarios
+        // Obtener todos los usuarios
         public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
             ExecuteAsync(async () =>
             {
