@@ -23,6 +23,7 @@ namespace SIGEBI.Application.Validators
                 "usuarios activos",
                 "ejemplares",
                 "penalizaciones",
+                "devoluciones",
                 "libros mas prestados"
             };
 

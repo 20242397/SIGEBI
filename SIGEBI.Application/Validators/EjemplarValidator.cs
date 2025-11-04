@@ -1,7 +1,6 @@
 ﻿using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
-using System;
-using System.Linq;
+
 
 namespace SIGEBI.Application.Validators
 {
