@@ -2,7 +2,6 @@
 using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
-using System.Threading.Tasks;
 
 namespace SIGEBI.Application.Interfaces
 {
