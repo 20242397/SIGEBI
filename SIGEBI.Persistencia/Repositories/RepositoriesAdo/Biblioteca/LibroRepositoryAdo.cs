@@ -3,7 +3,6 @@ using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Domain.Repository;
-using SIGEBI.Persistence.Models;
 using SIGEBI.Application.Validators;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
@@ -409,11 +408,67 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
             });
         }
 
-        
+        public async Task<OperationResult<IEnumerable<Libro>>> FiltrarAsync(
+     string? titulo, string? autor, string? categoria, int? año, string? estado)
+        {
+            try
+            {
+                string query = "SELECT * FROM Libro WHERE 1=1 ";
+                var parameters = new Dictionary<string, object>();
+
+                if (!string.IsNullOrWhiteSpace(titulo))
+                {
+                    query += " AND Titulo LIKE @Titulo";
+                    parameters["@Titulo"] = $"%{titulo}%";
+                }
+
+                if (!string.IsNullOrWhiteSpace(autor))
+                {
+                    query += " AND Autor LIKE @Autor";
+                    parameters["@Autor"] = $"%{autor}%";
+                }
+
+                if (!string.IsNullOrWhiteSpace(categoria))
+                {
+                    query += " AND Categoria LIKE @Categoria";
+                    parameters["@Categoria"] = $"%{categoria}%";
+                }
+
+                if (año.HasValue)
+                {
+                    query += " AND AñoPublicacion = @Año";
+                    parameters["@Año"] = año.Value;
+                }
+
+                if (!string.IsNullOrWhiteSpace(estado))
+                {
+                    query += " AND Estado = @Estado";
+                    parameters["@Estado"] = estado;
+                }
+
+                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+
+                var lista = rows.Select(r => EntityToModelMapper.ToLibro(r)).ToList();
+
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = true,
+                    Data = lista
+                };
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+
+        #endregion
 
     }
-
-    #endregion
-
 }
 

@@ -11,5 +11,8 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Prestamo
         public DateTime? FechaDevolucion { get; set; }
         public decimal? Penalizacion { get; set; }
         public int EjemplarId { get; set; }
+
+        public string Estado { get; set; }
+
     }
 }

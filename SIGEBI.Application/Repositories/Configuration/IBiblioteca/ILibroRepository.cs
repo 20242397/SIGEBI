@@ -16,5 +16,8 @@ namespace SIGEBI.Application.Repositories.Configuration.IBiblioteca
         Task<OperationResult<Libro>> UpdateAsync(Libro libro);
         Task<OperationResult<bool>> RemoveAsync(int id);
         Task<OperationResult<Libro>> GetByISBNAsync(string isbn);
+        Task<OperationResult<IEnumerable<Libro>>> FiltrarAsync(
+         string? titulo, string? autor, string? categoria, int? año, string? estado);
+
     }
 }

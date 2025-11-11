@@ -1,309 +1,323 @@
 ﻿using Microsoft.Extensions.Logging;
 using SIGEBI.Application.Repositories.Configuration.ISecurity;
-using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
-using SIGEBI.Persistence.Models;
-namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Security
+using SIGEBI.Persistence;
+using SIGEBI.Persistence.Repositories.RepositoriesAdo;
+
+public sealed class UsuarioRepositoryAdo : IUsuarioRepository
 {
-    public sealed class UsuarioRepositoryAdo : IUsuarioRepository
+    private readonly DbHelper _dbHelper;
+    private readonly ILogger<UsuarioRepositoryAdo> _logger;
+
+    public UsuarioRepositoryAdo(DbHelper dbHelper, ILogger<UsuarioRepositoryAdo> logger)
     {
-        private readonly DbHelper _dbHelper;
-        private readonly ILogger<UsuarioRepositoryAdo> _logger;
-
-        public UsuarioRepositoryAdo(DbHelper dbHelper, ILogger<UsuarioRepositoryAdo> logger)
-        {
-            _dbHelper = dbHelper;
-            _logger = logger;
-        }
-
-        #region  Add Usuario
-        public async Task<OperationResult<Usuario>> AddAsync(Usuario entity)
-        {
-            var validacion = UsuarioValidator.Validar(entity);
-            if (!validacion.Success) return validacion;
-
-            try
-            {
-                string query = @"
-                    INSERT INTO Usuario (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado)
-                    OUTPUT INSERTED.Id
-                    VALUES (@Nombre, @Apellido, @Email, @PasswordHash, @PhoneNumber, @Role, @Estado)";
-
-                var parameters = new Dictionary<string, object>
-                {
-                    {"@Nombre", entity.Nombre},
-                    {"@Apellido", entity.Apellido},
-                    {"@Email", entity.Email},
-                    {"@PasswordHash", entity.PasswordHash},
-                    {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
-                    {"@Role", entity.Role ?? "User"},
-                    {"@Estado", entity.Estado ?? "Activo"}
-                };
-
-                var id = await _dbHelper.ExecuteScalarAsync(query, parameters);
-                entity.Id = Convert.ToInt32(id);
-
-                return new OperationResult<Usuario>
-                {
-                    Success = true,
-                    Message = "Usuario agregado correctamente.",
-                    Data = entity
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al agregar usuario");
-                return new OperationResult<Usuario>
-                {
-                    Success = false,
-                    Message = $"Error al agregar usuario: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  GetAll Usuarios
-        public async Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync()
-        {
-            try
-            {
-                var query = "SELECT Id, Nombre, Apellido, Email, PhoneNumber, Role, Estado FROM Usuario";
-                var rows = await _dbHelper.ExecuteQueryAsync(query);
-
-                var usuarios = rows.Select(EntityToModelMapper.ToUsuario).ToList();
-
-                return new OperationResult<IEnumerable<Usuario>>
-                {
-                    Success = true,
-                    Data = usuarios
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener todos los usuarios");
-                return new OperationResult<IEnumerable<Usuario>>
-                {
-                    Success = false,
-                    Message = $"Error al obtener usuarios: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  GetById Usuario
-        public async Task<OperationResult<Usuario>> GetByIdAsync(int id)
-        {
-            if (id <= 0)
-                return new OperationResult<Usuario> { Success = false, Message = "El ID debe ser mayor que 0." };
-
-            try
-            {
-                var query = @"SELECT TOP 1 * FROM Usuario WHERE Id=@Id";
-                var parameters = new Dictionary<string, object> { { "@Id", id } };
-
-                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-                if (!rows.Any())
-                    return new OperationResult<Usuario> { Success = false, Message = "Usuario no encontrado." };
-
-                var usuario = EntityToModelMapper.ToUsuario(rows.First());
-                return new OperationResult<Usuario> { Success = true, Data = usuario };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener usuario por Id");
-                return new OperationResult<Usuario>
-                {
-                    Success = false,
-                    Message = $"Error al obtener usuario por Id: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  GetByEmail Usuario
-        public async Task<OperationResult<Usuario>> GetByEmailAsync(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return new OperationResult<Usuario> { Success = false, Message = "El email es obligatorio." };
-
-            try
-            {
-                var query = @"SELECT TOP 1 * FROM Usuario WHERE Email=@Email";
-                var parameters = new Dictionary<string, object> { { "@Email", email } };
-
-                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-                if (!rows.Any())
-                    return new OperationResult<Usuario> { Success = false, Message = "Usuario no encontrado." };
-
-                var usuario = EntityToModelMapper.ToUsuario(rows.First());
-                return new OperationResult<Usuario> { Success = true, Data = usuario };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al buscar usuario por email");
-                return new OperationResult<Usuario>
-                {
-                    Success = false,
-                    Message = $"Error al buscar usuario: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  Update Usuario
-        public async Task<OperationResult<Usuario>> UpdateAsync(Usuario entity)
-        {
-            if (entity.Id <= 0)
-                return new OperationResult<Usuario> { Success = false, Message = "El ID es inválido." };
-
-            try
-            {
-                var query = @"
-                    UPDATE Usuario
-                    SET Nombre=@Nombre, Apellido=@Apellido, Email=@Email, PasswordHash=@PasswordHash,
-                        PhoneNumber=@PhoneNumber, Role=@Role, Estado=@Estado
-                    WHERE Id=@Id";
-
-                var parameters = new Dictionary<string, object>
-                {
-                    {"@Nombre", entity.Nombre},
-                    {"@Apellido", entity.Apellido},
-                    {"@Email", entity.Email},
-                    {"@PasswordHash", entity.PasswordHash},
-                    {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
-                    {"@Role", entity.Role ?? "User"},
-                    {"@Estado", entity.Estado ?? "Activo"},
-                    {"@Id", entity.Id}
-                };
-
-                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
-                return new OperationResult<Usuario>
-                {
-                    Success = rows > 0,
-                    Message = rows > 0 ? "Usuario actualizado correctamente." : "No se actualizó el usuario.",
-                    Data = entity
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al actualizar usuario");
-                return new OperationResult<Usuario>
-                {
-                    Success = false,
-                    Message = $"Error al actualizar usuario: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  Cambiar Estado
-        public async Task<OperationResult<bool>> CambiarEstadoAsync(int id, bool activo)
-        {
-            try
-            {
-                var query = "UPDATE Usuarios SET Estado=@Estado WHERE Id=@Id";
-                var parameters = new Dictionary<string, object>
-                {
-                    {"@Estado", activo ? "Activo" : "Inactivo"},
-                    {"@Id", id}
-                };
-
-                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
-                return new OperationResult<bool>
-                {
-                    Success = rows > 0,
-                    Data = rows > 0,
-                    Message = rows > 0 ? "Estado actualizado correctamente." : "Usuario no encontrado."
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al cambiar estado del usuario");
-                return new OperationResult<bool>
-                {
-                    Success = false,
-                    Message = $"Error al cambiar estado: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  Asignar Rol
-        public async Task<OperationResult<bool>> AsignarRolAsync(int id, string rol)
-        {
-            try
-            {
-                var query = "UPDATE Usuario SET Role=@Role WHERE Id=@Id";
-                var parameters = new Dictionary<string, object>
-                {
-                    {"@Role", rol},
-                    {"@Id", id}
-                };
-
-                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
-                return new OperationResult<bool>
-                {
-                    Success = rows > 0,
-                    Data = rows > 0,
-                    Message = rows > 0 ? $"Rol '{rol}' asignado correctamente." : "Usuario no encontrado."
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al asignar rol");
-                return new OperationResult<bool>
-                {
-                    Success = false,
-                    Message = $"Error al asignar rol: {ex.Message}"
-                };
-            }
-        }
-
-        #region  Remove Usuario (Eliminación Lógica)
-        public async Task<OperationResult<Usuario>> RemoveAsync(int id)
-        {
-            if (id <= 0)
-                return new OperationResult<Usuario>
-                {
-                    Success = false,
-                    Message = "El ID del usuario no es válido."
-                };
-
-            try
-            {
-                var query = "UPDATE Usuario SET Estado = 'Inactivo' WHERE Id = @Id";
-                var parameters = new Dictionary<string, object> { { "@Id", id } };
-
-                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
-                if (rows == 0)
-                {
-                    return new OperationResult<Usuario>
-                    {
-                        Success = false,
-                        Message = "Usuario no encontrado o ya inactivo."
-                    };
-                }
-
-                return new OperationResult<Usuario>
-                {
-                    Success = true,
-                    Message = "Usuario desactivado correctamente."
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al desactivar usuario");
-                return new OperationResult<Usuario>
-                {
-                    Success = false,
-                    Message = $"Error al desactivar usuario: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #endregion
+        _dbHelper = dbHelper;
+        _logger = logger;
     }
-}
 
+    // ---------------------------
+    // ADD
+    // ---------------------------
+    public async Task<OperationResult<Usuario>> AddAsync(Usuario entity)
+    {
+        try
+        {
+            string query = @"
+                INSERT INTO Usuario 
+                (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado, Activo)
+                OUTPUT INSERTED.Id
+                VALUES (@Nombre, @Apellido, @Email, @PasswordHash, @PhoneNumber, @Role, @Estado, @Activo)";
+
+            var parameters = new Dictionary<string, object>
+            {
+                {"@Nombre", entity.Nombre},
+                {"@Apellido", entity.Apellido},
+                {"@Email", entity.Email},
+                {"@PasswordHash", entity.PasswordHash},
+                {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
+                {"@Role", entity.Role},
+                {"@Estado", entity.Estado},
+                {"@Activo", entity.Activo}
+            };
+
+            var id = await _dbHelper.ExecuteScalarAsync(query, parameters);
+            entity.Id = Convert.ToInt32(id);
+
+            return new OperationResult<Usuario>
+            {
+                Success = true,
+                Message = "Usuario agregado correctamente.",
+                Data = entity
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al agregar usuario");
+            return new OperationResult<Usuario>
+            {
+                Success = false,
+                Message = $"Error al agregar usuario: {ex.Message}"
+            };
+        }
+    }
+
+    // ---------------------------
+    // GET ALL
+    // ---------------------------
+    public async Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync()
+    {
+        try
+        {
+            var query = @"SELECT Id, Nombre, Apellido, Email, PhoneNumber, Role, Estado, Activo FROM Usuario";
+            var rows = await _dbHelper.ExecuteQueryAsync(query);
+
+            var usuarios = rows.Select(EntityToModelMapper.ToUsuario).ToList();
+
+            return new OperationResult<IEnumerable<Usuario>> { Success = true, Data = usuarios };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener usuarios");
+            return new OperationResult<IEnumerable<Usuario>>
+            {
+                Success = false,
+                Message = $"Error al obtener usuarios: {ex.Message}"
+            };
+        }
+    }
+
+    // ---------------------------
+    // GET BY ID
+    // ---------------------------
+    public async Task<OperationResult<Usuario>> GetByIdAsync(int id)
+    {
+        try
+        {
+            var query = @"SELECT TOP 1 * FROM Usuario WHERE Id = @Id";
+            var parameters = new Dictionary<string, object> { { "@Id", id } };
+
+            var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+            if (!rows.Any())
+                return new OperationResult<Usuario> { Success = false, Message = "Usuario no encontrado." };
+
+            return new OperationResult<Usuario>
+            {
+                Success = true,
+                Data = EntityToModelMapper.ToUsuario(rows.First())
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener usuario por ID");
+            return new OperationResult<Usuario> { Success = false, Message = ex.Message };
+        }
+    }
+
+    // ---------------------------
+    // GET BY EMAIL
+    // ---------------------------
+    public async Task<OperationResult<Usuario>> GetByEmailAsync(string email)
+    {
+        try
+        {
+            var query = @"SELECT TOP 1 * FROM Usuario WHERE Email = @Email";
+            var parameters = new Dictionary<string, object> { { "@Email", email } };
+
+            var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+
+            if (!rows.Any())
+                return new OperationResult<Usuario> { Success = false, Message = "Usuario no encontrado." };
+
+            return new OperationResult<Usuario>
+            {
+                Success = true,
+                Data = EntityToModelMapper.ToUsuario(rows.First())
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener usuario por email");
+            return new OperationResult<Usuario> { Success = false, Message = ex.Message };
+        }
+    }
+
+    // ---------------------------
+    // UPDATE
+    // ---------------------------
+    public async Task<OperationResult<Usuario>> UpdateAsync(Usuario entity)
+    {
+        try
+        {
+            var query = @"
+                UPDATE Usuario SET
+                    Nombre=@Nombre,
+                    Apellido=@Apellido,
+                    Email=@Email,
+                    PasswordHash=@PasswordHash,
+                    PhoneNumber=@PhoneNumber,
+                    Role=@Role,
+                    Estado=@Estado,
+                    Activo=@Activo
+                WHERE Id=@Id";
+
+            var parameters = new Dictionary<string, object>
+            {
+                {"@Nombre", entity.Nombre},
+                {"@Apellido", entity.Apellido},
+                {"@Email", entity.Email},
+                {"@PasswordHash", entity.PasswordHash},
+                {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
+                {"@Role", entity.Role},
+                {"@Estado", entity.Estado},
+                {"@Activo", entity.Activo},
+                {"@Id", entity.Id}
+            };
+
+            var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+            if (rows > 0)
+            {
+                var refreshed = await GetByIdAsync(entity.Id);
+                return new OperationResult<Usuario>
+                {
+                    Success = true,
+                    Message = "Usuario actualizado correctamente.",
+                    Data = refreshed.Data
+                };
+            }
+
+            return new OperationResult<Usuario> { Success = false, Message = "No se actualizó." };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al actualizar usuario");
+            return new OperationResult<Usuario> { Success = false, Message = ex.Message };
+        }
+    }
+
+    // ---------------------------
+    // DELETE (LOGICAL)
+    // ---------------------------
+    public async Task<OperationResult<Usuario>> RemoveAsync(int id)
+    {
+        try
+        {
+            var query = @"UPDATE Usuario SET Estado='Inactivo', Activo=0 WHERE Id=@Id";
+
+            var parameters = new Dictionary<string, object> { { "@Id", id } };
+
+            var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+            return new OperationResult<Usuario>
+            {
+                Success = rows > 0,
+                Message = rows > 0 ? "Usuario inactivado." : "Usuario no encontrado."
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al eliminar usuario");
+            return new OperationResult<Usuario> { Success = false, Message = ex.Message };
+        }
+    }
+
+    public async Task<OperationResult<bool>> CambiarEstadoAsync(int id, bool activo)
+    {
+        if (id <= 0)
+            return new OperationResult<bool>
+            {
+                Success = false,
+                Message = "El Id proporcionado no es válido.",
+                Data = false
+            };
+
+        try
+        {
+            const string query = @"
+            UPDATE Usuario
+            SET Activo = @Activo,
+                Estado = @Estado
+            WHERE Id = @Id";
+
+            var parameters = new Dictionary<string, object>
+        {
+            { "@Activo", activo },
+            { "@Estado", activo ? "Activo" : "Inactivo" },
+            { "@Id", id }
+        };
+
+            var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+            return new OperationResult<bool>
+            {
+                Success = rows > 0,
+                Data = rows > 0,
+                Message = rows > 0 ? "Estado actualizado correctamente." : "Usuario no encontrado."
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al cambiar estado del usuario {Id}", id);
+            return new OperationResult<bool>
+            {
+                Success = false,
+                Message = $"Error al cambiar estado: {ex.Message}",
+                Data = false
+            };
+        }
+    }
+
+    public async Task<OperationResult<bool>> AsignarRolAsync(int id, string rol)
+    {
+        if (id <= 0)
+            return new OperationResult<bool>
+            {
+                Success = false,
+                Message = "El Id proporcionado no es válido.",
+                Data = false
+            };
+
+        if (string.IsNullOrWhiteSpace(rol))
+            return new OperationResult<bool>
+            {
+                Success = false,
+                Message = "El rol no puede estar vacío.",
+                Data = false
+            };
+
+        try
+        {
+            const string query = @"
+            UPDATE Usuario
+            SET Role = @Role
+            WHERE Id = @Id";
+
+            var parameters = new Dictionary<string, object>
+        {
+            { "@Role", rol },
+            { "@Id", id }
+        };
+
+            var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+            return new OperationResult<bool>
+            {
+                Success = rows > 0,
+                Data = rows > 0,
+                Message = rows > 0 ? $"Rol '{rol}' asignado correctamente." : "Usuario no encontrado."
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al asignar rol '{Rol}' al usuario {Id}", rol, id);
+            return new OperationResult<bool>
+            {
+                Success = false,
+                Message = $"Error al asignar rol: {ex.Message}",
+                Data = false
+            };
+        }
+    }
+
+}

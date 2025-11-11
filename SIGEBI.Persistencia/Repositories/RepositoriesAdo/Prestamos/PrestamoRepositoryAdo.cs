@@ -3,7 +3,6 @@ using SIGEBI.Application.Repositories.Configuration.IPrestamo;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Prestamos;
 using SIGEBI.Domain.Repository;
-using SIGEBI.Persistence.Models;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 {
@@ -67,12 +66,29 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
         {
             try
             {
-                string query = "SELECT Id, UsuarioId, LibroId, FechaPrestamo, FechaVencimiento, FechaDevolucion, Penalizacion FROM Prestamo";
+                string query = @"
+            SELECT 
+                Id,
+                UsuarioId,
+                EjemplarId,
+                LibroId,
+                FechaPrestamo,
+                FechaVencimiento,
+                FechaDevolucion,
+                Penalizacion,
+                Estado
+            FROM Prestamo
+        ";
+
                 var rows = await _dbHelper.ExecuteQueryAsync(query);
 
                 var prestamos = rows.Select(EntityToModelMapper.ToPrestamo).ToList();
 
-                return new OperationResult<IEnumerable<Prestamo>> { Success = true, Data = prestamos };
+                return new OperationResult<IEnumerable<Prestamo>>
+                {
+                    Success = true,
+                    Data = prestamos
+                };
             }
             catch (Exception ex)
             {
@@ -84,6 +100,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
                 };
             }
         }
+
 
         public async Task<OperationResult<Prestamo>> GetByIdAsync(int id)
         {

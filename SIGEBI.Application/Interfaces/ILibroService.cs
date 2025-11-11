@@ -19,6 +19,9 @@ namespace SIGEBI.Application.Interfaces
         Task<OperationResult<Libro>> BuscarPorISBNAsync(string isbn);
         Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id);
         Task<ServiceResult<T>> ObtenerTodosAsync<T>();
+
+        Task<ServiceResult<T>> FiltrarAsync<T>(
+        string? titulo, string? autor, string? categoria, int? año, string? estado);
     }
 }
 

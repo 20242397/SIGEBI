@@ -54,12 +54,7 @@ namespace SIGEBI.Web
             builder.Services.AddSingleton(typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
                                           typeof(SIGEBI.Persistence.Logging.LoggerService<>));
 
-            // ? HttpClient para consumir tu API
-            builder.Services.AddHttpClient("SIGEBI_API", client =>
-            {
-                client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
-            });
-
+            
             var app = builder.Build();
 
            

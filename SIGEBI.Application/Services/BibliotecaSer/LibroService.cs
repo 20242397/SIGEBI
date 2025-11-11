@@ -194,5 +194,22 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                     Data = (T)(object)result.Data!
                 };
             });
+
+        public Task<ServiceResult<T>> FiltrarAsync<T>(
+        string? titulo, string? autor, string? categoria, int? año, string? estado)
+        {
+            return ExecuteAsync(async () =>
+            {
+                var result = await _libroRepository.FiltrarAsync(titulo, autor, categoria, año, estado);
+
+                return new OperationResult<T>
+                {
+                    Success = result.Success,
+                    Message = result.Message,
+                    Data = (T)(object)result.Data!
+                };
+            });
+        }
+
     }
 }

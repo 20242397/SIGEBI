@@ -2,7 +2,6 @@
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Application.Repositories.Configuration.ISecurity;
 using SIGEBI.Application.Services.SecuritySer;
-using SIGEBI.Persistence.Repositories.RepositoriesAdo.Security;
 
 
 namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario

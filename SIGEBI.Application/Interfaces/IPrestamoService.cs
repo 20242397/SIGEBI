@@ -17,5 +17,9 @@ namespace SIGEBI.Application.Interfaces
         Task<ServiceResult<T>> RestringirPrestamoSiPenalizadoAsync<T>(int usuarioId);
 
         Task<ServiceResult<T>> ObtenerHistorialUsuarioAsync<T>(int usuarioId);
+
+        Task<ServiceResult<T>> ObtenerTodosAsync<T>();
+
+
     }
 }

@@ -15,6 +15,8 @@ namespace SIGEBI.Application.Interfaces
         Task<ServiceResult<T>> ObtenerPorEmailAsync<T>(string email);
         Task<ServiceResult<T>> ObtenerTodosAsync<T>();
         Task<OperationResult<Usuario>> RemoveAsync(int id);
+        Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id);
+
     }
 }
 
