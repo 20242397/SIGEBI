@@ -66,20 +66,24 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
         // EDITAR (GET)
+        [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
             var result = await _usuarioService.ObtenerPorIdAsync<UsuarioUpdateDto>(id);
 
             if (!result.Success || result.Data == null)
-                return NotFound();
+            {
+                TempData["Error"] = "Usuario no encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
 
             return View(result.Data);
         }
 
         // EDITAR (POST)
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(UsuarioUpdateDto dto)
         {
             if (!ModelState.IsValid)
@@ -88,8 +92,12 @@ namespace SIGEBI.Web.Controllers
             var result = await _usuarioService.EditarUsuarioAsync<UsuarioGetDto>(dto);
 
             if (!result.Success)
+            {
                 ModelState.AddModelError("", result.Message);
+                return View(dto);
+            }
 
+            TempData["Success"] = "Usuario editado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

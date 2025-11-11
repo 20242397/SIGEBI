@@ -1,0 +1,59 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Usuario.UsuarioGetDto
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+<h2 class="fw-bold text-danger mb-4">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Usuario
+</h2>
+
+<div class="card shadow-sm border-0 p-4" style="max-width:650px;margin:auto;">
+
+    <div class="alert alert-warning d-flex align-items-start mb-4">
+        <i class="bi bi-exclamation-circle-fill fs-4 me-3"></i>
+        <div>
+            <strong class="d-block">¿Seguro que deseas eliminar este usuario?</strong>
+            Esta acción no se puede deshacer.
+        </div>
+    </div>
+
+    <!-- Información del usuario -->
+    <ul class="list-unstyled mb-4">
+        <li class="mb-2">
+            <strong><i class="bi bi-person-fill me-2"></i>Nombre:</strong>
+            @Model.Nombre @Model.Apellido
+        </li>
+
+        <li class="mb-2">
+            <strong><i class="bi bi-envelope-fill me-2"></i>Email:</strong>
+            @Model.Email
+        </li>
+
+        <li class="mb-2">
+            <strong><i class="bi bi-shield-lock-fill me-2"></i>Rol:</strong>
+            <span class="badge bg-primary px-3 py-2">@Model.Role</span>
+        </li>
+    </ul>
+
+    <!-- Formulario -->
+    <form asp-action="DeleteConfirmado" method="post">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="d-flex gap-2 mt-3">
+
+            <button type="submit" class="btn btn-danger px-4">
+                <i class="bi bi-trash-fill me-2"></i>Eliminar
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary px-4">
+                <i class="bi bi-arrow-left-circle me-2"></i>Cancelar
+            </a>
+
+        </div>
+    </form>
+
+</div>

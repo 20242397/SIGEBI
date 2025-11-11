@@ -9,9 +9,9 @@ namespace SIGEBI.Application.Mappers
 {
     public static class EntityToDtoMapper
     {
-       
+
         // USUARIO — ENTITY → DTO
-        
+
         public static UsuarioGetDto ToDto(this Usuario e)
         {
             return new UsuarioGetDto
@@ -23,6 +23,22 @@ namespace SIGEBI.Application.Mappers
                 PhoneNumber = e.PhoneNumber,
                 Role = e.Role,
                 Estado = e.Estado,
+                Activo = e.Activo
+            };
+        }
+
+        // ENTITY → UsuarioUpdateDto (Para edición)
+        public static UsuarioUpdateDto ToUpdateDto(this Usuario e)
+        {
+            return new UsuarioUpdateDto
+            {
+                Id = e.Id,
+                Nombre = e.Nombre,
+                Apellido = e.Apellido,
+                Email = e.Email,
+                PasswordHash = e.PasswordHash,
+                PhoneNumber = e.PhoneNumber,
+                Role = e.Role,
                 Activo = e.Activo
             };
         }
@@ -61,9 +77,9 @@ namespace SIGEBI.Application.Mappers
         }
 
 
-       
+
         // LIBRO — ENTITY → DTO
-      
+
         public static LibroGetDto ToDto(this Libro e)
         {
             return new LibroGetDto
@@ -73,7 +89,7 @@ namespace SIGEBI.Application.Mappers
                 Autor = e.Autor,
                 ISBN = e.ISBN,
                 Editorial = e.Editorial!,
-                AñoPublicacion = e.AñoPublicacion ?? 0, 
+                AñoPublicacion = e.AñoPublicacion ?? 0,
                 Categoria = e.Categoria,
                 Estado = e.Estado
             };
@@ -126,7 +142,7 @@ namespace SIGEBI.Application.Mappers
                 FechaDevolucion = e.FechaDevolucion,
                 Penalizacion = e.Penalizacion,
                 LibroId = e.LibroId,
-                Estado = e.Estado  
+                Estado = e.Estado
             };
         }
 

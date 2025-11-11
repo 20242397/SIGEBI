@@ -1,0 +1,67 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Usuario.UsuarioCreateDto
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
+
+<h2 class="fw-bold mb-4">Crear Usuario</h2>
+
+<div class="card card-glass p-4 shadow-soft" style="max-width: 700px; margin:auto">
+    <form asp-action="Create">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Apellido" class="form-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Role" class="form-label"></label>
+                <select asp-for="Role" class="form-control">
+                    <option>Admin</option>
+                    <option>Docente</option>
+                    <option>Estudiante</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="PasswordHash" class="form-label">Contraseña</label>
+                <input asp-for="PasswordHash" class="form-control" type="password" />
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-premium-primary btn-premium">
+                <i class="bi bi-check-circle"></i> Guardar
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary btn-premium">
+                <i class="bi bi-arrow-left-circle"></i> Volver
+            </a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

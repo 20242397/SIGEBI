@@ -51,35 +51,41 @@ namespace SIGEBI.Application.Services.SecuritySer
 
         // Editar usuario
         public Task<ServiceResult<T>> EditarUsuarioAsync<T>(UsuarioUpdateDto dto) =>
-            ExecuteAsync(async () =>
-            {
-                var usuarioResult = await _usuarioRepository.GetByIdAsync(dto.Id);
-                if (!usuarioResult.Success || usuarioResult.Data == null)
-                    return new OperationResult<T> { Success = false, Message = "Usuario no encontrado." };
+     ExecuteAsync(async () =>
+     {
+         var usuarioResult = await _usuarioRepository.GetByIdAsync(dto.Id);
+         if (!usuarioResult.Success || usuarioResult.Data == null)
+             return new OperationResult<T> { Success = false, Message = "Usuario no encontrado." };
 
-                var usuario = usuarioResult.Data;
+         var usuario = usuarioResult.Data;
 
-                usuario.Nombre = dto.Nombre;
-                usuario.Apellido = dto.Apellido;
-                usuario.Email = dto.Email;
-                usuario.PhoneNumber = dto.PhoneNumber;
-                usuario.Role = dto.Role;
-                usuario.Activo = dto.Activo;
-                usuario.Estado = usuario.Activo ? "Activo" : "Inactivo";
+         usuario.Nombre = dto.Nombre;
+         usuario.Apellido = dto.Apellido;
+         usuario.Email = dto.Email;
+         usuario.PhoneNumber = dto.PhoneNumber;
+         usuario.Role = dto.Role;
+         usuario.Activo = dto.Activo;
+         usuario.Estado = usuario.Activo ? "Activo" : "Inactivo";
 
-                var validation = UsuarioValidator.Validar(usuario);
-                if (!validation.Success)
-                    return new OperationResult<T> { Success = false, Message = validation.Message };
+         if (!string.IsNullOrWhiteSpace(dto.PasswordHash))
+         {
+             usuario.PasswordHash = dto.PasswordHash;
+         }
 
-                var updateResult = await _usuarioRepository.UpdateAsync(usuario);
+         var validation = UsuarioValidator.Validar(usuario);
+         if (!validation.Success)
+             return new OperationResult<T> { Success = false, Message = validation.Message };
 
-                return new OperationResult<T>
-                {
-                    Success = updateResult.Success,
-                    Message = updateResult.Message,
-                    Data = (T)(object)updateResult.Data!.ToDto()
-                };
-            });
+         var updateResult = await _usuarioRepository.UpdateAsync(usuario);
+
+         return new OperationResult<T>
+         {
+             Success = updateResult.Success,
+             Message = updateResult.Message,
+             Data = (T)(object)updateResult.Data!.ToDto()
+         };
+     });
+
 
         // Asignar rol
         public Task<ServiceResult<T>> AsignarRolAsync<T>(int id, string rol) =>
@@ -164,7 +170,8 @@ namespace SIGEBI.Application.Services.SecuritySer
         public Task<OperationResult<Usuario>> RemoveAsync(int id) =>
             _usuarioRepository.RemoveAsync(id);
 
-        // Obtener por ID
+       
+
         public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>
             ExecuteAsync(async () =>
             {
@@ -179,10 +186,27 @@ namespace SIGEBI.Application.Services.SecuritySer
                     };
                 }
 
+                object dto;
+
+                // Determinar qué DTO retornar según el tipo solicitado
+                if (typeof(T) == typeof(UsuarioUpdateDto))
+                {
+                    dto = result.Data.ToUpdateDto();
+                }
+                else if (typeof(T) == typeof(UsuarioGetDto))
+                {
+                    dto = result.Data.ToDto();
+                }
+                else
+                {
+                    // Por defecto usar ToDto
+                    dto = result.Data.ToDto();
+                }
+
                 return new OperationResult<T>
                 {
                     Success = true,
-                    Data = (T)(object)result.Data.ToDto()!
+                    Data = (T)dto
                 };
             });
 

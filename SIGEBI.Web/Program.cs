@@ -54,10 +54,10 @@ namespace SIGEBI.Web
             builder.Services.AddSingleton(typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
                                           typeof(SIGEBI.Persistence.Logging.LoggerService<>));
 
-            
+
             var app = builder.Build();
 
-           
+
 
             // ? Static files
             app.UseStaticFiles();
