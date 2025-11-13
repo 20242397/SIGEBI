@@ -32,6 +32,13 @@
             <input asp-for="Email" type="email" class="form-control" placeholder="usuario@correo.com" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
+        <!-- Contraseña -->
+        <div class="mb-3">
+            <label asp-for="PasswordHash" class="form-label fw-bold">Contraseña</label>
+            <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Ingrese una contraseña" />
+            <span asp-validation-for="PasswordHash" class="text-danger"></span>
+        </div>
+
 
         <!-- Teléfono -->
         <div class="mb-3">

@@ -13,9 +13,6 @@ namespace SIGEBI.Web.Controllers
             _notificacionService = notificacionService;
         }
 
-        // ============================================================
-        // INDEX — LISTAR Y FILTRAR
-        // ============================================================
         public async Task<ActionResult> Index(int? usuarioId, string? tipo, string? estado, bool? noLeidas)
         {
             var result = await _notificacionService.ObtenerTodosAsync<IEnumerable<NotificacionGetDto>>();
@@ -28,7 +25,7 @@ namespace SIGEBI.Web.Controllers
 
             var notificaciones = result.Data.AsQueryable();
 
-            // FILTROS OPCIONALES
+           
             if (usuarioId.HasValue)
                 notificaciones = notificaciones.Where(n => n.UsuarioId == usuarioId.Value);
 
@@ -45,7 +42,7 @@ namespace SIGEBI.Web.Controllers
             if (noLeidas == true)
                 notificaciones = notificaciones.Where(n => !n.Enviado);
 
-            // Pasar valores a la vista
+          
             ViewBag.UsuarioId = usuarioId;
             ViewBag.Tipo = tipo;
             ViewBag.Estado = estado;
@@ -54,9 +51,7 @@ namespace SIGEBI.Web.Controllers
             return View(notificaciones.ToList());
         }
 
-        // ============================================================
-        // DETALLES
-        // ============================================================
+       
         public async Task<ActionResult> Details(int id)
         {
             var result = await _notificacionService.ObtenerTodosAsync<IEnumerable<NotificacionGetDto>>();
@@ -77,17 +72,13 @@ namespace SIGEBI.Web.Controllers
             return View(notificacion);
         }
 
-        // ============================================================
-        // CREAR (GET)
-        // ============================================================
+      
         public ActionResult Create()
         {
             return View();
         }
 
-        // ============================================================
-        // CREAR (POST)
-        // ============================================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NotificacionCreateDto dto)
@@ -110,9 +101,6 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ============================================================
-        // GENERAR AUTOMÁTICAMENTE (RF4.1 - RF4.3)
-        // ============================================================
         [HttpPost]
         public async Task<ActionResult> GenerarAutomaticas()
         {
@@ -130,9 +118,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ============================================================
-        // MARCAR TODAS COMO ENVIADAS PARA UN USUARIO
-        // ============================================================
+       
         [HttpPost]
         public async Task<ActionResult> MarcarTodasEnviadas(int usuarioId)
         {

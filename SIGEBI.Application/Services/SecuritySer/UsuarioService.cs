@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Crypto.Generators;
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
 using SIGEBI.Application.Interfaces;
@@ -20,35 +21,67 @@ namespace SIGEBI.Application.Services.SecuritySer
             _logger = logger;
         }
 
-       
+
         public Task<ServiceResult<T>> RegistrarUsuarioAsync<T>(UsuarioCreateDto dto) =>
-            ExecuteAsync(async () =>
-            {
-                var entity = dto.ToEntity();
+      ExecuteAsync(async () =>
+      {
+         
+          var entity = dto.ToEntity();
 
-                var validation = UsuarioValidator.Validar(entity);
-                if (!validation.Success)
-                    return new OperationResult<T> { Success = false, Message = validation.Message };
+        
+          if (string.IsNullOrWhiteSpace(dto.PasswordHash))
+          {
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "La contraseña es obligatoria."
+              };
+          }
 
-                // Verificar si existe el correo
-                var existingUser = await _usuarioRepository.GetByEmailAsync(dto.Email);
-                if (existingUser.Success && existingUser.Data != null)
-                    return new OperationResult<T> { Success = false, Message = "El correo ya está registrado." };
+         
+          entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
 
-                var result = await _usuarioRepository.AddAsync(entity);
+         
+          entity.Estado = "Activo";
+          entity.Activo = true;
 
-                if (result.Success)
-                    _logger.LogInformation("Usuario registrado correctamente: {Email}", entity.Email);
+        
+          var validation = UsuarioValidator.Validar(entity);
+          if (!validation.Success)
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = validation.Message
+              };
 
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object)result.Data!.ToDto()
-                };
-            });
+          
+          var existingUser = await _usuarioRepository.GetByEmailAsync(dto.Email);
+          if (existingUser.Success && existingUser.Data != null)
+          {
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "El correo ya está registrado."
+              };
+          }
 
-       
+          // 7️⃣ Insertar usuario
+          var result = await _usuarioRepository.AddAsync(entity);
+
+          if (result.Success)
+              _logger.LogInformation("Usuario registrado correctamente: {Email}", entity.Email);
+
+          // 8️⃣ Retornar DTO correcto
+          return new OperationResult<T>
+          {
+              Success = result.Success,
+              Message = result.Message,
+              Data = (T)(object)result.Data!.ToDto()
+          };
+      });
+
+
+
         public Task<ServiceResult<T>> EditarUsuarioAsync<T>(UsuarioUpdateDto dto) =>
      ExecuteAsync(async () =>
      {

@@ -51,7 +51,7 @@ namespace SIGEBI.Web.Controllers
                 return View(dto);
             }
 
-            // 🔹 1️⃣ Verificar si el usuario tiene penalizaciones activas
+           
             var restriccion = await _prestamoService.RestringirPrestamoSiPenalizadoAsync<bool>(dto.UsuarioId);
 
             if (!restriccion.Success)
@@ -60,13 +60,13 @@ namespace SIGEBI.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (restriccion.Data) // true = usuario restringido
+            if (restriccion.Data) 
             {
                 TempData["Error"] = "El usuario tiene penalizaciones pendientes y no puede realizar nuevos préstamos.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // 🔹 2️⃣ Registrar el préstamo si no hay penalización
+           
             var result = await _prestamoService.RegistrarPrestamoAsync<PrestamoGetDto>(dto);
 
             if (!result.Success)

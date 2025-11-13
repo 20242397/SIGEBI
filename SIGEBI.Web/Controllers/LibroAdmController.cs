@@ -212,7 +212,7 @@ namespace SIGEBI.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // ✅ Renderiza los resultados filtrados en la misma vista Index
+            
             return View("Index", result.Data);
         }
     }

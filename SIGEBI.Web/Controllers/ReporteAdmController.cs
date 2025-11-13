@@ -15,9 +15,7 @@ namespace SIGEBI.Web.Controllers
             _logger = logger;
         }
 
-        // ============================================================
-        // 1️⃣ LISTADO PRINCIPAL (INDEX) CON FILTROS
-        // ============================================================
+     
         [HttpGet]
         public async Task<IActionResult> Index(string tipo = "", DateTime? inicio = null, DateTime? fin = null)
         {
@@ -35,7 +33,7 @@ namespace SIGEBI.Web.Controllers
 
                 var lista = result.Data ?? new List<ReporteGetDto>();
 
-                // Filtrar por rango de fechas (opcional)
+             
                 if (inicio.HasValue && fin.HasValue)
                     lista = lista.Where(r => r.FechaGeneracion >= inicio && r.FechaGeneracion <= fin).ToList();
 
@@ -53,9 +51,7 @@ namespace SIGEBI.Web.Controllers
             }
         }
 
-        // ============================================================
-        // 2️⃣ DETALLES DE UN REPORTE
-        // ============================================================
+      
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -69,18 +65,14 @@ namespace SIGEBI.Web.Controllers
             return View(result.Data);
         }
 
-        // ============================================================
-        // 3️⃣ CREAR (GET)
-        // ============================================================
+
         [HttpGet]
         public IActionResult Create()
         {
             return View(new ReporteCreateDto());
         }
 
-        // ============================================================
-        // 4️⃣ CREAR (POST)
-        // ============================================================
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ReporteCreateDto dto)
@@ -103,9 +95,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ============================================================
-        // 5️⃣ EXPORTAR REPORTE A ARCHIVO
-        // ============================================================
+       
         [HttpGet]
         public async Task<IActionResult> Exportar(int id, string formato)
         {
@@ -130,9 +120,7 @@ namespace SIGEBI.Web.Controllers
             return File(fileBytes, contentType, fileName);
         }
 
-        // ============================================================
-        // 6️⃣ FILTRO POR RANGO DE FECHAS
-        // ============================================================
+       
         [HttpPost]
         public async Task<IActionResult> FiltrarPorFechas(DateTime inicio, DateTime fin)
         {
@@ -151,9 +139,7 @@ namespace SIGEBI.Web.Controllers
             return View("Index", result.Data);
         }
 
-        // ============================================================
-        // 7️⃣ ACTUALIZAR REPORTE (MARCAR COMO RESUELTO)
-        // ============================================================
+       
         [HttpPost]
         public async Task<IActionResult> MarcarResuelto(int id, string contenido)
         {

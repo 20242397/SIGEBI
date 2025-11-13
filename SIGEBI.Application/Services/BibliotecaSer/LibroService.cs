@@ -62,7 +62,8 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 {
                     Success = result.Success,
                     Message = result.Message,
-                    Data = (T)(object)result.Data!
+                    Data = (T)(object)result.Data!.ToDto()
+
                 };
             });
 
