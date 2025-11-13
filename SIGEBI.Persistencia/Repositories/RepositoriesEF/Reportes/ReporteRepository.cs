@@ -226,8 +226,6 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
         }
 
 
-
-        //  Reporte de penalizaciones
         public async Task<OperationResult<Reporte>> GenerarReportePenalizacionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
         {
             try
@@ -262,7 +260,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
-        //  Reporte de devoluciones
+      
         public async Task<OperationResult<Reporte>> GenerarReporteDevolucionesAsync(DateTime fechaInicio, DateTime fechaFin, int usuarioId)
         {
             try
@@ -334,10 +332,10 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             }
         }
 
-    
 
-      
-          public async Task<OperationResult<Reporte>> GenerarReporteLibrosMasPrestadosAsync(DateTime inicio, DateTime fin)
+
+
+        public async Task<OperationResult<Reporte>> GenerarReporteLibrosMasPrestadosAsync(DateTime inicio, DateTime fin)
         {
             try
             {
@@ -351,9 +349,9 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     };
                 }
 
-                //  Consultar préstamos con relación a los libros
+                
                 var prestamosAgrupados = await _context.Prestamo
-                    .Include(p => p.Libro) // asegúrate de tener la propiedad Libro en la entidad Prestamo
+                    .Include(p => p.Libro) 
                     .Where(p => p.FechaPrestamo >= inicio && p.FechaPrestamo <= fin)
                     .GroupBy(p => new { p.LibroId, p.Libro.Titulo })
                     .Select(g => new
@@ -393,7 +391,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     Tipo = "Libros más prestados",
                     Contenido = sb.ToString(),
                     FechaGeneracion = DateTime.Now,
-                    UsuarioId = 1 // ⚠️ cámbialo si tu sistema maneja autenticación
+                    UsuarioId = 1
                 };
 
                 // Guardar el reporte
@@ -417,17 +415,6 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                 };
             }
         }
-
+        #endregion
     }
 }
-
-
-
-
-    
-
-
-      
-
-        #endregion
-

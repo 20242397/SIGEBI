@@ -2,6 +2,7 @@
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
 using SIGEBI.Application.Interfaces;
+using SIGEBI.Application.Mappers;
 using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
 using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
@@ -20,7 +21,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             _logger = logger;
         }
 
-        //  Registrar nuevo ejemplar
+        
         public Task<ServiceResult<T>> RegistrarEjemplarAsync<T>(EjemplarCreateDto dto) =>
             ExecuteAsync<T>(async () =>
             {
@@ -54,7 +55,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        //  Actualizar ejemplar
+        
         public Task<ServiceResult<Ejemplar>> ActualizarEjemplarAsync(EjemplarUpdateDto dto) =>
       ExecuteAsync<Ejemplar>(async () =>
       {
@@ -64,6 +65,8 @@ namespace SIGEBI.Application.Services.BibliotecaSer
 
           var ejemplar = ejemplarResult.Data;
           ejemplar.Estado = Enum.Parse<EstadoEjemplar>(dto.Estado, true);
+          _logger.LogInformation("Ejemplar (ID: {Id}) actualizado con estado {Estado}", dto.Id, dto.Estado);
+
 
           var validation = EjemplarValidator.Validar(ejemplar);
           if (!validation.Success)
@@ -72,26 +75,74 @@ namespace SIGEBI.Application.Services.BibliotecaSer
           var updateResult = await _ejemplarRepository.UpdateAsync(ejemplar);
           _logger.LogInformation($"Ejemplar actualizado (ID: {dto.Id})");
 
+       
+
+
           return updateResult;
       });
 
 
+        public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
+    ExecuteAsync<T>(async () =>
+    {
+        var result = await _ejemplarRepository.GetAllAsync();
 
-        //  Obtener ejemplares por libro
+        if (!result.Success)
+            return new OperationResult<T>
+            {
+                Success = false,
+                Message = result.Message
+            };
+
+        var listaDto = result.Data
+            .Select(e => e.ToDto())
+            .ToList();
+
+        return new OperationResult<T>
+        {
+            Success = true,
+            Data = (T)(object)listaDto
+        };
+    });
+
+        public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>
+    ExecuteAsync<T>(async () =>
+    {
+        var result = await _ejemplarRepository.GetByIdAsync(id);
+
+        if (!result.Success || result.Data == null)
+            return new OperationResult<T>
+            {
+                Success = false,
+                Message = result.Message
+            };
+
+        var dto = result.Data.ToDto();
+
+        return new OperationResult<T>
+        {
+            Success = true,
+            Data = (T)(object)dto
+        };
+    });
+
+
+
+
+      
         public Task<ServiceResult<T>> ObtenerPorLibroAsync<T>(int libroId) =>
             ExecuteAsync<T>(async () =>
             {
                 var result = await _ejemplarRepository.ObtenerPorLibroAsync(libroId);
                 _logger.LogInformation("Consulta de ejemplares del libro ID {LibroId}: {Count}", libroId, result?.Count() ?? 0);
 
-                return new OperationResult<T>
-                {
-                    Success = true,
-                    Data = (T)(object)result!
-                };
+                var listaDto = result.Select(e => e.ToDto()).ToList();
+                return new OperationResult<T> { Success = true, Data = (T)(object)listaDto };
+
+               
             });
 
-        //  Obtener disponibles por libro
+      
         public Task<ServiceResult<T>> ObtenerDisponiblesPorLibroAsync<T>(int libroId) =>
             ExecuteAsync<T>(async () =>
             {
@@ -105,7 +156,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        //  Listar prestados
+      
         public Task<ServiceResult<T>> ObtenerPrestadosAsync<T>() =>
             ExecuteAsync<T>(async () =>
             {
@@ -119,7 +170,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        //  Listar reservados
+       
         public Task<ServiceResult<T>> ObtenerReservadosAsync<T>() =>
             ExecuteAsync<T>(async () =>
             {
@@ -133,7 +184,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        //  Marcar como perdido
+      
         public Task<ServiceResult<T>> MarcarComoPerdidoAsync<T>(int ejemplarId) =>
             ExecuteAsync<T>(async () =>
             {

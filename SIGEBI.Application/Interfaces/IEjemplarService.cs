@@ -7,7 +7,7 @@ namespace SIGEBI.Application.Interfaces
 {
     public interface IEjemplarService
     {
-        
+
         Task<ServiceResult<T>> RegistrarEjemplarAsync<T>(EjemplarCreateDto dto);
         Task<ServiceResult<Ejemplar>> ActualizarEjemplarAsync(EjemplarUpdateDto dto);
         Task<ServiceResult<T>> ObtenerPorLibroAsync<T>(int libroId);
@@ -15,8 +15,7 @@ namespace SIGEBI.Application.Interfaces
         Task<ServiceResult<T>> ObtenerPrestadosAsync<T>();
         Task<ServiceResult<T>> ObtenerReservadosAsync<T>();
         Task<ServiceResult<T>> MarcarComoPerdidoAsync<T>(int ejemplarId);
-
-
+        Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id);
+        Task<ServiceResult<T>> ObtenerTodosAsync<T>();
     }
 }
-

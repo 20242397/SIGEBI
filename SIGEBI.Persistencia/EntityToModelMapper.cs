@@ -6,7 +6,7 @@ namespace SIGEBI.Persistence
 {
     public static class EntityToModelMapper
     {
-        // USUARIO — ROW → ENTITY
+       
         public static Usuario ToUsuario(Dictionary<string, object> r)
         {
             return new Usuario
@@ -24,23 +24,24 @@ namespace SIGEBI.Persistence
             };
         }
 
-        // LIBRO — ROW → ENTITY
+        
         public static Libro ToLibro(Dictionary<string, object> r)
         {
             return new Libro
             {
                 Id = Convert.ToInt32(r["Id"]),
-                Titulo = r["Titulo"].ToString()!,
-                Autor = r["Autor"].ToString()!,
-                ISBN = r["ISBN"].ToString()!,
-                Editorial = r["Editorial"].ToString()!,
-                AñoPublicacion = Convert.ToInt32(r["AñoPublicacion"]),
-                Categoria = r["Categoria"]?.ToString(),
-                Estado = r["Estado"].ToString()!
+                Titulo = r["Titulo"]?.ToString() ?? "",
+                Autor = r["Autor"]?.ToString() ?? "",
+                ISBN = r["ISBN"]?.ToString() ?? "",
+                Editorial = r["Editorial"]?.ToString() ?? "",
+                AñoPublicacion = Convert.ToInt32(r["AnioPublicacion"]),
+                Categoria = r["Categoria"]?.ToString() ?? "",
+                Estado = r["Estado"]?.ToString() ?? "Disponible"
             };
         }
 
-        // PRESTAMO — ROW → ENTITY
+
+        
         public static Prestamo ToPrestamo(Dictionary<string, object> r)
         {
             return new Prestamo

@@ -1,0 +1,45 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Notificacion.NotificacionGetDto
+@{
+    ViewData["Title"] = "Detalles de Notificación";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-info-circle"></i> Detalles de la Notificación</h2>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Usuario</dt>
+        <dd class="col-sm-9">@Model.UsuarioId</dd>
+
+        <dt class="col-sm-3">Tipo</dt>
+        <dd class="col-sm-9">@Model.Tipo</dd>
+
+        <dt class="col-sm-3">Mensaje</dt>
+        <dd class="col-sm-9">@Model.Mensaje</dd>
+
+        <dt class="col-sm-3">Fecha de Envío</dt>
+        <dd class="col-sm-9">@Model.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Estado</dt>
+        <dd class="col-sm-9">
+            <span class="badge bg-@(Model.Enviado ? "success" : "warning")">
+                @(Model.Enviado ? "Enviada" : "Pendiente")
+            </span>
+        </dd>
+    </dl>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        <form asp-action="MarcarComoEnviada" method="post" asp-route-id="@Model.Id">
+            <button type="submit" class="btn btn-success shadow-sm" @(Model.Enviado ? "disabled" : "")>
+                <i class="bi bi-check2-circle"></i> Marcar como Enviada
+            </button>
+        </form>
+    </div>
+</div>

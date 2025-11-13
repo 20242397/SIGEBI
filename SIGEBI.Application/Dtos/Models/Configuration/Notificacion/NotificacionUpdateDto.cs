@@ -1,4 +1,5 @@
 ﻿
+
 namespace SIGEBI.Application.Dtos.Models.Configuration.Notificacion
 {
     public record NotificacionUpdateDto
@@ -7,3 +8,5 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Notificacion
         public bool Enviado { get; set; }
     }
 }
+
+

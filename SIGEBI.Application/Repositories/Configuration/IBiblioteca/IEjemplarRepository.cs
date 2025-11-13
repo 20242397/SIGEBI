@@ -13,4 +13,3 @@ namespace SIGEBI.Application.Repositories.Configuration.IBiblioteca
         Task<OperationResult<bool>> MarcarComoPerdidoAsync(int ejemplarId);
     }
 }
-

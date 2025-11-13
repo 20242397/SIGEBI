@@ -1,5 +1,4 @@
 ﻿
-
 using Microsoft.Extensions.Logging;
 
 namespace SIGEBI.Persistence.Logging
@@ -8,7 +7,7 @@ namespace SIGEBI.Persistence.Logging
     {
         private readonly ILogger<T> _logger;
 
-        public LoggerService(ILogger<T>  logger)
+        public LoggerService(ILogger<T> logger)
         {
             _logger = logger;
         }
@@ -29,4 +28,3 @@ namespace SIGEBI.Persistence.Logging
         }
     }
 }
-

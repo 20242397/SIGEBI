@@ -37,7 +37,7 @@ namespace SIGEBI.Persistence.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //  Aplicar configuraciones Fluent API desde el ensamblado actual
+           
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SIGEBIContext).Assembly);
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -49,12 +49,12 @@ namespace SIGEBI.Persistence.Context
                 modelBuilder.Entity(entityType.ClrType).Ignore("RowVersion");
             }
 
-            // Guardar el enum EstadoEjemplar como texto
+            
             modelBuilder.Entity<Ejemplar>()
                 .Property(e => e.Estado)
                 .HasConversion<string>();
 
-            //  Configuración explícita de relaciones para evitar el error con 'object'
+           
             modelBuilder.Entity<Prestamo>()
                 .HasOne(p => p.Usuario)
                 .WithMany()

@@ -39,6 +39,20 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        [HttpGet("todos")]
+        public async Task<IActionResult> ObtenerTodos()
+        {
+            var result = await _prestamoService.ObtenerTodosAsync<IEnumerable<PrestamoGetDto>>();
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var result = await _prestamoService.RemoveAsync<object>(id);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
 
         [HttpPut("penalizacion/{prestamoId}")]
         public async Task<IActionResult> CalcularPenalizacion(int prestamoId)

@@ -38,7 +38,7 @@ namespace SIGEBI.Web.Controllers
 
             if (!result.Success || result.Data == null)
             {
-                TempData["Error"] = "No se encontró un usuario con ese email.";
+                TempData["Error"] = result.Message ?? "No se encontró un usuario con ese email.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -59,10 +59,11 @@ namespace SIGEBI.Web.Controllers
 
             if (!result.Success)
             {
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("", result.Message ?? "Error al registrar el usuario.");
                 return View(dto);
             }
 
+            TempData["Ok"] = "Usuario creado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -74,7 +75,7 @@ namespace SIGEBI.Web.Controllers
 
             if (!result.Success || result.Data == null)
             {
-                TempData["Error"] = "Usuario no encontrado.";
+                TempData["Error"] = result.Message ?? "Usuario no encontrado.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -93,11 +94,11 @@ namespace SIGEBI.Web.Controllers
 
             if (!result.Success)
             {
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("", result.Message ?? "Error al editar el usuario.");
                 return View(dto);
             }
 
-            TempData["Success"] = "Usuario editado correctamente.";
+            TempData["Ok"] = "Usuario editado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -106,7 +107,8 @@ namespace SIGEBI.Web.Controllers
         {
             var result = await _usuarioService.CambiarEstadoAsync<UsuarioGetDto>(id, activo);
 
-            TempData[result.Success ? "Ok" : "Error"] = result.Message;
+            TempData[result.Success ? "Ok" : "Error"] = result.Message ??
+                (result.Success ? "Estado actualizado." : "Error al cambiar estado.");
 
             return RedirectToAction(nameof(Index));
         }
@@ -116,8 +118,8 @@ namespace SIGEBI.Web.Controllers
         {
             var result = await _usuarioService.AsignarRolAsync<UsuarioGetDto>(id, nuevoRol);
 
-            if (!result.Success)
-                TempData["Error"] = result.Message;
+            TempData[result.Success ? "Ok" : "Error"] = result.Message ??
+                (result.Success ? "Rol actualizado." : "Error al asignar rol.");
 
             return RedirectToAction(nameof(Index));
         }
@@ -150,9 +152,14 @@ namespace SIGEBI.Web.Controllers
         {
             var result = await _usuarioService.RemoveAsync(id);
 
-            return result.Success 
-                ? RedirectToAction(nameof(Index)) 
-                : View("Error", result);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message ?? "Error al eliminar el usuario.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Ok"] = "Usuario eliminado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

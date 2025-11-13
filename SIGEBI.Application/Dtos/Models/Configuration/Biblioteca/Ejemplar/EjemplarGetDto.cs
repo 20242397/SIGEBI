@@ -1,6 +1,4 @@
-﻿
-
-namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar
+﻿namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar
 {
     public record EjemplarGetDto
     {

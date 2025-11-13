@@ -1,5 +1,6 @@
 ﻿
 
+
 namespace SIGEBI.Application.Dtos.Models.Configuration.Notificacion
 {
     public record NotificacionGetDto

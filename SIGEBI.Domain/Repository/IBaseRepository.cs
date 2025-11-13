@@ -1,5 +1,4 @@
-﻿
-using SIGEBI.Domain.Base;
+﻿using SIGEBI.Domain.Base;
 
 
 namespace SIGEBI.Domain.Repository

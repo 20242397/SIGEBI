@@ -4,56 +4,37 @@
     ViewData["Title"] = "Eliminar Usuario";
 }
 
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-<h2 class="fw-bold text-danger mb-4">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Usuario
-</h2>
+<h2 class="fw-bold text-danger mb-4"><i class="bi bi-trash-fill"></i> Eliminar Usuario</h2>
 
-<div class="card shadow-sm border-0 p-4" style="max-width:650px;margin:auto;">
+<div class="card shadow-sm border-danger p-4">
+    <p class="text-danger fw-bold">
+        ¿Estás seguro que deseas eliminar este usuario? Esta acción no se puede deshacer.
+    </p>
 
-    <div class="alert alert-warning d-flex align-items-start mb-4">
-        <i class="bi bi-exclamation-circle-fill fs-4 me-3"></i>
-        <div>
-            <strong class="d-block">¿Seguro que deseas eliminar este usuario?</strong>
-            Esta acción no se puede deshacer.
-        </div>
-    </div>
+    <dl class="row">
+        <dt class="col-sm-3 fw-bold">Nombre</dt>
+        <dd class="col-sm-9">@Model.Nombre @Model.Apellido</dd>
 
-    <!-- Información del usuario -->
-    <ul class="list-unstyled mb-4">
-        <li class="mb-2">
-            <strong><i class="bi bi-person-fill me-2"></i>Nombre:</strong>
-            @Model.Nombre @Model.Apellido
-        </li>
+        <dt class="col-sm-3 fw-bold">Correo</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
 
-        <li class="mb-2">
-            <strong><i class="bi bi-envelope-fill me-2"></i>Email:</strong>
-            @Model.Email
-        </li>
+        <dt class="col-sm-3 fw-bold">Rol</dt>
+        <dd class="col-sm-9">@Model.Role</dd>
 
-        <li class="mb-2">
-            <strong><i class="bi bi-shield-lock-fill me-2"></i>Rol:</strong>
-            <span class="badge bg-primary px-3 py-2">@Model.Role</span>
-        </li>
-    </ul>
+        <dt class="col-sm-3 fw-bold">Estado</dt>
+        <dd class="col-sm-9">@Model.Estado</dd>
+    </dl>
 
-    <!-- Formulario -->
-    <form asp-action="DeleteConfirmado" method="post">
-        <input type="hidden" name="Id" value="@Model.Id" />
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
 
-        <div class="d-flex gap-2 mt-3">
-
-            <button type="submit" class="btn btn-danger px-4">
-                <i class="bi bi-trash-fill me-2"></i>Eliminar
-            </button>
-
-            <a asp-action="Index" class="btn btn-secondary px-4">
-                <i class="bi bi-arrow-left-circle me-2"></i>Cancelar
-            </a>
-
-        </div>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash3-fill"></i> Eliminar
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
     </form>
-
 </div>

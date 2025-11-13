@@ -1,11 +1,12 @@
 ﻿using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Prestamo;
+using System.Threading.Tasks;
 
 namespace SIGEBI.Application.Interfaces
 {
     public interface IPrestamoService
     {
-       
+
         Task<ServiceResult<T>> RegistrarPrestamoAsync<T>(PrestamoCreateDto dto);
 
         Task<ServiceResult<T>> ExtenderPrestamoAsync<T>(PrestamoUpdateDto dto);
@@ -19,6 +20,8 @@ namespace SIGEBI.Application.Interfaces
         Task<ServiceResult<T>> ObtenerHistorialUsuarioAsync<T>(int usuarioId);
 
         Task<ServiceResult<T>> ObtenerTodosAsync<T>();
+
+        Task<ServiceResult<T>> RemoveAsync<T>(int id);
 
 
     }

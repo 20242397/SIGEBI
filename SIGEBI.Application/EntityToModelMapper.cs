@@ -1,4 +1,5 @@
-﻿using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
+﻿using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
+using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
 using SIGEBI.Application.Dtos.Models.Configuration.Prestamo;
 using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
@@ -10,7 +11,7 @@ namespace SIGEBI.Application.Mappers
     public static class EntityToDtoMapper
     {
 
-        // USUARIO — ENTITY → DTO
+      
 
         public static UsuarioGetDto ToDto(this Usuario e)
         {
@@ -27,7 +28,7 @@ namespace SIGEBI.Application.Mappers
             };
         }
 
-        // ENTITY → UsuarioUpdateDto (Para edición)
+      
         public static UsuarioUpdateDto ToUpdateDto(this Usuario e)
         {
             return new UsuarioUpdateDto
@@ -43,7 +44,7 @@ namespace SIGEBI.Application.Mappers
             };
         }
 
-        //  DTO → ENTITY (Crear)
+        
         public static Usuario ToEntity(this UsuarioCreateDto dto)
         {
             return new Usuario
@@ -59,7 +60,7 @@ namespace SIGEBI.Application.Mappers
             };
         }
 
-        // DTO → ENTITY (Actualizar)
+       
         public static Usuario ToEntity(this UsuarioUpdateDto dto)
         {
             return new Usuario
@@ -78,7 +79,7 @@ namespace SIGEBI.Application.Mappers
 
 
 
-        // LIBRO — ENTITY → DTO
+        
 
         public static LibroGetDto ToDto(this Libro e)
         {
@@ -95,7 +96,7 @@ namespace SIGEBI.Application.Mappers
             };
         }
 
-        // DTO → ENTITY (Crear)
+       
         public static Libro ToEntity(this LibroCreateDto dto)
         {
             return new Libro
@@ -110,7 +111,7 @@ namespace SIGEBI.Application.Mappers
             };
         }
 
-        // DTO → ENTITY (Actualizar)
+       
         public static Libro ToEntity(this LibroUpdateDto dto)
         {
             return new Libro
@@ -128,7 +129,7 @@ namespace SIGEBI.Application.Mappers
 
 
 
-        // PRESTAMO — ENTITY → DTO
+        
 
         public static PrestamoGetDto ToDto(this Prestamo e)
         {
@@ -147,7 +148,7 @@ namespace SIGEBI.Application.Mappers
         }
 
 
-        // DTO → ENTITY (Crear)
+       
         public static Prestamo ToEntity(this PrestamoCreateDto dto)
         {
             return new Prestamo
@@ -162,11 +163,64 @@ namespace SIGEBI.Application.Mappers
             };
         }
 
-        // DTO → ENTITY 
+       
         public static Prestamo ToEntityUpdate(this PrestamoUpdateDto dto, Prestamo original)
         {
-            original.FechaVencimiento = dto.NuevaFechaVencimiento;
+            original.FechaVencimiento = dto.FechaVencimiento;
             return original;
         }
+
+      
+        public static LibroUpdateDto ToUpdateDto(this Libro e)
+        {
+            return new LibroUpdateDto
+            {
+                Id = e.Id,
+                Titulo = e.Titulo,
+                Autor = e.Autor,
+                ISBN = e.ISBN,
+                Editorial = e.Editorial,
+                AñoPublicacion = e.AñoPublicacion ?? 0,
+                Categoria = e.Categoria,
+                Estado = e.Estado
+            };
+        }
+
+
+
+        public static EjemplarGetDto ToDto(this Ejemplar e)
+        {
+            return new EjemplarGetDto
+            {
+                Id = e.Id,
+                CodigoBarras = e.CodigoBarras,
+                Estado = e.Estado.ToString(), 
+                LibroId = e.LibroId
+            };
+        }
+
+        public static Ejemplar ToEntity(this EjemplarCreateDto dto)
+        {
+            return new Ejemplar
+            {
+                CodigoBarras = dto.CodigoBarras,
+                Estado = Enum.Parse<EstadoEjemplar>(dto.Estado, true),
+                LibroId = dto.LibroId
+            };
+        }
+
+       
+        public static Ejemplar ToEntity(this EjemplarUpdateDto dto)
+        {
+            return new Ejemplar
+            {
+                Id = dto.Id,
+                CodigoBarras = dto.CodigoBarras,
+                Estado = Enum.Parse<EstadoEjemplar>(dto.Estado, true),
+                LibroId = dto.LibroId
+            };
+        }
+
+
     }
 }

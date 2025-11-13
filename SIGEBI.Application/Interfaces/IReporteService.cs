@@ -5,7 +5,7 @@ namespace SIGEBI.Application.Interfaces
 {
     public interface IReporteService
     {
-     
+
         Task<ServiceResult<T>> GenerarReporteAsync<T>(ReporteCreateDto dto);
         Task<ServiceResult<T>> ExportarReporteAsync<T>(int reporteId, string formato);
         Task<ServiceResult<T>> ActualizarReporteAsync<T>(ReporteUpdateDto dto);
@@ -15,4 +15,3 @@ namespace SIGEBI.Application.Interfaces
         Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id);
     }
 }
-

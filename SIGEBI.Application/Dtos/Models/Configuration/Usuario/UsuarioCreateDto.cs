@@ -9,5 +9,7 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
         public string PasswordHash { get; set; } = null!;
         public string? PhoneNumber { get; set; }
         public string? Role { get; set; } = "User";
+
+        public bool Activo { get; set; } = true;
     }
 }

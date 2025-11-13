@@ -1,5 +1,4 @@
-﻿
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SIGEBI.Application.Dtos.Models.Configuration.Reporte;
@@ -156,7 +155,7 @@ namespace SIGEBI.Application.Test.Services
         }
 
         [Fact]
-       public async Task GenerarReporteAsync_Should_Call_Devoluciones_When_Tipo_Devoluciones()
+        public async Task GenerarReporteAsync_Should_Call_Devoluciones_When_Tipo_Devoluciones()
         {
             var dto = new ReporteCreateDto
             {
@@ -244,7 +243,7 @@ namespace SIGEBI.Application.Test.Services
             catch { /* ignorar limpieza en CI */ }
         }
         #endregion
-       
+
 
         #region ActualizarReporteAsync Tests
 

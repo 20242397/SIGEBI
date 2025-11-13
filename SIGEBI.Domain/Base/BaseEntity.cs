@@ -1,10 +1,8 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SIGEBI.Domain.Base
 {
-    public  class BaseEntity
+    public class BaseEntity
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

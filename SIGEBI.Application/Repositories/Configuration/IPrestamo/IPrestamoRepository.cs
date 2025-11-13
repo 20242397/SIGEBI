@@ -6,7 +6,7 @@ namespace SIGEBI.Application.Repositories.Configuration.IPrestamo
 {
     public interface IPrestamoRepository : IBaseRepository<Prestamo>
     {
-      
+
         Task<OperationResult<Prestamo>> RegistrarPrestamoAsync(Prestamo prestamo);
         Task<OperationResult<Prestamo>> RegistrarDevolucionAsync(int prestamoId, DateTime fechaDevolucion, decimal? penalizacion);
         Task<OperationResult<IEnumerable<Prestamo>>> GetPrestamosActivosAsync();
@@ -14,6 +14,6 @@ namespace SIGEBI.Application.Repositories.Configuration.IPrestamo
         Task<OperationResult<bool>> CalcularPenalizacionAsync(int prestamoId);
         Task<OperationResult<IEnumerable<Prestamo>>> GetHistorialPorUsuarioAsync(int usuarioId);
         Task<OperationResult<bool>> RestringirPrestamoSiPenalizadoAsync(int usuarioId);
+
     }
 }
-

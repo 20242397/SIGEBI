@@ -16,9 +16,8 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         _logger = logger;
     }
 
-    // ---------------------------
-    // ADD
-    // ---------------------------
+    
+   
     public async Task<OperationResult<Usuario>> AddAsync(Usuario entity)
     {
         try
@@ -62,9 +61,8 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-    // ---------------------------
-    // GET ALL
-    // ---------------------------
+  
+   
     public async Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync()
     {
         try
@@ -87,9 +85,7 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-    // ---------------------------
-    // GET BY ID
-    // ---------------------------
+    
     public async Task<OperationResult<Usuario>> GetByIdAsync(int id)
     {
         try
@@ -114,9 +110,8 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-    // ---------------------------
-    // GET BY EMAIL
-    // ---------------------------
+   
+   
     public async Task<OperationResult<Usuario>> GetByEmailAsync(string email)
     {
         try
@@ -142,9 +137,8 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-    // ---------------------------
-    // UPDATE
-    // ---------------------------
+   
+  
     public async Task<OperationResult<Usuario>> UpdateAsync(Usuario entity)
     {
         try
@@ -196,9 +190,8 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-    // ---------------------------
-    // DELETE (LOGICAL)
-    // ---------------------------
+   
+
     public async Task<OperationResult<Usuario>> RemoveAsync(int id)
     {
         try

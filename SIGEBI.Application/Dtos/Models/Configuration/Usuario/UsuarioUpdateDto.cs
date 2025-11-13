@@ -1,5 +1,4 @@
 ﻿
-
 namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
 {
     public record UsuarioUpdateDto
@@ -10,9 +9,9 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
         public string? Email { get; set; }
         public string? PasswordHash { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? Role { get; set; } = null; 
+        public string? Role { get; set; } = null;
 
         public string? Estado { get; set; }
-        public bool Activo { get; set; } = true; 
+        public bool Activo { get; set; } = true;
     }
 }

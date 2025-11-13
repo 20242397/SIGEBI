@@ -15,13 +15,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             _notificacionService = notificacionService;
         }
 
-        [HttpPost("registrar")]
-        public async Task<IActionResult> Registrar([FromBody] NotificacionCreateDto dto)
-        {
-            var result = await _notificacionService.RegistrarNotificacionAsync<object>(dto);
-            return result.Success ? Ok(result) : BadRequest(result);
-        }
-
+       
 
         [HttpPost("enviar")]
         public async Task<IActionResult> Enviar([FromBody] NotificacionCreateDto dto)
@@ -50,6 +44,41 @@ namespace SIGEBI.Configuracion.Api.Controllers
             var result = await _notificacionService.MarcarTodasComoEnviadasPorUsuarioAsync<object>(usuarioId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+        [HttpGet("todas")]
+        public async Task<IActionResult> ObtenerTodas()
+        {
+            var result = await _notificacionService.ObtenerTodosAsync<IEnumerable<NotificacionGetDto>>();
+
+            return result.Success ? Ok(result) : NotFound(result);
+        }
+
+        [HttpGet("usuario/{usuarioId}/no-leidas")]
+        public async Task<IActionResult> ObtenerNoLeidas(int usuarioId)
+        {
+            var result = await _notificacionService.ObtenerNoLeidasAsync<IEnumerable<NotificacionGetDto>>(usuarioId);
+
+            return result.Success ? Ok(result) : NotFound(result);
+        }
+
+
+        [HttpGet("tipo/{tipo}")]
+        public async Task<IActionResult> ObtenerPorTipo(string tipo)
+        {
+            var result = await _notificacionService.ObtenerPorTipoAsync<IEnumerable<NotificacionGetDto>>(tipo);
+
+            return result.Success ? Ok(result) : NotFound(result);
+        }
+
+        [HttpPost("generar-automaticas")]
+        public async Task<IActionResult> GenerarAutomaticas()
+        {
+            var result = await _notificacionService.GenerarNotificacionesAutomaticasAsync();
+
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+
 
     }
 }

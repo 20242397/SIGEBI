@@ -1,0 +1,31 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar.EjemplarGetDto
+@{
+    ViewData["Title"] = "Marcar como Perdido";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="card border-danger shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <i class="bi bi-exclamation-triangle"></i> Confirmar acción
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-danger fw-bold">
+                ¿Desea marcar este ejemplar como perdido?
+            </h5>
+
+            <p><strong>Código:</strong> @Model.CodigoBarras</p>
+            <p><strong>Libro ID:</strong> @Model.LibroId</p>
+
+            <form asp-action="MarcarComoPerdido" method="post">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger shadow-sm">
+                    <i class="bi bi-check2-circle"></i> Confirmar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary shadow-sm ms-2">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

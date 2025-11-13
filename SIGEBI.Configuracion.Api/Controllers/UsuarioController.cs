@@ -19,7 +19,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
         }
 
         [HttpPost("registrar")]
-        public async Task<IActionResult> Registrar ([FromBody] UsuarioCreateDto dto)
+        public async Task<IActionResult> Registrar([FromBody] UsuarioCreateDto dto)
         {
             var result = await _usuarioService.RegistrarUsuarioAsync<object>(dto);
             return result.Success ? Ok(result) : BadRequest(result);
@@ -62,5 +62,21 @@ namespace SIGEBI.Configuracion.Api.Controllers
             var result = await _usuarioService.ObtenerTodosAsync<object>();
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> ObtenerPorId(int id)
+        {
+            var result = await _usuarioService.ObtenerPorIdAsync<UsuarioGetDto>(id);
+            return result.Success ? Ok(result) : NotFound(result);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var result = await _usuarioService.RemoveAsync(id);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+
     }
 }

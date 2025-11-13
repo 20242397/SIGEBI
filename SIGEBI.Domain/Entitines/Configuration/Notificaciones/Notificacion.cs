@@ -7,7 +7,7 @@ namespace SIGEBI.Domain.Entitines.Configuration.Notificaciones
 
     public sealed class Notificacion : Base.BaseEntity
     {
-       
+
         public int UsuarioId { get; set; }
 
         public string Tipo { get; set; } = "Aviso"; // Aviso, Recordatorio, Penalización
@@ -16,6 +16,6 @@ namespace SIGEBI.Domain.Entitines.Configuration.Notificaciones
         public DateTime FechaEnvio { get; set; } = DateTime.Now;
         public bool Enviado { get; set; } = false;
 
-       
+
     }
 }

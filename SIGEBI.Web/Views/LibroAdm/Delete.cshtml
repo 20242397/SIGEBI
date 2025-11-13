@@ -1,0 +1,47 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro.LibroGetDto
+
+@{
+    ViewData["Title"] = "Eliminar Libro";
+}
+
+<div class="container mt-4">
+    <div class="card shadow p-4 rounded-4 border-0">
+        <h3 class="fw-bold mb-4 text-danger">
+            <i class="bi bi-trash3"></i> Eliminar Libro
+        </h3>
+
+        <p>¿Está seguro de que desea eliminar el siguiente libro?</p>
+
+        <dl class="row">
+            <dt class="col-sm-3">Título</dt>
+            <dd class="col-sm-9">@Model.Titulo</dd>
+
+            <dt class="col-sm-3">Autor</dt>
+            <dd class="col-sm-9">@Model.Autor</dd>
+
+            <dt class="col-sm-3">Editorial</dt>
+            <dd class="col-sm-9">@Model.Editorial</dd>
+
+            <dt class="col-sm-3">Año</dt>
+            <dd class="col-sm-9">@Model.AñoPublicacion</dd>
+
+            <dt class="col-sm-3">Categoría</dt>
+            <dd class="col-sm-9">@Model.Categoria</dd>
+
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.Estado</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="mt-3">
+            <input type="hidden" asp-for="Id" />
+            <div class="text-end">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

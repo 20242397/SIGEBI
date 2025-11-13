@@ -1,4 +1,5 @@
-﻿namespace SIGEBI.Persistence.Logging
+﻿
+namespace SIGEBI.Persistence.Logging
 {
     public interface ILoggerService<T>
     {

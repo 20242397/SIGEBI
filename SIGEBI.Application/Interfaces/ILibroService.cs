@@ -9,7 +9,7 @@ namespace SIGEBI.Application.Interfaces
 {
     public interface ILibroService
     {
-        
+
         Task<ServiceResult<T>> RegistrarLibroAsync<T>(LibroCreateDto dto);
         Task<ServiceResult<T>> ModificarLibroAsync<T>(LibroUpdateDto dto);
         Task<OperationResult<bool>> RemoveAsync(int id);
@@ -19,9 +19,8 @@ namespace SIGEBI.Application.Interfaces
         Task<OperationResult<Libro>> BuscarPorISBNAsync(string isbn);
         Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id);
         Task<ServiceResult<T>> ObtenerTodosAsync<T>();
-
+        Task<OperationResult<Libro>> CambiarEstadoAsync(int id, string nuevoEstado);
         Task<ServiceResult<T>> FiltrarAsync<T>(
         string? titulo, string? autor, string? categoria, int? año, string? estado);
     }
 }
-

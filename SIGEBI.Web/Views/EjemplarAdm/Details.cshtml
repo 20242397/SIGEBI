@@ -1,0 +1,37 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar.EjemplarGetDto
+@{
+    ViewData["Title"] = "Detalles del Ejemplar";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-4"><i class="bi bi-eye"></i> Detalles del ejemplar</h2>
+
+    <div class="card shadow-sm p-4">
+        <dl class="row">
+            <dt class="col-sm-3 fw-bold">Código de Barras</dt>
+            <dd class="col-sm-9">@Model.CodigoBarras</dd>
+
+            <dt class="col-sm-3 fw-bold">Estado</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-@(Model.Estado == "Disponible" ? "success" :
+                                          Model.Estado == "Prestado" ? "warning" :
+                                          Model.Estado == "Perdido" ? "danger" : "secondary")">
+                    @Model.Estado
+                </span>
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">Libro ID</dt>
+            <dd class="col-sm-9">@Model.LibroId</dd>
+        </dl>
+
+        <div class="mt-3">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>

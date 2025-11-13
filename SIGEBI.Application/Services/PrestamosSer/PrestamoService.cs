@@ -22,7 +22,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
             _logger = logger;
         }
 
-        //  Obtener todos (Index)
+     
         public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
             ExecuteAsync(async () =>
             {
@@ -38,7 +38,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                 }
 
                 var listaDto = result.Data
-                    .Select(p => p.ToDto())   
+                    .Select(p => p.ToDto())
                     .ToList();
 
                 return new OperationResult<T>
@@ -50,7 +50,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
 
 
 
-        // Registrar préstamo
+      
         public Task<ServiceResult<T>> RegistrarPrestamoAsync<T>(PrestamoCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -65,7 +65,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                     Estado = "Activo"
                 };
 
-                // Validación de dominio
+              
                 var validation = PrestamoValidator.Validar(entidad);
                 if (!validation.Success)
                     return new OperationResult<T>
@@ -74,7 +74,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
                         Message = validation.Message
                     };
 
-                // Validación de penalización
+              
                 var restriccion = await _prestamoRepository.RestringirPrestamoSiPenalizadoAsync(dto.UsuarioId);
                 if (restriccion.Success && restriccion.Data)
                 {
@@ -96,7 +96,7 @@ namespace SIGEBI.Application.Services.PrestamosSer
 
 
 
-        // ✅ Extender préstamo
+     
         public Task<ServiceResult<T>> ExtenderPrestamoAsync<T>(PrestamoUpdateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -110,7 +110,27 @@ namespace SIGEBI.Application.Services.PrestamosSer
                     };
 
                 var prestamo = prestamoResult.Data;
-                prestamo.FechaVencimiento = dto.NuevaFechaVencimiento;
+
+              
+                if (prestamo.Estado == "Cancelado" || prestamo.Estado == "Devuelto")
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "No se puede renovar un préstamo cancelado o devuelto."
+                    };
+
+                if (dto.FechaVencimiento != default)
+                    prestamo.FechaVencimiento = dto.FechaVencimiento;
+
+
+                if (dto.FechaDevolucion.HasValue)
+                    prestamo.FechaDevolucion = dto.FechaDevolucion;
+
+                if (dto.Penalizacion.HasValue)
+                    prestamo.Penalizacion = dto.Penalizacion;
+
+           
+                prestamo.Estado = "Activo";
 
                 var updateResult = await _prestamoRepository.UpdateAsync(prestamo);
 
@@ -123,22 +143,49 @@ namespace SIGEBI.Application.Services.PrestamosSer
 
 
 
-        // ✅ Registrar devolución
+     
         public Task<ServiceResult<T>> RegistrarDevolucionAsync<T>(int prestamoId, DateTime fechaDevolucion) =>
             ExecuteAsync(async () =>
             {
-                var result = await _prestamoRepository.RegistrarDevolucionAsync(prestamoId, fechaDevolucion, null);
+                var prestamoResult = await _prestamoRepository.GetByIdAsync(prestamoId);
+
+                if (!prestamoResult.Success || prestamoResult.Data == null)
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "Préstamo no encontrado."
+                    };
+
+                var prestamo = prestamoResult.Data;
+
+       
+                if (prestamo.Estado == "Devuelto")
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = "El préstamo ya fue devuelto previamente."
+                    };
+
+               
+                prestamo.FechaDevolucion = fechaDevolucion;
+                prestamo.Estado = "Devuelto";
+
+                var updateResult = await _prestamoRepository.UpdateAsync(prestamo);
 
                 return new OperationResult<T>
                 {
-                    Success = result.Success,
-                    Message = result.Message
+                    Success = updateResult.Success,
+                    Message = updateResult.Message
                 };
             });
 
 
 
-        // ✅ Calcular penalización
+
+
+
+
+
         public Task<ServiceResult<T>> CalcularPenalizacionAsync<T>(int prestamoId) =>
             ExecuteAsync(async () =>
             {
@@ -153,7 +200,6 @@ namespace SIGEBI.Application.Services.PrestamosSer
 
 
 
-        // ✅ Restringir préstamo si penalizado
         public Task<ServiceResult<T>> RestringirPrestamoSiPenalizadoAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {
@@ -168,7 +214,6 @@ namespace SIGEBI.Application.Services.PrestamosSer
 
 
 
-        // ✅ Historial del usuario
         public Task<ServiceResult<T>> ObtenerHistorialUsuarioAsync<T>(int usuarioId) =>
             ExecuteAsync(async () =>
             {
@@ -191,5 +236,18 @@ namespace SIGEBI.Application.Services.PrestamosSer
                     Data = (T)(object)listaDto
                 };
             });
+
+        public Task<ServiceResult<T>> RemoveAsync<T>(int id) =>
+    ExecuteAsync(async () =>
+    {
+        var result = await _prestamoRepository.RemoveAsync(id);
+
+        return new OperationResult<T>
+        {
+            Success = result.Success,
+            Message = result.Message
+        };
+    });
+
     }
 }

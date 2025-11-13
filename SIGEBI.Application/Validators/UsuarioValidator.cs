@@ -19,10 +19,10 @@ public static class UsuarioValidator
             !Regex.IsMatch(usuario.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             return new OperationResult<Usuario> { Success = false, Message = "El correo electrónico no es válido." };
 
-        // ✅ Detectar si es nuevo (crear) o edición
+     
         bool esNuevo = usuario.Id == 0;
 
-        // ✅ Solo pedir contraseña al crear
+       
         if (esNuevo && string.IsNullOrWhiteSpace(usuario.PasswordHash))
             return new OperationResult<Usuario> { Success = false, Message = "La contraseña es obligatoria al registrar un usuario nuevo." };
 

@@ -1,0 +1,40 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar.EjemplarCreateDto
+@{
+    ViewData["Title"] = "Registrar Ejemplar";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-4"><i class="bi bi-plus-circle"></i> Registrar nuevo ejemplar</h2>
+
+    <div class="card shadow-sm p-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="CodigoBarras" class="form-label"></label>
+                <input asp-for="CodigoBarras" class="form-control shadow-sm" placeholder="Ej: LB-001" />
+                <span asp-validation-for="CodigoBarras" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LibroId" class="form-label"></label>
+                <input asp-for="LibroId" class="form-control shadow-sm" placeholder="ID del libro asociado" />
+                <span asp-validation-for="LibroId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary shadow-sm">
+                <i class="bi bi-check-circle"></i> Guardar
+            </button>
+            <a asp-action="Index" class="btn btn-secondary shadow-sm ms-2">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

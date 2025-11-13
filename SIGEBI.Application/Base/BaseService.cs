@@ -46,7 +46,7 @@ namespace SIGEBI.Application.Services
             }
             catch (Exception ex)
             {
-                // ✅ Captura genérica traducida al español
+               
                 return ServiceResult<T>.Fail($"Excepción inesperada: {ex.Message}");
             }
         }
@@ -58,5 +58,26 @@ namespace SIGEBI.Application.Services
 
             return FromOperationResult(result);
         }
+
+        
+        protected OperationResult<T> Ok<T>(T? data = default, string? message = null)
+        {
+            return new OperationResult<T>
+            {
+                Success = true,
+                Data = data,
+                Message = message ?? "Operación exitosa."
+            };
+        }
+
+        protected OperationResult<T> Fail<T>(string message)
+        {
+            return new OperationResult<T>
+            {
+                Success = false,
+                Message = message
+            };
+        }
+
     }
 }

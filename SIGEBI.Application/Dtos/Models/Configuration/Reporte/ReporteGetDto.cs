@@ -1,5 +1,4 @@
 ﻿
-
 namespace SIGEBI.Application.Dtos.Models.Configuration.Reporte
 {
     public record ReporteGetDto

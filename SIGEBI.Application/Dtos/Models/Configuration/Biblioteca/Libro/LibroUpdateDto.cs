@@ -1,6 +1,4 @@
-﻿
-
-namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro
+﻿namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro
 {
     public record LibroUpdateDto
     {

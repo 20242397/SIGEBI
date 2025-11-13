@@ -69,7 +69,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
-            [HttpGet("{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
             var result = await _libroService.ObtenerPorIdAsync<object>(id);
@@ -82,6 +82,35 @@ namespace SIGEBI.Configuracion.Api.Controllers
             var result = await _libroService.ObtenerTodosAsync<object>();
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+
+        [HttpPut("estado/{id:int}")]
+        public async Task<IActionResult> CambiarEstado(int id, [FromBody] string nuevoEstado)
+        {
+            if (string.IsNullOrWhiteSpace(nuevoEstado))
+                return BadRequest("El estado no puede estar vacío.");
+
+            var result = await _libroService.CambiarEstadoAsync(id, nuevoEstado);
+
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("filtrar")]
+        public async Task<IActionResult> Filtrar(
+    string? titulo,
+    string? autor,
+    string? categoria,
+    int? anio,
+    string? estado)
+        {
+            var result = await _libroService.FiltrarAsync<IEnumerable<LibroGetDto>>(
+                titulo, autor, categoria, anio, estado
+            );
+
+            return result.Success ? Ok(result) : NotFound(result);
+        }
     }
 }
 
+
+    

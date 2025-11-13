@@ -1,6 +1,4 @@
-﻿
-
-namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
+﻿namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
 {
     public record UsuarioGetDto
     {

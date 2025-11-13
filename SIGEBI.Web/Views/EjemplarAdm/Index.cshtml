@@ -1,0 +1,140 @@
+﻿@model IEnumerable<SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar.EjemplarGetDto>
+
+@{
+    ViewData["Title"] = "Gestión de Ejemplares";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-4">
+
+    <!-- TÍTULO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary mb-0">
+            <i class="bi bi-collection"></i> Gestión de Ejemplares
+        </h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle"></i> Nuevo Ejemplar
+        </a>
+    </div>
+
+    <!-- CARDS DE RESUMEN -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card border-success border-2 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-success fw-semibold">
+                        <i class="bi bi-check-circle"></i> Disponibles
+                    </h6>
+                    <h3>@Model.Count(e => e.Estado == "Disponible")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-warning border-2 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-warning fw-semibold">
+                        <i class="bi bi-book"></i> Prestados
+                    </h6>
+                    <h3>@Model.Count(e => e.Estado == "Prestado")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-info border-2 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-info fw-semibold">
+                        <i class="bi bi-bookmark"></i> Reservados
+                    </h6>
+                    <h3>@Model.Count(e => e.Estado == "Reservado")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-danger border-2 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-danger fw-semibold">
+                        <i class="bi bi-x-circle"></i> Perdidos
+                    </h6>
+                    <h3>@Model.Count(e => e.Estado == "Perdido")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <form asp-action="Index" method="get" class="card p-3 mb-4 shadow-sm">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-9">
+                <input type="text" name="search" class="form-control shadow-sm"
+                       placeholder="Buscar por código de barras o ID de libro..."
+                       value="@ViewBag.SearchTerm" />
+            </div>
+            <div class="col-md-3 d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary shadow-sm">
+                    <i class="bi bi-arrow-repeat"></i> Limpiar
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <!-- TABLA -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Código de Barras</th>
+                        <th>Estado</th>
+                        <th>ID Libro</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td class="fw-semibold">@item.CodigoBarras</td>
+                                <td>
+                                    <span class="badge bg-@(item.Estado switch {
+                                        "Disponible" => "success",
+                                        "Prestado" => "warning",
+                                        "Reservado" => "info",
+                                        "Perdido" => "danger",
+                                        _ => "secondary"
+                                    })">@item.Estado</span>
+                                </td>
+                                <td>@item.LibroId</td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form asp-action="MarcarComoPerdido" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Marcar como perdido">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No se encontraron ejemplares.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

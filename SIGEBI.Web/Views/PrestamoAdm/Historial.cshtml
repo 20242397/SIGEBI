@@ -1,0 +1,125 @@
+﻿@model IEnumerable<SIGEBI.Application.Dtos.Models.Configuration.Prestamo.PrestamoGetDto>
+
+@{
+    ViewData["Title"] = "Historial de Préstamos";
+    var usuarioId = ViewBag.UsuarioId ?? 0;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<h2 class="fw-bold text-center mb-4">
+    <i class="bi bi-journal-text"></i> Historial de Préstamos del Usuario #@usuarioId
+</h2>
+
+<!-- ✅ Mensajes del sistema -->
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success text-center shadow-sm">
+        <i class="bi bi-check-circle-fill"></i> @TempData["Ok"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger text-center shadow-sm">
+        <i class="bi bi-x-circle-fill"></i> @TempData["Error"]
+    </div>
+}
+
+<!-- ✅ Botón volver -->
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary shadow-sm">
+        <i class="bi bi-arrow-left"></i> Volver a la lista general
+    </a>
+</div>
+
+<!-- ✅ Tabla de historial -->
+<table class="table table-hover table-striped table-bordered shadow-sm align-middle">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>ID</th>
+            <th>Libro</th>
+            <th>Ejemplar</th>
+            <th>Fecha Préstamo</th>
+            <th>Fecha Vencimiento</th>
+            <th>Devolución</th>
+            <th>Penalización</th>
+            <th>Estado</th>
+            <th style="width: 250px;">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="9" class="text-center text-muted">
+                    <i class="bi bi-info-circle"></i> Este usuario no tiene préstamos registrados.
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var p in Model)
+            {
+                <tr class="text-center">
+                    <td>@p.Id</td>
+                    <td>@p.LibroId</td>
+                    <td>@p.EjemplarId</td>
+                    <td>@p.FechaPrestamo.ToShortDateString()</td>
+                    <td>@p.FechaVencimiento.ToShortDateString()</td>
+                    <td>@(p.FechaDevolucion.HasValue? p.FechaDevolucion.Value.ToShortDateString() : "-")</td>
+
+                    <!-- Penalización -->
+                    <td>
+                        @if (p.Penalizacion.HasValue && p.Penalizacion > 0)
+                        {
+                            <span class="fw-bold text-danger">@p.Penalizacion.Value.ToString("C")</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">0</span>
+                        }
+                    </td>
+
+                    <!-- Estado -->
+                    <td>
+                        <span class="badge @(p.Estado?.ToLower() == "activo" ? "bg-success" :
+                                                                          p.Estado?.ToLower() == "cancelado" ? "bg-danger" :
+                                                                          "bg-secondary")">
+                    @p.Estado
+                </span>
+            </td>
+
+                    <!-- ACCIONES -->
+                    <td class="text-nowrap">
+                        <!-- Registrar devolución -->
+                        <a asp-action="RegistrarDevolucion" asp-route-id="@p.Id"
+                           class="btn btn-success btn-sm me-1" data-bs-toggle="tooltip" title="Registrar devolución">
+                            <i class="bi bi-arrow-return-left"></i>
+                        </a>
+
+                        <!-- Calcular penalización -->
+                        <a asp-action="CalcularPenalizacion" asp-route-id="@p.Id"
+                           class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="tooltip" title="Calcular penalización">
+                            <i class="bi bi-cash-coin"></i>
+                        </a>
+
+                        <!-- Extender préstamo -->
+                        <a asp-action="Edit" asp-route-id="@p.Id"
+                           class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Extender préstamo">
+                            <i class="bi bi-calendar-plus"></i>
+                        </a>
+                    </td>
+                </tr>
+                }
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        // Activar tooltips Bootstrap
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+    </script>
+}

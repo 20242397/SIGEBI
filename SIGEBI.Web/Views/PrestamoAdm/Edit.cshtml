@@ -1,0 +1,55 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Prestamo.PrestamoUpdateDto
+
+@{
+    ViewData["Title"] = "Editar préstamo";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="bi bi-pencil-square"></i> Editar préstamo
+    </h2>
+
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="card shadow-sm p-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="FechaVencimiento" class="form-label fw-bold"></label>
+                    <input asp-for="FechaVencimiento" class="form-control" type="date" />
+                    <span asp-validation-for="FechaVencimiento" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="FechaDevolucion" class="form-label fw-bold"></label>
+                    <input asp-for="FechaDevolucion" class="form-control" type="date" />
+                    <span asp-validation-for="FechaDevolucion" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Penalizacion" class="form-label fw-bold"></label>
+                    <input asp-for="Penalizacion" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="Penalizacion" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-save"></i> Guardar cambios
+                </button>
+                <a asp-action="Index" class="btn btn-secondary shadow-sm ms-2">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

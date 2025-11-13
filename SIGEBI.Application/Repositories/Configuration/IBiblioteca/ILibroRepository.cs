@@ -6,7 +6,7 @@ namespace SIGEBI.Application.Repositories.Configuration.IBiblioteca
 {
     public interface ILibroRepository : IBaseRepository<Libro>
     {
-       
+
         Task<OperationResult<Libro>> AddAsync(Libro libro);
         Task<OperationResult<IEnumerable<Libro>>> GetAllAsync();
         Task<OperationResult<Libro>> GetByIdAsync(int id);

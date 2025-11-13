@@ -15,7 +15,7 @@ namespace SIGEBI.Application.Validators
             if (string.IsNullOrWhiteSpace(entity.CodigoBarras))
                 return new OperationResult<Ejemplar> { Success = false, Message = "El código de barras es obligatorio." };
 
-            // Validar formato del código de barras (ejemplo: alfanumérico entre 8 y 13 caracteres)
+           
             if (!System.Text.RegularExpressions.Regex.IsMatch(entity.CodigoBarras, @"^[A-Za-z0-9]{8,13}$"))
                 return new OperationResult<Ejemplar>
                 {

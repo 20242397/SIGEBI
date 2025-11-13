@@ -4,7 +4,6 @@ using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Application.Mappers;
 using SIGEBI.Application.Repositories.Configuration.ISecurity;
-using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Security;
 
@@ -21,7 +20,7 @@ namespace SIGEBI.Application.Services.SecuritySer
             _logger = logger;
         }
 
-        // Registrar usuario
+       
         public Task<ServiceResult<T>> RegistrarUsuarioAsync<T>(UsuarioCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -49,7 +48,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // Editar usuario
+       
         public Task<ServiceResult<T>> EditarUsuarioAsync<T>(UsuarioUpdateDto dto) =>
      ExecuteAsync(async () =>
      {
@@ -87,7 +86,7 @@ namespace SIGEBI.Application.Services.SecuritySer
      });
 
 
-        // Asignar rol
+      
         public Task<ServiceResult<T>> AsignarRolAsync<T>(int id, string rol) =>
             ExecuteAsync(async () =>
             {
@@ -113,8 +112,8 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
+
       
-        //  Activar / Desactivar
         public Task<ServiceResult<T>> CambiarEstadoAsync<T>(int id, bool activo) =>
             ExecuteAsync(async () =>
             {
@@ -137,7 +136,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // Obtener usuario por email
+       
         public Task<ServiceResult<T>> ObtenerPorEmailAsync<T>(string email) =>
             ExecuteAsync(async () =>
             {
@@ -151,7 +150,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        // Obtener todos
+       
         public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
             ExecuteAsync(async () =>
             {
@@ -166,11 +165,11 @@ namespace SIGEBI.Application.Services.SecuritySer
                 };
             });
 
-        //  Eliminar
+       
         public Task<OperationResult<Usuario>> RemoveAsync(int id) =>
             _usuarioRepository.RemoveAsync(id);
 
-       
+
 
         public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>
             ExecuteAsync(async () =>
@@ -188,7 +187,7 @@ namespace SIGEBI.Application.Services.SecuritySer
 
                 object dto;
 
-                // Determinar qué DTO retornar según el tipo solicitado
+               
                 if (typeof(T) == typeof(UsuarioUpdateDto))
                 {
                     dto = result.Data.ToUpdateDto();
@@ -199,7 +198,7 @@ namespace SIGEBI.Application.Services.SecuritySer
                 }
                 else
                 {
-                    // Por defecto usar ToDto
+                  
                     dto = result.Data.ToDto();
                 }
 
@@ -212,4 +211,3 @@ namespace SIGEBI.Application.Services.SecuritySer
 
     }
 }
-

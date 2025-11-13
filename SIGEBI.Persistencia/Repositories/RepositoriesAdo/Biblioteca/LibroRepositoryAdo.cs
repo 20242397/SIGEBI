@@ -18,7 +18,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
             _logger = logger;
         }
 
-        #region  Add
+        
         public async Task<OperationResult<Libro>> AddAsync(Libro entity)
         {
             var validacion = LibroValidator.Validar(entity);
@@ -29,7 +29,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                 string query = @"
                     INSERT INTO Libro (Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria, Estado)
                     OUTPUT INSERTED.Id
-                    VALUES (@Titulo, @Autor, @ISBN, @Editorial, @AñoPublicacion, @Categoria, @Estado)";
+                    VALUES (@Titulo, @Autor, @ISBN, @Editorial, @AnioPublicacion, @Categoria, @Estado)";
 
                 var parameters = new Dictionary<string, object>
                 {
@@ -37,7 +37,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                     {"@Autor", entity.Autor},
                     {"@ISBN", entity.ISBN},
                     {"@Editorial", entity.Editorial},
-                    {"@AñoPublicacion", entity.AñoPublicacion},
+                    {"@AnioPublicacion", entity.AñoPublicacion},
                     {"@Categoria", entity.Categoria ?? (object)DBNull.Value},
                     {"@Estado", entity.Estado ?? "Disponible"}
                 };
@@ -62,16 +62,25 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                 };
             }
         }
-        #endregion
 
-        #region  GetAll
+        
         public async Task<OperationResult<IEnumerable<Libro>>> GetAllAsync()
         {
             try
             {
-                var query = "SELECT Id, Titulo, Autor, ISBN, Editorial, AñoPublicacion, Categoria, Estado FROM Libro";
-                var rows = await _dbHelper.ExecuteQueryAsync(query);
+                string query = @"
+                    SELECT 
+                        Id,
+                        Titulo,
+                        Autor,
+                        ISBN,
+                        Editorial,
+                        AñoPublicacion AS AnioPublicacion,
+                        Categoria,
+                        Estado
+                    FROM Libro";
 
+                var rows = await _dbHelper.ExecuteQueryAsync(query);
                 var libros = rows.Select(EntityToModelMapper.ToLibro).ToList();
 
                 return new OperationResult<IEnumerable<Libro>>
@@ -90,9 +99,8 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                 };
             }
         }
-        #endregion
 
-        #region  GetById
+       
         public async Task<OperationResult<Libro>> GetByIdAsync(int id)
         {
             if (id <= 0)
@@ -100,10 +108,22 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 
             try
             {
-                var query = "SELECT TOP 1 * FROM Libro WHERE Id=@Id";
-                var parameters = new Dictionary<string, object> { { "@Id", id } };
+                string query = @"
+                    SELECT TOP 1 
+                        Id,
+                        Titulo,
+                        Autor,
+                        ISBN,
+                        Editorial,
+                        AñoPublicacion AS AnioPublicacion,
+                        Categoria,
+                        Estado
+                    FROM Libro
+                    WHERE Id = @Id";
 
+                var parameters = new Dictionary<string, object> { { "@Id", id } };
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+
                 if (!rows.Any())
                     return new OperationResult<Libro> { Success = false, Message = "Libro no encontrado." };
 
@@ -120,118 +140,8 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                 };
             }
         }
-        #endregion
 
-        #region  GetByAuthor
-        public async Task<OperationResult<IEnumerable<Libro>>> GetByAuthorAsync(string autor)
-        {
-            if (string.IsNullOrWhiteSpace(autor))
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = false,
-                    Message = "Debe proporcionar un autor."
-                };
-
-            try
-            {
-                var query = "SELECT * FROM Libro WHERE Autor LIKE @Autor";
-                var parameters = new Dictionary<string, object> { { "@Autor", $"%{autor}%" } };
-
-                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-                var libros = rows.Select(EntityToModelMapper.ToLibro).ToList();
-
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = true,
-                    Data = libros
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al buscar libros por autor");
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = false,
-                    Message = $"Error al buscar libros por autor: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  GetByCategory
-        public async Task<OperationResult<IEnumerable<Libro>>> GetByCategoryAsync(string categoria)
-        {
-            if (string.IsNullOrWhiteSpace(categoria))
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = false,
-                    Message = "Debe proporcionar una categoría."
-                };
-
-            try
-            {
-                var query = "SELECT * FROM Libro WHERE Categoria LIKE @Categoria";
-                var parameters = new Dictionary<string, object> { { "@Categoria", $"%{categoria}%" } };
-
-                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-                var libros = rows.Select(EntityToModelMapper.ToLibro).ToList();
-
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = true,
-                    Data = libros
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al buscar libros por categoría");
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = false,
-                    Message = $"Error al buscar libros por categoría: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  SearchByTitle
-        public async Task<OperationResult<IEnumerable<Libro>>> SearchByTitleAsync(string titulo)
-        {
-            if (string.IsNullOrWhiteSpace(titulo))
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = false,
-                    Message = "Debe proporcionar un título."
-                };
-
-            try
-            {
-                var query = "SELECT * FROM Libro WHERE Titulo LIKE @Titulo";
-                var parameters = new Dictionary<string, object> { { "@Titulo", $"%{titulo}%" } };
-
-                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-                var libros = rows.Select(EntityToModelMapper.ToLibro).ToList();
-
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = true,
-                    Data = libros
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al buscar libros por título");
-                return new OperationResult<IEnumerable<Libro>>
-                {
-                    Success = false,
-                    Message = $"Error al buscar libros por título: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-        #region  Update
-
+        
         public async Task<OperationResult<Libro>> UpdateAsync(Libro entity)
         {
             if (entity.Id <= 0)
@@ -243,25 +153,25 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 
             try
             {
-                var query = @"
-                   UPDATE Libro
-                   SET 
-                   Titulo = @Titulo,
-                   Autor = @Autor,
-                   ISBN = @ISBN,
-                   Editorial = @Editorial,
-                   AñoPublicacion = @AñoPublicacion,
-                   Categoria = @Categoria,
-                   Estado = @Estado
-                   WHERE Id = @Id";
+                string query = @"
+                    UPDATE Libro
+                    SET 
+                        Titulo = @Titulo,
+                        Autor = @Autor,
+                        ISBN = @ISBN,
+                        Editorial = @Editorial,
+                        AñoPublicacion = @AnioPublicacion,
+                        Categoria = @Categoria,
+                        Estado = @Estado
+                    WHERE Id = @Id";
 
                 var parameters = new Dictionary<string, object>
                 {
-                    { "@Titulo", entity.Titulo},
+                    {"@Titulo", entity.Titulo},
                     {"@Autor", entity.Autor},
                     {"@ISBN", entity.ISBN},
                     {"@Editorial", entity.Editorial},
-                    {"@AñoPublicacion", entity.AñoPublicacion},
+                    {"@AnioPublicacion", entity.AñoPublicacion},
                     {"@Categoria", entity.Categoria ?? (object)DBNull.Value},
                     {"@Estado", entity.Estado ?? "Disponible"},
                     {"@Id", entity.Id}
@@ -271,7 +181,6 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
 
                 if (rows > 0)
                 {
-                    //  Refrescamos el registro desde la base para devolver datos actualizados
                     var refreshed = await GetByIdAsync(entity.Id);
                     return new OperationResult<Libro>
                     {
@@ -299,121 +208,72 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
             }
         }
 
-
-
-        #endregion
-
-        #region  Remove
-
-        #region  Remove (Eliminación Lógica)
-        public async Task<OperationResult<bool>> RemoveAsync(int id)
+        public async Task<OperationResult<Libro>> CambiarEstadoAsync(int id, string nuevoEstado)
         {
             if (id <= 0)
-                return new OperationResult<bool>
-                {
-                    Success = false,
-                    Message = "El ID del libro no es válido."
-                };
+                return new OperationResult<Libro> { Success = false, Message = "El ID del libro es inválido." };
+
+            if (string.IsNullOrWhiteSpace(nuevoEstado))
+                return new OperationResult<Libro> { Success = false, Message = "El estado no puede estar vacío." };
 
             try
             {
-                // Cambiamos el estado a 'Inactivo' en lugar de eliminar físicamente
-                var query = "UPDATE Libro SET Estado = 'Inactivo' WHERE Id = @Id";
-                var parameters = new Dictionary<string, object> { { "@Id", id } };
+                string query = "UPDATE Libro SET Estado = @Estado WHERE Id = @Id";
+
+                var parameters = new Dictionary<string, object>
+                {
+                    {"@Estado", nuevoEstado},
+                    {"@Id", id}
+                };
 
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
 
-                if (rows == 0)
-                    return new OperationResult<bool>
-                    {
-                        Success = false,
-                        Message = "No se encontró el libro o ya está inactivo.",
-                        Data = false
-                    };
-
-                return new OperationResult<bool>
+                if (rows > 0)
                 {
-                    Success = true,
-                    Message = "Libro desactivado correctamente.",
-                    Data = true
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al desactivar libro");
-                return new OperationResult<bool>
-                {
-                    Success = false,
-                    Message = $"Error al desactivar libro: {ex.Message}"
-                };
-            }
-        }
-        #endregion
-
-
-        #region  GetByISBN
-        public async Task<OperationResult<Libro>> GetByISBNAsync(string isbn)
-        {
-            if (string.IsNullOrWhiteSpace(isbn))
-                return new OperationResult<Libro>
-                {
-                    Success = false,
-                    Message = "Debe proporcionar un ISBN válido."
-                };
-
-            try
-            {
-                string query = "SELECT TOP 1 * FROM Libro WHERE ISBN = @ISBN";
-                var parameters = new Dictionary<string, object> { { "@ISBN", isbn } };
-
-                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-                if (!rows.Any())
+                    var refreshed = await GetByIdAsync(id);
                     return new OperationResult<Libro>
                     {
-                        Success = false,
-                        Message = "No se encontró un libro con ese ISBN."
+                        Success = true,
+                        Message = $"Estado del libro actualizado a '{nuevoEstado}'.",
+                        Data = refreshed.Data
                     };
+                }
 
-                var libro = EntityToModelMapper.ToLibro(rows.First());
                 return new OperationResult<Libro>
                 {
-                    Success = true,
-                    Data = libro
+                    Success = false,
+                    Message = "No se encontró el libro o no se actualizó el estado."
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener libro por ISBN");
+                _logger.LogError(ex, "Error al cambiar el estado del libro");
                 return new OperationResult<Libro>
                 {
                     Success = false,
-                    Message = $"Error al obtener libro por ISBN: {ex.Message}"
+                    Message = $"Error al cambiar el estado: {ex.Message}"
                 };
             }
-        }
-        #endregion
-
-        Task<OperationResult<Libro>> IBaseRepository<Libro>.RemoveAsync(int id)
-        {
-            // Call RemoveAsync and convert the result to OperationResult<Libro>
-            return RemoveAsync(id).ContinueWith(task =>
-            {
-                var boolResult = task.Result;
-                return new OperationResult<Libro>
-                {
-                    Success = boolResult.Success,
-                    Message = boolResult.Message,
-                    Data = null // No Libro data to return on delete
-                };
-            });
         }
 
         public async Task<OperationResult<IEnumerable<Libro>>> FiltrarAsync(
-     string? titulo, string? autor, string? categoria, int? año, string? estado)
+            string? titulo, string? autor, string? categoria, int? anio, string? estado)
         {
             try
             {
-                string query = "SELECT * FROM Libro WHERE 1=1 ";
+                string query = @"
+                    SELECT 
+                        Id,
+                        Titulo,
+                        Autor,
+                        ISBN,
+                        Editorial,
+                        AñoPublicacion AS AnioPublicacion,
+                        Categoria,
+                        Estado
+                    FROM Libro
+                    WHERE 1=1";
+
                 var parameters = new Dictionary<string, object>();
 
                 if (!string.IsNullOrWhiteSpace(titulo))
@@ -434,10 +294,10 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                     parameters["@Categoria"] = $"%{categoria}%";
                 }
 
-                if (año.HasValue)
+                if (anio.HasValue)
                 {
-                    query += " AND AñoPublicacion = @Año";
-                    parameters["@Año"] = año.Value;
+                    query += " AND AñoPublicacion = @Anio";
+                    parameters["@Anio"] = anio.Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(estado))
@@ -447,28 +307,274 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Biblioteca
                 }
 
                 var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
-
-                var lista = rows.Select(r => EntityToModelMapper.ToLibro(r)).ToList();
+                var lista = rows.Select(EntityToModelMapper.ToLibro).ToList();
 
                 return new OperationResult<IEnumerable<Libro>>
                 {
                     Success = true,
-                    Data = lista
+                    Data = lista,
+                    Message = lista.Any()
+                        ? $"Se encontraron {lista.Count} resultado(s)."
+                        : "No se encontraron resultados para el filtro especificado."
                 };
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al filtrar libros");
                 return new OperationResult<IEnumerable<Libro>>
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = $"Error al filtrar libros: {ex.Message}"
                 };
             }
         }
 
+        public async Task<OperationResult<bool>> RemoveAsync(int id)
+        {
+            if (id <= 0)
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = "El ID del libro no es válido."
+                };
 
-        #endregion
+            try
+            {
+                string query = "UPDATE Libro SET Estado = 'Inactivo' WHERE Id = @Id";
+                var parameters = new Dictionary<string, object> { { "@Id", id } };
+
+                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+
+                return new OperationResult<bool>
+                {
+                    Success = rows > 0,
+                    Message = rows > 0
+                        ? "Libro desactivado correctamente."
+                        : "No se encontró el libro o ya está inactivo.",
+                    Data = rows > 0
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al desactivar libro");
+                return new OperationResult<bool>
+                {
+                    Success = false,
+                    Message = $"Error al desactivar libro: {ex.Message}"
+                };
+            }
+        }
+
+        
+        public async Task<OperationResult<Libro>> GetByISBNAsync(string isbn)
+        {
+            if (string.IsNullOrWhiteSpace(isbn))
+                return new OperationResult<Libro>
+                {
+                    Success = false,
+                    Message = "Debe proporcionar un ISBN válido."
+                };
+
+            try
+            {
+                string query = @"
+                    SELECT TOP 1 
+                        Id,
+                        Titulo,
+                        Autor,
+                        ISBN,
+                        Editorial,
+                        AñoPublicacion AS AnioPublicacion,
+                        Categoria,
+                        Estado
+                    FROM Libro
+                    WHERE ISBN = @ISBN";
+
+                var parameters = new Dictionary<string, object> { { "@ISBN", isbn } };
+                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+
+                if (!rows.Any())
+                    return new OperationResult<Libro>
+                    {
+                        Success = false,
+                        Message = "No se encontró un libro con ese ISBN."
+                    };
+
+                var libro = EntityToModelMapper.ToLibro(rows.First());
+                return new OperationResult<Libro> { Success = true, Data = libro };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener libro por ISBN");
+                return new OperationResult<Libro>
+                {
+                    Success = false,
+                    Message = $"Error al obtener libro por ISBN: {ex.Message}"
+                };
+            }
+        }
+
+       
+        public async Task<OperationResult<IEnumerable<Libro>>> GetByAuthorAsync(string autor)
+        {
+            if (string.IsNullOrWhiteSpace(autor))
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = "Debe proporcionar un autor válido."
+                };
+
+            try
+            {
+                string query = @"
+            SELECT 
+                Id,
+                Titulo,
+                Autor,
+                ISBN,
+                Editorial,
+                AñoPublicacion AS AnioPublicacion,
+                Categoria,
+                Estado
+            FROM Libro
+            WHERE Autor LIKE @Autor";
+
+                var parameters = new Dictionary<string, object> { { "@Autor", $"%{autor}%" } };
+                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+                var lista = rows.Select(EntityToModelMapper.ToLibro).ToList();
+
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = true,
+                    Data = lista,
+                    Message = lista.Any()
+                        ? $"Se encontraron {lista.Count} libro(s) del autor '{autor}'."
+                        : "No se encontraron resultados."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al buscar libros por autor");
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = $"Error al buscar libros por autor: {ex.Message}"
+                };
+            }
+        }
+
+       
+        public async Task<OperationResult<IEnumerable<Libro>>> GetByCategoryAsync(string categoria)
+        {
+            if (string.IsNullOrWhiteSpace(categoria))
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = "Debe proporcionar una categoría válida."
+                };
+
+            try
+            {
+                string query = @"
+            SELECT 
+                Id,
+                Titulo,
+                Autor,
+                ISBN,
+                Editorial,
+                AñoPublicacion AS AnioPublicacion,
+                Categoria,
+                Estado
+            FROM Libro
+            WHERE Categoria LIKE @Categoria";
+
+                var parameters = new Dictionary<string, object> { { "@Categoria", $"%{categoria}%" } };
+                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+                var lista = rows.Select(EntityToModelMapper.ToLibro).ToList();
+
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = true,
+                    Data = lista,
+                    Message = lista.Any()
+                        ? $"Se encontraron {lista.Count} libro(s) en la categoría '{categoria}'."
+                        : "No se encontraron resultados."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al buscar libros por categoría");
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = $"Error al buscar libros por categoría: {ex.Message}"
+                };
+            }
+        }
+
+       
+        public async Task<OperationResult<IEnumerable<Libro>>> SearchByTitleAsync(string titulo)
+        {
+            if (string.IsNullOrWhiteSpace(titulo))
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = "Debe proporcionar un título válido."
+                };
+
+            try
+            {
+                string query = @"
+            SELECT 
+                Id,
+                Titulo,
+                Autor,
+                ISBN,
+                Editorial,
+                AñoPublicacion AS AnioPublicacion,
+                Categoria,
+                Estado
+            FROM Libro
+            WHERE Titulo LIKE @Titulo";
+
+                var parameters = new Dictionary<string, object> { { "@Titulo", $"%{titulo}%" } };
+                var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+                var lista = rows.Select(EntityToModelMapper.ToLibro).ToList();
+
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = true,
+                    Data = lista,
+                    Message = lista.Any()
+                        ? $"Se encontraron {lista.Count} libro(s) con coincidencias en el título '{titulo}'."
+                        : "No se encontraron resultados."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al buscar libros por título");
+                return new OperationResult<IEnumerable<Libro>>
+                {
+                    Success = false,
+                    Message = $"Error al buscar libros por título: {ex.Message}"
+                };
+            }
+        }
+
+       
+        Task<OperationResult<Libro>> IBaseRepository<Libro>.RemoveAsync(int id)
+        {
+            return RemoveAsync(id).ContinueWith(task =>
+            {
+                var boolResult = task.Result;
+                return new OperationResult<Libro>
+                {
+                    Success = boolResult.Success,
+                    Message = boolResult.Message,
+                    Data = null
+                };
+            });
+        }
 
     }
 }
-

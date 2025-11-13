@@ -16,24 +16,24 @@ namespace SIGEBI.Persistence.Test.Repositories
 
         public EjemplarRepositoryTests()
         {
-            
+
             var options = new DbContextOptionsBuilder<SIGEBIContext>()
                 .UseInMemoryDatabase(databaseName: $"SIGEBI_TestDB_{Guid.NewGuid()}")
                 .Options;
 
             _context = new SIGEBIContext(options);
 
-          
+
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
                     .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddConsole(); 
+                    .AddConsole();
             });
 
             _logger = loggerFactory.CreateLogger<Ejemplar>();
 
-            
+
             _ejemplarRepository = new EjemplarRepository(_context, new LoggerService<Ejemplar>(_logger));
         }
         #region "Pruebas para AddAsync"
@@ -102,7 +102,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             {
                 CodigoBarras = "LIBRO999",
                 Estado = EstadoEjemplar.Disponible,
-                LibroId = 999 // No existe
+                LibroId = 999 
             };
 
             // Act
@@ -123,7 +123,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
             var ejemplar = new Ejemplar
             {
-                CodigoBarras = "##@@@", // inválido
+                CodigoBarras = "##@@@", 
                 Estado = EstadoEjemplar.Disponible,
                 LibroId = 3
             };
@@ -147,7 +147,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             var ejemplar = new Ejemplar
             {
                 CodigoBarras = "EST12345",
-                Estado = (EstadoEjemplar)999, // Estado inválido
+                Estado = (EstadoEjemplar)999, 
                 LibroId = 4
             };
 
@@ -188,7 +188,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddAsync(ejemplar);
             await _context.SaveChangesAsync();
 
-            // 🔹 Recupera el ejemplar desde la BD para asegurar que EF lo rastrea bien
+           
             var ejemplarToUpdate = await _context.Ejemplar.FirstAsync(e => e.CodigoBarras == "UPD002AA");
             ejemplarToUpdate.Estado = EstadoEjemplar.Prestado;
 
@@ -216,7 +216,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             var ejemplar = new Ejemplar
             {
                 Id = 1,
-                CodigoBarras = "UPD002AA", // ahora tiene 8 caracteres
+                CodigoBarras = "UPD002AA", 
                 Estado = EstadoEjemplar.Reservado,
                 LibroId = 1
             };
@@ -229,8 +229,8 @@ namespace SIGEBI.Persistence.Test.Repositories
             var result = await _ejemplarRepository.UpdateAsync(new Ejemplar
             {
                 Id = 1,
-                CodigoBarras = "UPD002AA", // mismo código, pero válido
-                Estado = EstadoEjemplar.Reservado, // mismo estado
+                CodigoBarras = "UPD002AA", 
+                Estado = EstadoEjemplar.Reservado, 
                 LibroId = 1
             });
 
@@ -258,8 +258,8 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddAsync(ejemplar);
             await _context.SaveChangesAsync();
 
-            // Act — invalidar el código de barras para forzar error del validator
-            ejemplar.CodigoBarras = ""; // inválido
+            // Act 
+            ejemplar.CodigoBarras = ""; 
             var result = await _ejemplarRepository.UpdateAsync(ejemplar);
 
             // Assert
@@ -270,8 +270,8 @@ namespace SIGEBI.Persistence.Test.Repositories
         private async Task ResetDatabaseAsync()
         {
 
-            await _context.Database.EnsureDeletedAsync();  // elimina la BD InMemory
-            await _context.Database.EnsureCreatedAsync();  // la recrea limpia
+            await _context.Database.EnsureDeletedAsync();  
+            await _context.Database.EnsureCreatedAsync();  
 
         }
 
@@ -308,7 +308,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             result.All(e => e.LibroId == 1).Should().BeTrue();
         }
 
-        
+
         [Fact]
         public async Task ObtenerDisponiblesPorLibroAsync_Should_Return_Only_Disponibles()
         {
@@ -341,12 +341,12 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            //  Insertar el libro primero
+            
             var libro = new Libro { Id = 1, Titulo = "Libro de Prueba Reservados" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
 
-            //  Agregar ejemplares con diferentes estados
+          
             var ejemplares = new[]
             {
                new Ejemplar { CodigoBarras = "RES001AA", Estado = EstadoEjemplar.Reservado, LibroId = 1 },
@@ -356,10 +356,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddRangeAsync(ejemplares);
             await _context.SaveChangesAsync();
 
-            // Ejecutar método del repositorio
+           
             var result = (await _ejemplarRepository.ObtenerReservadosAsync()).ToList();
 
-            // Validar resultado
+          
             result.Should().HaveCount(1, "porque solo uno tiene estado 'Reservado'");
             result.First().Estado.Should().Be(EstadoEjemplar.Reservado);
         }
@@ -367,7 +367,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
 
         [Fact]
-        
+
         public async Task ObtenerPrestadosAsync_Should_Return_Only_Prestados()
         {
             await ResetDatabaseAsync();
@@ -398,7 +398,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
 
         [Fact]
-        
+
         public async Task MarcarComoPerdidoAsync_Should_Mark_Ejemplar_As_Perdido()
         {
             await ResetDatabaseAsync();
@@ -420,7 +420,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
             // Assert
             result.Success.Should().BeTrue();
-            ((bool)result.Data).Should().BeTrue(); // 👈 cast explícito agregado
+            ((bool)result.Data).Should().BeTrue();
             (await _context.Ejemplar.FindAsync(1))!.Estado.Should().Be(EstadoEjemplar.Perdido);
         }
 

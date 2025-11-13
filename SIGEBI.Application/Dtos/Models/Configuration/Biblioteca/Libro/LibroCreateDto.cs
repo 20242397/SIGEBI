@@ -1,4 +1,6 @@
 ﻿
+using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
+
 namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro
 {
     public record LibroCreateDto
@@ -9,7 +11,6 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro
         public string Editorial { get; set; } = null!;
         public int AñoPublicacion { get; set; }
         public string? Categoria { get; set; }
-
-
+        public string Estado { get; set; } = "Disponible";
     }
 }

@@ -1,0 +1,45 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro.LibroGetDto
+
+@{
+    ViewData["Title"] = "Detalles del Libro";
+}
+
+<div class="container mt-4">
+    <div class="card shadow p-4 rounded-4 border-0">
+        <h3 class="fw-bold mb-4 text-info">
+            <i class="bi bi-info-circle"></i> Detalles del Libro
+        </h3>
+
+        <dl class="row">
+            <dt class="col-sm-3">Título</dt>
+            <dd class="col-sm-9">@Model.Titulo</dd>
+
+            <dt class="col-sm-3">Autor</dt>
+            <dd class="col-sm-9">@Model.Autor</dd>
+
+            <dt class="col-sm-3">ISBN</dt>
+            <dd class="col-sm-9">@Model.ISBN</dd>
+
+            <dt class="col-sm-3">Editorial</dt>
+            <dd class="col-sm-9">@Model.Editorial</dd>
+
+            <dt class="col-sm-3">Año</dt>
+            <dd class="col-sm-9">@Model.AñoPublicacion</dd>
+
+            <dt class="col-sm-3">Categoría</dt>
+            <dd class="col-sm-9">@Model.Categoria</dd>
+
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.Estado</dd>
+        </dl>
+
+        <div class="text-end mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-dark me-2">
+                <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>

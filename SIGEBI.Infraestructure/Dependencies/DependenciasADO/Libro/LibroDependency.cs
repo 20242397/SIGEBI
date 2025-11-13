@@ -10,7 +10,7 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Libro
     {
         public static void AddLibroDependency(this IServiceCollection services)
         {
-            
+
             services.AddScoped<ILibroRepository, LibroRepositoryAdo>();
             services.AddTransient<ILibroService, LibroService>();
         }

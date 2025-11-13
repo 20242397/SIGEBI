@@ -15,7 +15,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
         private readonly ILoggerService<Ejemplar> _logger;
 
         public EjemplarRepository(SIGEBIContext context, ILoggerService<Ejemplar> logger)
-            : base(context ,logger)
+            : base(context, logger)
         {
             _context = context;
             _logger = logger;
@@ -23,12 +23,12 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
         public override async Task<OperationResult<Ejemplar>> AddAsync(Ejemplar entity)
         {
-            //  Validación con EjemplarValidator
+            
             var validacion = EjemplarValidator.Validar(entity);
             if (!validacion.Success)
                 return validacion;
 
-            //  Validar si el código de barras ya existe
+        
             if (await _context.Ejemplar.AnyAsync(e => e.CodigoBarras == entity.CodigoBarras))
                 return new OperationResult<Ejemplar>
                 {
@@ -36,7 +36,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                     Message = "El código de barras ya está registrado."
                 };
 
-            //  Validar si el libro asociado existe
+           
             if (!await _context.Libro.AnyAsync(l => l.Id == entity.LibroId))
                 return new OperationResult<Ejemplar>
                 {
@@ -46,7 +46,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
             try
             {
-                //  Insertar registro
+                
                 await _context.Ejemplar.AddAsync(entity);
                 var rows = await _context.SaveChangesAsync();
 
@@ -77,6 +77,35 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
             }
         }
 
+        public async Task<OperationResult<IEnumerable<Ejemplar>>> GetAllAsync()
+        {
+            try
+            {
+                var ejemplares = await _context.Ejemplar
+                    .Include(e => e.Libro) 
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return new OperationResult<IEnumerable<Ejemplar>>
+                {
+                    Success = true,
+                    Data = ejemplares,
+                    Message = $"Se obtuvieron {ejemplares.Count} ejemplares correctamente."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener todos los ejemplares");
+
+                return new OperationResult<IEnumerable<Ejemplar>>
+                {
+                    Success = false,
+                    Message = $"Error al obtener los ejemplares: {ex.Message}"
+                };
+            }
+        }
+
+
 
         public override async Task<OperationResult<Ejemplar>> UpdateAsync(Ejemplar entity)
         {
@@ -97,7 +126,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                     Data = entity
                 };
 
-            //  Realizar actualización
+           
             try
             {
                 _context.Entry(entity).State = EntityState.Modified;
@@ -127,6 +156,39 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
                 {
                     Success = false,
                     Message = $"Error al actualizar ejemplar: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<OperationResult<Ejemplar>> GetByIdAsync(int id)
+        {
+            try
+            {
+                var ejemplar = await _context.Ejemplar
+                    .Include(e => e.Libro)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.Id == id);
+
+                if (ejemplar == null)
+                    return new OperationResult<Ejemplar>
+                    {
+                        Success = false,
+                        Message = "Ejemplar no encontrado."
+                    };
+
+                return new OperationResult<Ejemplar>
+                {
+                    Success = true,
+                    Data = ejemplar
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener ejemplar por ID");
+                return new OperationResult<Ejemplar>
+                {
+                    Success = false,
+                    Message = $"Error al obtener ejemplar: {ex.Message}"
                 };
             }
         }

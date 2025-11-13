@@ -1,6 +1,4 @@
-﻿
-
-namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar
+﻿namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar
 {
     public record EjemplarUpdateDto
     {
@@ -8,5 +6,7 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar
 
         public string CodigoBarras { get; set; } = string.Empty;
         public string Estado { get; set; } = "Disponible";
+        public int LibroId { get;  set; }
     }
 }
+

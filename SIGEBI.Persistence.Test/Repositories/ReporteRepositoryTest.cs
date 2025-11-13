@@ -175,7 +175,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange: crear usuario y ejemplar
+            // Arrange: 
             var usuario = new Usuario { Id = 1, Nombre = "Juan", Apellido = "Perez", Email = "juan@correo.com", Estado = "Activo" };
             var libro = new Libro { Id = 1, Titulo = "C# Básico" };
             var ejemplar = new Ejemplar { Id = 1, LibroId = 1, CodigoBarras = "ABC12345" };

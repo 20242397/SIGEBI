@@ -11,7 +11,7 @@ namespace SIGEBI.Persistence.Base
         protected readonly SIGEBIContext _context;
         protected readonly DbSet<T> _entities;
         protected readonly ILoggerService<T> _logger;
-       
+
         protected BaseRepository(SIGEBIContext context, ILoggerService<T> logger)
         {
             _context = context;
@@ -19,11 +19,9 @@ namespace SIGEBI.Persistence.Base
             _logger = logger;
         }
 
-        
 
-        /// <summary>
-        /// Ejecuta una acción asíncrona con manejo de errores centralizado.
-        /// </summary>
+
+       
         protected async Task<OperationResult<TResult>> ExecuteAsync<TResult>(
             Func<Task<OperationResult<TResult>>> action,
             string errorMessage)
@@ -102,7 +100,6 @@ namespace SIGEBI.Persistence.Base
             }, "Error al eliminar entidad.");
         }
 
-        // Implementación explícita para IBaseRepository
         Task<OperationResult<T>> IBaseRepository<T>.RemoveAsync(int id)
         {
             return RemoveAsync(id).ContinueWith(task =>

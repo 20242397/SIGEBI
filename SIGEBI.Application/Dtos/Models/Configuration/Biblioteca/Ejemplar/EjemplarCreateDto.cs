@@ -1,6 +1,4 @@
-﻿
-
-using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
+﻿using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 
 namespace SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar
 {

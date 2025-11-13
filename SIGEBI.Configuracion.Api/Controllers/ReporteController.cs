@@ -15,7 +15,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             _reporteService = reporteService;
         }
 
-      
+
         [HttpPost("generar")]
         public async Task<IActionResult> Generar([FromBody] ReporteCreateDto dto)
         {
@@ -23,7 +23,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-       
+
         [HttpGet("libros-mas-prestados")]
         public async Task<IActionResult> GenerarLibrosMasPrestados([FromQuery] DateTime inicio, [FromQuery] DateTime fin)
         {
@@ -32,13 +32,13 @@ namespace SIGEBI.Configuracion.Api.Controllers
                 Tipo = "libros mas prestados",
                 FechaInicio = inicio,
                 FechaFin = fin,
-                UsuarioId = 1 
+                UsuarioId = 1
             });
 
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-       
+
         [HttpPut("actualizar")]
         public async Task<IActionResult> Actualizar([FromBody] ReporteUpdateDto dto)
         {
@@ -46,7 +46,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-       
+
         [HttpGet("exportar/{id}")]
         public async Task<IActionResult> Exportar(int id, [FromQuery] string formato)
         {
@@ -54,7 +54,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-      
+
         [HttpGet("fecha")]
         public async Task<IActionResult> ObtenerPorFecha([FromQuery] DateTime inicio, [FromQuery] DateTime fin)
         {
@@ -62,18 +62,16 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
-      
         [HttpGet("tipo/{tipo}")]
         public async Task<IActionResult> ObtenerPorTipo(string tipo)
         {
-            var result = await _reporteService.ObtenerPorTipoAsync<IEnumerable<object>>(tipo);
-            if (!result.Success)
-                return BadRequest(result.Message);
+            var result = await _reporteService.ObtenerPorTipoAsync<IEnumerable<ReporteGetDto>>(tipo);
 
-            return Ok(result.Data);
+            return result.Success ? Ok(result) : NotFound(result);
         }
 
-       
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
@@ -81,7 +79,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
-       
+
         [HttpGet("todos")]
         public async Task<IActionResult> ObtenerTodos()
         {
@@ -90,4 +88,3 @@ namespace SIGEBI.Configuracion.Api.Controllers
         }
     }
 }
-

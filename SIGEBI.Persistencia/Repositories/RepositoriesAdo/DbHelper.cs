@@ -15,7 +15,6 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo
             _logger = logger;
         }
 
-        // Para INSERT, UPDATE, DELETE
         public async Task<int> ExecuteCommandAsync(string query, Dictionary<string, object> parameters)
         {
             try
@@ -38,7 +37,6 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo
             }
         }
 
-        //  Para SELECT que devuelve filas
         public async Task<List<Dictionary<string, object>>> ExecuteQueryAsync(string query, Dictionary<string, object>? parameters = null)
         {
             var result = new List<Dictionary<string, object>>();
@@ -78,7 +76,6 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo
             return result;
         }
 
-        //  Para consultas que devuelven un único valor (ejemplo: INSERT con OUTPUT INSERTED.Id)
         public async Task<object> ExecuteScalarAsync(string query, Dictionary<string, object> parameters)
         {
             try
@@ -102,4 +99,3 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo
         }
     }
 }
-

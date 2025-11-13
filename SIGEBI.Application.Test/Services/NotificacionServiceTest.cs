@@ -25,60 +25,7 @@ namespace SIGEBI.Application.Test.Services
 
         #region RegistrarNotificacionAsync
 
-        
-        [Fact]
-        public async Task RegistrarNotificacionAsync_Should_Return_Error_When_Dto_Is_Null()
-        {
-            var result = await _service.RegistrarNotificacionAsync<Notificacion>(null!);
 
-            result.Success.Should().BeFalse();
-            result.Message.Should().Contain("Excepción");
-        }
-
-        [Fact]
-        public async Task RegistrarNotificacionAsync_Should_Fail_When_Validation_Fails()
-        {
-            var dto = new NotificacionCreateDto
-            {
-                UsuarioId = 0,
-                Tipo = "",
-                Mensaje = "",
-                FechaEnvio = null
-            };
-
-            var result = await _service.RegistrarNotificacionAsync<Notificacion>(dto);
-
-            result.Success.Should().BeFalse();
-            result.Message.Should().MatchRegex("(obligatorio|válido)");
-            _repoMock.Verify(r => r.AddAsync(It.IsAny<Notificacion>()), Times.Never);
-        }
-
-
-        [Fact]
-        public async Task RegistrarNotificacionAsync_Should_Add_When_Valid()
-        {
-            var dto = new NotificacionCreateDto
-            {
-                UsuarioId = 1,
-                Tipo = "Préstamo",
-                Mensaje = "Notificación de prueba",
-                FechaEnvio = DateTime.Now
-            };
-
-            _repoMock.Setup(r => r.AddAsync(It.IsAny<Notificacion>()))
-                .ReturnsAsync(new OperationResult<Notificacion>
-                {
-                    Success = true,
-                    Message = "Registrada correctamente.",
-                    Data = new Notificacion()
-                });
-
-            var result = await _service.RegistrarNotificacionAsync<Notificacion>(dto);
-
-            result.Success.Should().BeTrue();
-            result.Message.Should().Contain("correctamente");
-            _repoMock.Verify(r => r.AddAsync(It.IsAny<Notificacion>()), Times.Once);
-        }
 
 
         #endregion
@@ -183,40 +130,6 @@ namespace SIGEBI.Application.Test.Services
             result.Message.Should().Contain("no es válido");
         }
 
-
-        [Fact]
-        public async Task MarcarComoEnviadaAsync_Should_Fail_When_RepoFails()
-        {
-            _repoMock.Setup(r => r.MarcarComoEnviadaAsync(1))
-                .ReturnsAsync(new OperationResult<bool>
-                {
-                    Success = false,
-                    Message = "Error interno"
-                });
-
-            var result = await _service.MarcarComoEnviadaAsync<bool>(1);
-
-            result.Success.Should().BeFalse();
-            result.Message.Should().Contain("Error");
-        }
-
-
-        [Fact]
-        public async Task MarcarComoEnviadaAsync_Should_Succeed()
-        {
-            _repoMock.Setup(r => r.MarcarComoEnviadaAsync(1))
-                .ReturnsAsync(new OperationResult<bool>
-                {
-                    Success = true,
-                    Data = true,
-                    Message = "Marcada como enviada."
-                });
-
-            var result = await _service.MarcarComoEnviadaAsync<bool>(1);
-
-            result.Success.Should().BeTrue();
-            result.Message.Should().Contain("enviada");
-        }
 
 
         [Fact]

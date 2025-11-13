@@ -132,86 +132,73 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 
         public async Task<OperationResult<Prestamo>> UpdateAsync(Prestamo entity)
         {
-            // Validar ID
             if (entity.Id <= 0)
-                return new OperationResult<Prestamo>
-                {
-                    Success = false,
-                    Message = "El ID del préstamo es inválido."
-                };
+                return new OperationResult<Prestamo> { Success = false, Message = "El ID del préstamo es inválido." };
 
             try
             {
-                //  Consulta SQL: solo actualiza los campos que pueden cambiar
+               
+                if (entity.FechaDevolucion != null)
+                    entity.Estado = "Devuelto";
+                else if (entity.Estado == "Cancelado")
+                    entity.Estado = "Activo"; 
+
                 string query = @"
-                  UPDATE Prestamo
-                  SET 
-                   FechaVencimiento = @FechaVencimiento,
-                   FechaDevolucion = @FechaDevolucion,
-                   Penalizacion = @Penalizacion
-                   WHERE Id = @Id";
+            UPDATE Prestamo
+            SET 
+                FechaVencimiento = @FechaVencimiento,
+                FechaDevolucion = @FechaDevolucion,
+                Penalizacion = @Penalizacion,
+                Estado = @Estado
+            WHERE Id = @Id";
 
-                //  Diccionario de parámetros (solo los campos necesarios)
                 var parameters = new Dictionary<string, object>
-                {
-                 { "@FechaVencimiento", entity.FechaVencimiento },
-                 { "@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value },
-                 { "@Penalizacion", entity.Penalizacion ?? (object)DBNull.Value },
-                 { "@Id", entity.Id }
-                };
+        {
+            { "@FechaVencimiento", entity.FechaVencimiento },
+            { "@FechaDevolucion", entity.FechaDevolucion ?? (object)DBNull.Value },
+            { "@Penalizacion", entity.Penalizacion ?? (object)DBNull.Value },
+            { "@Estado", entity.Estado },
+            { "@Id", entity.Id }
+        };
 
-                // Ejecutar la actualización
                 var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
 
-                // Retornar resultado
                 return new OperationResult<Prestamo>
                 {
                     Success = rows > 0,
-                    Message = rows > 0
-                        ? "Préstamo actualizado correctamente."
-                        : "No se encontró el préstamo o no se realizaron cambios.",
+                    Message = rows > 0 ? "Préstamo actualizado correctamente." : "No se encontró el préstamo o no se realizaron cambios.",
                     Data = entity
                 };
             }
             catch (Exception ex)
             {
-                // Manejo de errores y logging
                 _logger.LogError(ex, "Error al actualizar préstamo (ID: {Id})", entity.Id);
-
-                return new OperationResult<Prestamo>
-                {
-                    Success = false,
-                    Message = $"Error al actualizar préstamo: {ex.Message}"
-                };
+                return new OperationResult<Prestamo> { Success = false, Message = $"Error al actualizar préstamo: {ex.Message}" };
             }
         }
+
+
 
 
         public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             if (id <= 0)
-                return new OperationResult<bool>
-                {
-                    Success = false,
-                    Message = "El ID del préstamo no es válido."
-                };
+                return new OperationResult<bool> { Success = false, Message = "ID inválido." };
 
             try
             {
-                // Solo permite cancelarlo si aún no se ha devuelto
                 string query = @"
             UPDATE Prestamo
             SET Estado = 'Cancelado'
-            WHERE Id = @Id AND FechaDevolucion IS NULL";
+            WHERE Id = @Id";
 
-                var parameters = new Dictionary<string, object> { { "@Id", id } };
-                var rows = await _dbHelper.ExecuteCommandAsync(query, parameters);
+                var rows = await _dbHelper.ExecuteCommandAsync(query, new() { { "@Id", id } });
 
                 if (rows == 0)
                     return new OperationResult<bool>
                     {
                         Success = false,
-                        Message = "El préstamo no se puede eliminar (ya devuelto o no existe).",
+                        Message = "No se encontró el préstamo o ya estaba cancelado.",
                         Data = false
                     };
 
@@ -232,6 +219,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
                 };
             }
         }
+
 
         #endregion
 
@@ -390,7 +378,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 
         Task<OperationResult<Prestamo>> IBaseRepository<Prestamo>.RemoveAsync(int id)
         {
-            // Call RemoveAsync and convert the result to OperationResult<Prestamo>
+           
             return RemovePrestamoAsync(id);
         }
 
@@ -401,11 +389,10 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
             {
                 Success = result.Success,
                 Message = result.Message,
-                Data = null // No Prestamo data to return after removal
+                Data = null 
             };
         }
 
         #endregion
     }
 }
-

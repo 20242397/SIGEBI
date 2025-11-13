@@ -2,6 +2,7 @@
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
 using SIGEBI.Application.Interfaces;
+using SIGEBI.Application.Mappers;
 using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
 using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
@@ -20,7 +21,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             _logger = logger;
         }
 
-        // Registrar libro
+       
         public Task<ServiceResult<T>> RegistrarLibroAsync<T>(LibroCreateDto dto) =>
             ExecuteAsync(async () =>
             {
@@ -65,54 +66,104 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // Modificar datos
-        public Task<ServiceResult<T>> ModificarLibroAsync<T>(LibroUpdateDto dto) =>
-            ExecuteAsync(async () =>
+        public async Task<OperationResult<Libro>> CambiarEstadoAsync(int id, string nuevoEstado)
+        {
+            try
             {
-                var libroResult = await _libroRepository.GetByIdAsync(dto.Id);
+                var libroResult = await _libroRepository.GetByIdAsync(id);
+
                 if (!libroResult.Success || libroResult.Data == null)
-                    return new OperationResult<T> { Success = false, Message = "Libro no encontrado." };
+                    return new OperationResult<Libro> { Success = false, Message = "Libro no encontrado." };
 
                 var libro = libroResult.Data;
-                libro.Titulo = dto.Titulo;
-                libro.Autor = dto.Autor;
-                libro.ISBN = dto.ISBN;
-                libro.Editorial = dto.Editorial;
-                libro.AñoPublicacion = dto.AñoPublicacion;
-                libro.Categoria = dto.Categoria;
-                libro.Estado = dto.Estado;
-
-                var validation = LibroValidator.Validar(libro);
-                if (!validation.Success)
-                    return new OperationResult<T> { Success = false, Message = validation.Message };
-
-                if (libro.Estado == "Inactivo")
-                {
-                    return new OperationResult<T>
-                    {
-                        Success = false,
-                        Message = "No se puede modificar un libro inactivo."
-                    };
-                }
+                libro.Estado = nuevoEstado;
 
                 var updateResult = await _libroRepository.UpdateAsync(libro);
-                _logger.LogInformation("Libro actualizado correctamente: {Titulo}", (object)libro.Titulo);
 
-                return new OperationResult<T>
+                if (!updateResult.Success)
+                    return new OperationResult<Libro> { Success = false, Message = "No se pudo actualizar el estado." };
+
+                _logger.LogInformation("Estado del libro {Titulo} actualizado a {Estado}", libro.Titulo, nuevoEstado);
+
+                return new OperationResult<Libro>
                 {
-                    Success = updateResult.Success,
-                    Message = updateResult.Message,
-                    Data = (T)(object)updateResult.Data!
+                    Success = true,
+                    Data = updateResult.Data,
+                    Message = "Estado actualizado correctamente."
                 };
-            });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al cambiar el estado del libro");
+                return new OperationResult<Libro>
+                {
+                    Success = false,
+                    Message = $"Error al cambiar el estado: {ex.Message}"
+                };
+            }
+        }
 
-        // Eliminar lógicamente un libro
+
+       
+        public Task<ServiceResult<T>> ModificarLibroAsync<T>(LibroUpdateDto dto) =>
+      ExecuteAsync(async () =>
+      {
+          var libroResult = await _libroRepository.GetByIdAsync(dto.Id);
+          if (!libroResult.Success || libroResult.Data == null)
+              return new OperationResult<T> { Success = false, Message = "Libro no encontrado." };
+
+          var libro = libroResult.Data;
+          libro.Titulo = dto.Titulo;
+          libro.Autor = dto.Autor;
+          libro.ISBN = dto.ISBN;
+          libro.Editorial = dto.Editorial;
+          libro.AñoPublicacion = dto.AñoPublicacion;
+          libro.Categoria = dto.Categoria;
+          libro.Estado = dto.Estado;
+
+          var validation = LibroValidator.Validar(libro);
+          if (!validation.Success)
+              return new OperationResult<T> { Success = false, Message = validation.Message };
+
+          if (libro.Estado == "Inactivo")
+          {
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "No se puede modificar un libro inactivo."
+              };
+          }
+
+          var updateResult = await _libroRepository.UpdateAsync(libro);
+
+          _logger.LogInformation("Libro actualizado correctamente: {Titulo}", (object)libro.Titulo);
+
+          object data;
+
+         
+          if (typeof(T) == typeof(LibroGetDto))
+              data = ((Libro)updateResult.Data!).ToDto();
+          else if (typeof(T) == typeof(LibroUpdateDto))
+              data = ((Libro)updateResult.Data!).ToUpdateDto();
+          else
+              data = updateResult.Data!;
+
+          return new OperationResult<T>
+          {
+              Success = updateResult.Success,
+              Message = updateResult.Message,
+              Data = (T)data
+          };
+      });
+
+
+       
         public async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             return await _libroRepository.RemoveAsync(id);
         }
 
-        // Buscar por título
+        
         public Task<ServiceResult<T>> BuscarPorTituloAsync<T>(string titulo) =>
             ExecuteAsync(async () =>
             {
@@ -125,7 +176,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // Buscar por autor
+        
         public Task<ServiceResult<T>> BuscarPorAutorAsync<T>(string autor) =>
             ExecuteAsync(async () =>
             {
@@ -138,7 +189,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // Buscar por categoría
+       
         public Task<ServiceResult<T>> BuscarPorCategoriaAsync<T>(string categoria) =>
             ExecuteAsync(async () =>
             {
@@ -151,65 +202,146 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 };
             });
 
-        // Buscar por ISBN
+       
         public async Task<OperationResult<Libro>> BuscarPorISBNAsync(string isbn)
         {
             return await _libroRepository.GetByISBNAsync(isbn);
         }
 
-        // Obtener libro por ID
         public Task<ServiceResult<T>> ObtenerPorIdAsync<T>(int id) =>
-            ExecuteAsync(async () =>
-            {
-                var result = await _libroRepository.GetByIdAsync(id);
+      ExecuteAsync(async () =>
+      {
+          var result = await _libroRepository.GetByIdAsync(id);
 
-                if (result.Success)
-                    _logger.LogInformation("Libro obtenido correctamente por ID:{Id}", id);
+          if (!result.Success || result.Data == null)
+          {
+              return new OperationResult<T>
+              {
+                  Success = false,
+                  Message = "Libro no encontrado."
+              };
+          }
 
-                else
-                    _logger.LogWarning("Error al obtener libro por ID: {Id}", id);
+          var libro = result.Data;
+
+          object data;
+
+          
+          if (typeof(T) == typeof(LibroGetDto))
+          {
+              data = ((Libro)libro).ToDto();
+          }
+          else if (typeof(T) == typeof(LibroUpdateDto))
+          {
+              data = ((Libro)libro).ToUpdateDto();
+          }
+          else if (typeof(T) == typeof(Libro))
+          {
+              data = libro;
+          }
+          else
+          {
+              throw new InvalidOperationException(
+                  $"Tipo de retorno no soportado: {typeof(T).Name}");
+          }
+
+          return new OperationResult<T>
+          {
+              Success = true,
+              Message = result.Message,
+              Data = (T)data
+          };
+      });
 
 
-                    return new OperationResult<T>
-                    {
-                        Success = result.Success,
-                        Message = result.Message,
-                        Data = (T)(object)result.Data!
-                    };
-            });
 
-        // Obtener todos los libros
+       
         public Task<ServiceResult<T>> ObtenerTodosAsync<T>() =>
-            ExecuteAsync(async () =>
-            {
-                var result = await _libroRepository.GetAllAsync();
+     ExecuteAsync(async () =>
+     {
+         var result = await _libroRepository.GetAllAsync();
 
-                _logger.LogInformation("Consulta de libros completada. Total: {Count}",
-                    (result.Data as IEnumerable<object>)?.Count() ?? 0);
+         if (!result.Success)
+         {
+             return new OperationResult<T>
+             {
+                 Success = false,
+                 Message = result.Message
+             };
+         }
 
-                return new OperationResult<T>
-                {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object)result.Data!
-                };
-            });
+        
+         object data;
+
+         if (typeof(T) == typeof(IEnumerable<LibroGetDto>))
+         {
+             data = result.Data
+                 .Select(l => ((Libro)l).ToDto())   
+                 .ToList();
+         }
+         else
+         {
+            
+             data = result.Data!;
+         }
+
+         return new OperationResult<T>
+         {
+             Success = true,
+             Message = result.Message,
+             Data = (T)data
+         };
+     });
+
 
         public Task<ServiceResult<T>> FiltrarAsync<T>(
-        string? titulo, string? autor, string? categoria, int? año, string? estado)
+      string? titulo, string? autor, string? categoria, int? anio, string? estado)
         {
             return ExecuteAsync(async () =>
             {
-                var result = await _libroRepository.FiltrarAsync(titulo, autor, categoria, año, estado);
+                
+                var result = await _libroRepository.FiltrarAsync(titulo, autor, categoria, anio, estado);
 
+               
+                if (!result.Success || result.Data == null)
+                {
+                    return new OperationResult<T>
+                    {
+                        Success = false,
+                        Message = result.Message ?? "No se pudieron obtener los libros filtrados."
+                    };
+                }
+
+                object data;
+
+               
+                if (typeof(T) == typeof(IEnumerable<LibroGetDto>))
+                {
+                    data = result.Data
+                        .Select(l => l.ToDto())
+                        .ToList();
+                }
+                else if (typeof(T) == typeof(IEnumerable<LibroUpdateDto>))
+                {
+                    data = result.Data
+                        .Select(l => l.ToUpdateDto())
+                        .ToList();
+                }
+                else
+                {
+                    data = result.Data!;
+                }
+
+              
                 return new OperationResult<T>
                 {
-                    Success = result.Success,
-                    Message = result.Message,
-                    Data = (T)(object)result.Data!
+                    Success = true,
+                    Data = (T)data,
+                    Message = result.Message ?? "Filtrado realizado correctamente."
                 };
             });
         }
+
 
     }
 }

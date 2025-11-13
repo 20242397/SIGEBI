@@ -1,0 +1,37 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Reporte.ReporteGetDto
+
+@{
+    ViewData["Title"] = "Detalles del Reporte";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary fw-bold mb-4">
+        <i class="bi bi-info-circle"></i> Detalles del Reporte
+    </h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-dark">@Model.Tipo</h5>
+            <p><strong>ID:</strong> @Model.Id</p>
+            <p><strong>Usuario ID:</strong> @Model.UsuarioId</p>
+            <p><strong>Fecha de generación:</strong> @Model.FechaGeneracion.ToString("dd/MM/yyyy HH:mm")</p>
+
+            <hr />
+            <h6><strong>Contenido:</strong></h6>
+            <pre class="bg-light p-3 rounded">@Model.Contenido</pre>
+
+            <div class="mt-4 d-flex gap-2">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                <form asp-action="MarcarResuelto" method="post" class="d-flex gap-2">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="text" name="contenido" class="form-control" placeholder="Comentario de resolución..." />
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Marcar como Resuelto
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

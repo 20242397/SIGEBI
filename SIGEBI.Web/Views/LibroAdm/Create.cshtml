@@ -1,0 +1,83 @@
+﻿@model SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro.LibroCreateDto
+
+@{
+    ViewData["Title"] = "Registrar Libro";
+}
+
+<div class="container mt-4">
+    <div class="card shadow p-4 rounded-4 border-0">
+        <h3 class="fw-bold mb-4 text-success">
+            <i class="bi bi-plus-circle"></i> Registrar Libro
+        </h3>
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Titulo" class="form-label">Título</label>
+                    <input asp-for="Titulo" class="form-control" placeholder="Ej: Introducción a la Inteligencia Artificial" />
+                    <span asp-validation-for="Titulo" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Autor" class="form-label">Autor</label>
+                    <input asp-for="Autor" class="form-control" placeholder="Ej: John Smith" />
+                    <span asp-validation-for="Autor" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ISBN" class="form-label">ISBN</label>
+                    <input asp-for="ISBN" class="form-control" placeholder="Ej: 9781234567890" />
+                    <span asp-validation-for="ISBN" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Editorial" class="form-label">Editorial</label>
+                    <input asp-for="Editorial" class="form-control" placeholder="Ej: ITLA Press" />
+                    <span asp-validation-for="Editorial" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="AñoPublicacion" class="form-label">Año</label>
+                    <input asp-for="AñoPublicacion" type="number" class="form-control" placeholder="Ej: 2025" />
+                    <span asp-validation-for="AñoPublicacion" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Categoria" class="form-label">Categoría</label>
+                    <input asp-for="Categoria" class="form-control" placeholder="Ej: Programación" />
+                    <span asp-validation-for="Categoria" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Estado" class="form-label">Estado</label>
+                    <select asp-for="Estado" class="form-select">
+                        <option>Disponible</option>
+                        <option>Prestado</option>
+                        <option>Reservado</option>
+                        <option>Dañado</option>
+                        <option>Inactivo</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="text-end mt-4">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
