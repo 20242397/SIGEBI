@@ -116,7 +116,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ASIGNAR ROL
+        [HttpPost]
         public async Task<ActionResult> AsignarRol(int id, string nuevoRol)
         {
             var result = await _usuarioService.AsignarRolAsync<UsuarioGetDto>(id, nuevoRol);
@@ -126,6 +126,7 @@ namespace SIGEBI.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // DETAILS
         public async Task<ActionResult> Details(int id)

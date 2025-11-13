@@ -185,11 +185,40 @@
                             <i class="bi bi-person-gear"></i> Rol
                         </button>
                         <ul class="dropdown-menu shadow-sm">
-                            <li><a class="dropdown-item" asp-action="AsignarRol" asp-route-id="@u.Id" asp-route-nuevoRol="Admin"><i class="bi bi-shield-lock-fill text-secondary"></i> Admin</a></li>
-                            <li><a class="dropdown-item" asp-action="AsignarRol" asp-route-id="@u.Id" asp-route-nuevoRol="Docente"><i class="bi bi-person-video3 text-primary"></i> Docente</a></li>
-                            <li><a class="dropdown-item" asp-action="AsignarRol" asp-route-id="@u.Id" asp-route-nuevoRol="Estudiante"><i class="bi bi-mortarboard-fill text-warning"></i> Estudiante</a></li>
+
+                            <li>
+                                <form method="post" action="/UsuarioAdm/AsignarRol">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="nuevoRol" value="Admin" />
+                                    <button class="dropdown-item">
+                                        <i class="bi bi-shield-lock-fill text-secondary"></i> Admin
+                                    </button>
+                                </form>
+                            </li>
+
+                            <li>
+                                <form method="post" action="/UsuarioAdm/AsignarRol">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="nuevoRol" value="Docente" />
+                                    <button class="dropdown-item">
+                                        <i class="bi bi-person-video3 text-primary"></i> Docente
+                                    </button>
+                                </form>
+                            </li>
+
+                            <li>
+                                <form method="post" action="/UsuarioAdm/AsignarRol">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="nuevoRol" value="Estudiante" />
+                                    <button class="dropdown-item">
+                                        <i class="bi bi-mortarboard-fill text-warning"></i> Estudiante
+                                    </button>
+                                </form>
+                            </li>
+
                         </ul>
                     </div>
+
 
                 </td>
             </tr>
