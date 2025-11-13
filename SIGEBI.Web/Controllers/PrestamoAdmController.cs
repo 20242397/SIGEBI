@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Application.Dtos.Models.Configuration.Prestamo;
 using SIGEBI.Application.Interfaces;
+using SIGEBI.Web.Filters;
 
 namespace SIGEBI.Web.Controllers
 {
+    [AuthFilter]
+    [RoleFilter("Admin", "Docente")]
     public class PrestamoAdmController : Controller
     {
         private readonly IPrestamoService _prestamoService;

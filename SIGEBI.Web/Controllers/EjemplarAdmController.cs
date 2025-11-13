@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
 using SIGEBI.Application.Interfaces;
+using SIGEBI.Web.Filters;
 
 namespace SIGEBI.Web.Controllers
 {
+    [AuthFilter]
+    [RoleFilter("Admin", "Docente")]
     public class EjemplarAdmController : Controller
     {
         private readonly IEjemplarService _ejemplarService;

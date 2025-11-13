@@ -26,5 +26,8 @@ namespace SIGEBI.Application.Repositories.Configuration.ISecurity
 
 
         Task<OperationResult<bool>> AsignarRolAsync(int id, string rol);
+
+        Task<OperationResult<Usuario>> ObtenerPorEmailYPasswordAsync(string email, string password);
+
     }
 }

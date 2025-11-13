@@ -16,29 +16,29 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         _logger = logger;
     }
 
-    
-   
+
+
     public async Task<OperationResult<Usuario>> AddAsync(Usuario entity)
     {
         try
         {
             string query = @"
-                INSERT INTO Usuario 
-                (Nombre, Apellido, Email, PasswordHash, PhoneNumber, Role, Estado, Activo)
-                OUTPUT INSERTED.Id
-                VALUES (@Nombre, @Apellido, @Email, @PasswordHash, @PhoneNumber, @Role, @Estado, @Activo)";
+            INSERT INTO Usuario 
+            (Nombre, Apellido, Email, Password, PhoneNumber, Role, Estado, Activo)
+            OUTPUT INSERTED.Id
+            VALUES (@Nombre, @Apellido, @Email, @Password, @PhoneNumber, @Role, @Estado, @Activo)";
 
             var parameters = new Dictionary<string, object>
-            {
-                {"@Nombre", entity.Nombre},
-                {"@Apellido", entity.Apellido},
-                {"@Email", entity.Email},
-                {"@PasswordHash", entity.PasswordHash},
-                {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
-                {"@Role", entity.Role},
-                {"@Estado", entity.Estado},
-                {"@Activo", entity.Activo}
-            };
+        {
+            {"@Nombre", entity.Nombre},
+            {"@Apellido", entity.Apellido},
+            {"@Email", entity.Email},
+            {"@Password", entity.Password},  // ✔ ARREGLADO
+            {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
+            {"@Role", entity.Role},
+            {"@Estado", entity.Estado},
+            {"@Activo", entity.Activo}
+        };
 
             var id = await _dbHelper.ExecuteScalarAsync(query, parameters);
             entity.Id = Convert.ToInt32(id);
@@ -61,18 +61,24 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-  
-   
+
+
+
     public async Task<OperationResult<IEnumerable<Usuario>>> GetAllAsync()
     {
         try
         {
-            var query = @"SELECT Id, Nombre, Apellido, Email, PhoneNumber, Role, Estado, Activo FROM Usuario";
+            var query = @"SELECT * FROM Usuario";   
+
             var rows = await _dbHelper.ExecuteQueryAsync(query);
 
             var usuarios = rows.Select(EntityToModelMapper.ToUsuario).ToList();
 
-            return new OperationResult<IEnumerable<Usuario>> { Success = true, Data = usuarios };
+            return new OperationResult<IEnumerable<Usuario>>
+            {
+                Success = true,
+                Data = usuarios
+            };
         }
         catch (Exception ex)
         {
@@ -85,7 +91,7 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
-    
+
     public async Task<OperationResult<Usuario>> GetByIdAsync(int id)
     {
         try
@@ -148,7 +154,7 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
                     Nombre=@Nombre,
                     Apellido=@Apellido,
                     Email=@Email,
-                    PasswordHash=@PasswordHash,
+                    Password=@Password,
                     PhoneNumber=@PhoneNumber,
                     Role=@Role,
                     Estado=@Estado,
@@ -160,7 +166,7 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
                 {"@Nombre", entity.Nombre},
                 {"@Apellido", entity.Apellido},
                 {"@Email", entity.Email},
-                {"@PasswordHash", entity.PasswordHash},
+                {"@Password", entity.Password},
                 {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
                 {"@Role", entity.Role},
                 {"@Estado", entity.Estado},
@@ -313,4 +319,62 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
         }
     }
 
+    public async Task<OperationResult<Usuario>> ObtenerPorEmailYPasswordAsync(string email, string password)
+    {
+        try
+        {
+            const string query = @"
+                SELECT TOP 1 *
+                FROM Usuario
+                WHERE Email = @Email AND Activo = 1";
+
+            var parameters = new Dictionary<string, object>
+            {
+                {"@Email", email}
+            };
+
+            var rows = await _dbHelper.ExecuteQueryAsync(query, parameters);
+
+            if (!rows.Any())
+            {
+                return new OperationResult<Usuario>
+                {
+                    Success = false,
+                    Message = "Correo no encontrado."
+                };
+            }
+
+            var usuario = EntityToModelMapper.ToUsuario(rows.First());
+
+            // ✔ LOGIN TEXTO PLANO
+            if (usuario.Password != password)
+            {
+                return new OperationResult<Usuario>
+                {
+                    Success = false,
+                    Message = "Contraseña incorrecta."
+                };
+            }
+
+            return new OperationResult<Usuario>
+            {
+                Success = true,
+                Data = usuario
+            };
+        }
+        catch (Exception ex)
+        {
+            return new OperationResult<Usuario>
+            {
+                Success = false,
+                Message = $"Error al validar credenciales: {ex.Message}"
+            };
+        }
+    }
 }
+
+
+
+
+
+

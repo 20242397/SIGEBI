@@ -1,0 +1,167 @@
+﻿@model SIGEBI.Application.Dtos.Auth.LoginRequestDto
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #0A3D62, #3C6382, #60A3BC);
+        background-size: cover;
+    }
+
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.20);
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        animation: fadeIn 0.8s ease;
+    }
+
+    fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* TITULO + ICONO */
+    .sigebi-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .sigebi-icon {
+        font-size: 36px;
+        color: #ffffff;
+        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+    }
+
+    .sigebi-text {
+        font-size: 30px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+
+    .login-title {
+        text-align: center;
+        font-weight: 700;
+        font-size: 22px;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+    .icon-input {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+        .icon-input input {
+            padding-left: 40px;
+            height: 45px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #444;
+        }
+
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(90deg, #1B66F1, #004AAD);
+        border: none;
+        height: 48px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        letter-spacing: 0.5px;
+        transition: 0.3s ease;
+        margin-top: 10px;
+    }
+
+        .btn-login:hover {
+            background: linear-gradient(90deg, #004AAD, #063A8E);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+        }
+
+    .small-text {
+        text-align: center;
+        margin-top: 15px;
+        color: #ffffffdd;
+        font-size: 14px;
+    }
+</style>
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <!-- SIGEBI + ICONO DE LIBRO -->
+        <div class="sigebi-header">
+            <i class="bi bi-book-half sigebi-icon"></i>
+            <span class="sigebi-text">SIGEBI</span>
+        </div>
+
+        <h3 class="login-title">Iniciar Sesión</h3>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger text-center">
+                @TempData["Error"]
+            </div>
+        }
+
+        <form method="post">
+
+            <div class="icon-input">
+                <i class="bi bi-envelope"></i>
+                <input asp-for="Email" class="form-control" placeholder="Correo electrónico" />
+            </div>
+
+            <div class="icon-input">
+                <i class="bi bi-lock-fill"></i>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Contraseña" />
+            </div>
+
+            <button class="btn-login">Entrar</button>
+
+        </form>
+
+        <p class="small-text">Docente • Estudiante • Administrador</p>
+
+    </div>
+</div>

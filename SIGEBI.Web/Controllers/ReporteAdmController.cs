@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Application.Dtos.Models.Configuration.Reporte;
 using SIGEBI.Application.Interfaces;
+using SIGEBI.Web.Filters;
 
 namespace SIGEBI.Web.Controllers
 {
+    [AuthFilter]
+    [RoleFilter("Admin")]
     public class ReporteAdmController : Controller
     {
         private readonly IReporteService _reporteService;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Crypto.Generators;
 using SIGEBI.Application.Base;
 using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
 using SIGEBI.Application.Interfaces;
@@ -28,8 +27,8 @@ namespace SIGEBI.Application.Services.SecuritySer
          
           var entity = dto.ToEntity();
 
-        
-          if (string.IsNullOrWhiteSpace(dto.PasswordHash))
+
+          if (string.IsNullOrWhiteSpace(dto.Password))
           {
               return new OperationResult<T>
               {
@@ -38,8 +37,8 @@ namespace SIGEBI.Application.Services.SecuritySer
               };
           }
 
-         
-          entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
+
+          entity.Password = dto.Password;
 
          
           entity.Estado = "Activo";
@@ -99,9 +98,9 @@ namespace SIGEBI.Application.Services.SecuritySer
          usuario.Activo = dto.Activo;
          usuario.Estado = usuario.Activo ? "Activo" : "Inactivo";
 
-         if (!string.IsNullOrWhiteSpace(dto.PasswordHash))
+         if (!string.IsNullOrWhiteSpace(dto.Password))
          {
-             usuario.PasswordHash = dto.PasswordHash;
+             usuario.Password = dto.Password;
          }
 
          var validation = UsuarioValidator.Validar(usuario);

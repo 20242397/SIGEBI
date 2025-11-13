@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Application.Repositories.Configuration.ISecurity;
+using SIGEBI.Application.Services;
 using SIGEBI.Application.Services.SecuritySer;
 
 
@@ -13,6 +14,9 @@ namespace SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario
 
             services.AddScoped<IUsuarioRepository, UsuarioRepositoryAdo>();
             services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddScoped<IAuthService, AuthService>();
+
+
         }
     }
 }

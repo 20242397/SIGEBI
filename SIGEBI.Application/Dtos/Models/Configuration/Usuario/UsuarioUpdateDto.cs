@@ -7,7 +7,7 @@ namespace SIGEBI.Application.Dtos.Models.Configuration.Usuario
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
         public string? Email { get; set; }
-        public string? PasswordHash { get; set; }
+        public string? Password { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Role { get; set; } = null;
 

@@ -2,9 +2,12 @@
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
+using SIGEBI.Web.Filters;
 
 namespace SIGEBI.Web.Controllers
 {
+    [AuthFilter]
+    [RoleFilter("Admin", "Docente","Estudiante")]
     public class LibroAdmController : Controller
     {
         private readonly ILibroService _libroService;

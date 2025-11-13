@@ -1,4 +1,5 @@
-﻿using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
+﻿using SIGEBI.Application.Dtos.Auth;
+using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
 using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Libro;
 using SIGEBI.Application.Dtos.Models.Configuration.Prestamo;
 using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
@@ -10,8 +11,18 @@ namespace SIGEBI.Application.Mappers
 {
     public static class EntityToDtoMapper
     {
+        public static LoginResponseDto ToLoginResponse(this Usuario user)
+        {
+            return new LoginResponseDto
+            {
+                Id = user.Id,
+                NombreCompleto = $"{user.Nombre} {user.Apellido}",
+                Email = user.Email,
+                Role = user.Role,
+                Activo = user.Activo
+            };
+        }
 
-      
 
         public static UsuarioGetDto ToDto(this Usuario e)
         {
@@ -37,14 +48,14 @@ namespace SIGEBI.Application.Mappers
                 Nombre = e.Nombre,
                 Apellido = e.Apellido,
                 Email = e.Email,
-                PasswordHash = e.PasswordHash,
+                Password = e.Password,
                 PhoneNumber = e.PhoneNumber,
                 Role = e.Role,
                 Activo = e.Activo
             };
         }
 
-        
+
         public static Usuario ToEntity(this UsuarioCreateDto dto)
         {
             return new Usuario
@@ -52,15 +63,16 @@ namespace SIGEBI.Application.Mappers
                 Nombre = dto.Nombre,
                 Apellido = dto.Apellido,
                 Email = dto.Email,
-                PasswordHash = dto.PasswordHash,
+                Password = dto.Password,
                 PhoneNumber = dto.PhoneNumber,
-                Role = "Estudiante",
-                Estado = "Activo",
-                Activo = true
+                Role = dto.Role ?? "Estudiante",
+                Estado = dto.Activo ? "Activo" : "Inactivo",
+                Activo = dto.Activo
             };
         }
 
-       
+
+
         public static Usuario ToEntity(this UsuarioUpdateDto dto)
         {
             return new Usuario
@@ -69,7 +81,7 @@ namespace SIGEBI.Application.Mappers
                 Nombre = dto.Nombre,
                 Apellido = dto.Apellido,
                 Email = dto.Email,
-                PasswordHash = dto.PasswordHash,
+                Password = dto.Password,
                 PhoneNumber = dto.PhoneNumber,
                 Role = dto.Role,
                 Estado = dto.Activo ? "Activo" : "Inactivo",

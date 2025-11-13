@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Libro;
 using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Prestamo;
 using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario;
@@ -17,7 +17,14 @@ namespace SIGEBI.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ? JSON Config (igual a API)
+            // --------------------------------------------
+            // 🔥 NECESARIO PARA HttpContext en filtros y vistas
+            // --------------------------------------------
+            builder.Services.AddHttpContextAccessor();
+
+            // --------------------------------------------
+            // MVC + JSON config
+            // --------------------------------------------
             builder.Services.AddControllersWithViews()
                 .AddJsonOptions(options =>
                 {
@@ -25,54 +32,66 @@ namespace SIGEBI.Web
                         JsonIgnoreCondition.WhenWritingNull;
                 });
 
-            // ? Swagger (igual que API)
-            builder.Services.AddEndpointsApiExplorer();
-
-            // ? Logging oficial .NET (igual que API)
+            // Logging
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
-            // ? Database Helper (ADO)
+            // Database Helper ADO.NET
             builder.Services.AddTransient<DbHelper>();
 
-            // ? Dependencias ADO (igual que API)
+            // Dependencias ADO
             builder.Services.AddUsuarioDependency();
             builder.Services.AddLibroDependency();
             builder.Services.AddPrestamoDependency();
 
-            // ? Entity Framework Core (igual que API)
+            // EF Core
             builder.Services.AddDbContext<SIGEBIContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SIGEBIConnString")));
 
-            // ? Dependencias EF (igual que API)
+            // Dependencias EF
             builder.Services.AddEjemplarDependency();
             builder.Services.AddNotificacionDependency();
             builder.Services.AddReporteDependency();
 
-            // ? Logger Persistence (igual que API)
-            builder.Services.AddSingleton(typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
-                                          typeof(SIGEBI.Persistence.Logging.LoggerService<>));
+            // Logger Persistence
+            builder.Services.AddSingleton(
+                typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
+                typeof(SIGEBI.Persistence.Logging.LoggerService<>));
 
+            // --------------------------------------------
+            // 🔥 ACTIVAR SESSION
+            // --------------------------------------------
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
-
-
-            // ? Static files
+            // --------------------------------------------
+            // MIDDLEWARE PIPELINE
+            // --------------------------------------------
             app.UseStaticFiles();
 
-            // ? Routing y autorizaci�n
             app.UseRouting();
+
+            // 🔥 NECESARIO para usar HttpContext.Session
+            app.UseSession();
+
+            // Si usas filtros con roles -> dejar Authorization activado
             app.UseAuthorization();
 
-            // ? MVC Default Route
+            // --------------------------------------------
+            // RUTA POR DEFECTO → LOGIN
+            // --------------------------------------------
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Auth}/{action=Login}/{id?}");
 
             app.Run();
         }
     }
 }
-

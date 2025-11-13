@@ -23,7 +23,7 @@ public static class UsuarioValidator
         bool esNuevo = usuario.Id == 0;
 
        
-        if (esNuevo && string.IsNullOrWhiteSpace(usuario.PasswordHash))
+        if (esNuevo && string.IsNullOrWhiteSpace(usuario.Password))
             return new OperationResult<Usuario> { Success = false, Message = "La contraseña es obligatoria al registrar un usuario nuevo." };
 
         if (!string.IsNullOrWhiteSpace(usuario.PhoneNumber) &&

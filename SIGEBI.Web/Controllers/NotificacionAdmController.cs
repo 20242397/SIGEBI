@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Application.Dtos.Models.Configuration.Notificacion;
 using SIGEBI.Application.Interfaces;
+using SIGEBI.Web.Filters;
 
 namespace SIGEBI.Web.Controllers
 {
+    [AuthFilter]
+    [RoleFilter("Admin")]
     public class NotificacionAdmController : Controller
     {
         private readonly INotificacionService _notificacionService;

@@ -6,6 +6,7 @@
         Estudiante,
         Docente,
     }
+
     public sealed class Usuario : Base.BaseEntity
     {
         public int Id { get; set; }
@@ -13,12 +14,18 @@
         public string Nombre { get; set; } = string.Empty;
         public string Apellido { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string PasswordHash { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
         public string? PhoneNumber { get; set; }
 
         public string Role { get; set; } = "Estudiante"; // Admin / Docente / Estudiante
-        public string Estado { get; set; } = "Activo";  // Activo / Inactivo
+        public string Estado { get; set; } = "Activo";   // Activo / Inactivo
         public bool Activo { get; set; } = true;
 
+        // Helpers
+        public bool EsAdmin() => Role.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+        public bool EsDocente() => Role.Equals("Docente", StringComparison.OrdinalIgnoreCase);
+        public bool EsEstudiante() => Role.Equals("Estudiante", StringComparison.OrdinalIgnoreCase);
     }
 }
