@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SIGEBI</title>
 
-    <!-- BOOTSTRAP CSS -->
+   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
 
@@ -24,7 +24,7 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
-        /* SIDEBAR */
+       
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -66,14 +66,14 @@
                     font-size: 18px;
                 }
 
-        /* CONTENIDO */
+      
         .main-container {
             margin-left: @(userLogged ? "240px" : "0");
             padding: 30px;
             transition: 0.3s;
         }
 
-        /* TOPBAR */
+       
         .topbar {
             display: flex;
             justify-content: flex-end;
@@ -101,7 +101,7 @@
 
 <body>
 
-    <!-- SIDEBAR SOLO SI HAY SESIÓN -->
+   
     @if (userLogged)
     {
         <div class="sidebar">
@@ -109,7 +109,7 @@
                 <i class="bi bi-book-half"></i> SIGEBI
             </div>
 
-            <!-- 🎩 ADMIN -->
+           
             @if (userRole == "Admin")
             {
                 <a href="/DashboardAdm/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
@@ -121,7 +121,7 @@
                 <a href="/ReporteAdm/Index"><i class="bi bi-bar-chart-fill"></i> Reportes</a>
             }
 
-            <!-- 👨‍🏫 DOCENTE -->
+           
             @if (userRole == "Docente")
             {
                 <a href="/DashboardDoc/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
@@ -130,7 +130,7 @@
                 <a href="/NotificacionAdm/Index"><i class="bi bi-bell-fill"></i> Notificaciones</a>
             }
 
-            <!-- 🎓 ESTUDIANTE -->
+           
             @if (userRole == "Estudiante")
             {
                 <a href="/DashboardEst/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
@@ -140,10 +140,10 @@
         </div>
     }
 
-    <!-- CONTENIDO -->
+   
     <div class="main-container">
 
-        <!-- TOPBAR -->
+      
         @if (userLogged)
         {
             <div class="topbar">
@@ -160,7 +160,7 @@
 
         @RenderBody()
 
-        <!-- BOOTSTRAP JS (NECESARIO PARA DROPDOWN & MODALES) -->
+       
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
         @await RenderSectionAsync("Scripts", required: false)

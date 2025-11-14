@@ -41,7 +41,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         [Fact]
         public async Task AddAsync_Should_Add_Valid_Ejemplar()
         {
-            // Arrange
+            
             var libro = new Libro { Id = 1, Titulo = "C# Avanzado" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
@@ -53,10 +53,10 @@ namespace SIGEBI.Persistence.Test.Repositories
                 LibroId = 1
             };
 
-            // Act
+           
             var result = await _ejemplarRepository.AddAsync(ejemplar);
 
-            // Assert
+           
             result.Success.Should().BeTrue("porque el ejemplar es válido y el libro existe");
             result.Message.Should().Contain("registrado correctamente");
             (await _context.Ejemplar.AnyAsync(e => e.CodigoBarras == "ABC12345")).Should().BeTrue();
@@ -65,7 +65,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         [Fact]
         public async Task AddAsync_Should_Fail_When_CodigoBarras_Duplicated()
         {
-            // Arrange
+           
             var libro = new Libro { Id = 2, Titulo = "Programación en Java" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
@@ -86,10 +86,10 @@ namespace SIGEBI.Persistence.Test.Repositories
 
             await _ejemplarRepository.AddAsync(ejemplar1);
 
-            // Act
+           
             var result = await _ejemplarRepository.AddAsync(ejemplar2);
 
-            // Assert
+           
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("ya está registrado");
         }
@@ -97,7 +97,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         [Fact]
         public async Task AddAsync_Should_Fail_When_Libro_Does_Not_Exist()
         {
-            // Arrange
+          
             var ejemplar = new Ejemplar
             {
                 CodigoBarras = "LIBRO999",
@@ -105,10 +105,10 @@ namespace SIGEBI.Persistence.Test.Repositories
                 LibroId = 999 
             };
 
-            // Act
+           
             var result = await _ejemplarRepository.AddAsync(ejemplar);
 
-            // Assert
+            
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("libro asociado no existe");
         }
@@ -116,7 +116,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         [Fact]
         public async Task AddAsync_Should_Fail_When_CodigoBarras_Invalid()
         {
-            // Arrange
+           
             var libro = new Libro { Id = 3, Titulo = "SQL Server Essentials" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
@@ -128,10 +128,10 @@ namespace SIGEBI.Persistence.Test.Repositories
                 LibroId = 3
             };
 
-            // Act
+          
             var result = await _ejemplarRepository.AddAsync(ejemplar);
 
-            // Assert
+           
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("formato del código de barras");
         }
@@ -139,7 +139,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         [Fact]
         public async Task AddAsync_Should_Fail_When_Estado_Invalid()
         {
-            // Arrange
+           
             var libro = new Libro { Id = 4, Titulo = "Introducción a la Programación" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
@@ -151,10 +151,10 @@ namespace SIGEBI.Persistence.Test.Repositories
                 LibroId = 4
             };
 
-            // Act
+            
             var result = await _ejemplarRepository.AddAsync(ejemplar);
 
-            // Assert
+          
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("estado del ejemplar no es válido");
         }
@@ -173,7 +173,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange
+           
             var libro = new Libro { Id = 1, Titulo = "EF Core Básico" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
@@ -192,10 +192,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             var ejemplarToUpdate = await _context.Ejemplar.FirstAsync(e => e.CodigoBarras == "UPD002AA");
             ejemplarToUpdate.Estado = EstadoEjemplar.Prestado;
 
-            // Act
+            
             var result = await _ejemplarRepository.UpdateAsync(ejemplarToUpdate);
 
-            // Assert
+           
             result.Success.Should().BeTrue("porque el ejemplar fue actualizado correctamente");
             result.Message.Should().Contain("actualizado correctamente");
 
@@ -211,7 +211,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange
+           
             var libro = new Libro { Id = 1, Titulo = "EF Core Avanzado" };
             var ejemplar = new Ejemplar
             {
@@ -225,7 +225,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddAsync(ejemplar);
             await _context.SaveChangesAsync();
 
-            // Act
+           
             var result = await _ejemplarRepository.UpdateAsync(new Ejemplar
             {
                 Id = 1,
@@ -234,7 +234,7 @@ namespace SIGEBI.Persistence.Test.Repositories
                 LibroId = 1
             });
 
-            // Assert
+           
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("ya se encuentra en ese estado");
         }
@@ -244,7 +244,6 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange
             var libro = new Libro { Id = 1, Titulo = "Prueba Validación Update" };
             var ejemplar = new Ejemplar
             {
@@ -258,11 +257,11 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddAsync(ejemplar);
             await _context.SaveChangesAsync();
 
-            // Act 
+           
             ejemplar.CodigoBarras = ""; 
             var result = await _ejemplarRepository.UpdateAsync(ejemplar);
 
-            // Assert
+          
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("código de barras es obligatorio");
         }
@@ -287,7 +286,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange
+           
             var libro = new Libro { Id = 1, Titulo = "Test Libro" };
             await _context.Libro.AddAsync(libro);
 
@@ -300,10 +299,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddRangeAsync(ejemplares);
             await _context.SaveChangesAsync();
 
-            // Act
+           
             var result = await _ejemplarRepository.ObtenerPorLibroAsync(1);
 
-            // Assert
+          
             result.Should().HaveCount(2);
             result.All(e => e.LibroId == 1).Should().BeTrue();
         }
@@ -314,7 +313,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange
+           
             var libro = new Libro { Id = 1, Titulo = "Libro con Disponibles" };
             await _context.Libro.AddAsync(libro);
 
@@ -327,10 +326,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddRangeAsync(ejemplares);
             await _context.SaveChangesAsync();
 
-            // Act
+            
             var result = await _ejemplarRepository.ObtenerDisponiblesPorLibroAsync(1);
 
-            // Assert
+           
             result.Should().HaveCount(1);
             result.First().Estado.Should().Be(EstadoEjemplar.Disponible);
         }
@@ -372,12 +371,11 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Primero insertamos un libro válido
             var libro = new Libro { Id = 1, Titulo = "Libro de Prueba" };
             await _context.Libro.AddAsync(libro);
             await _context.SaveChangesAsync();
 
-            // Arrange
+           
             var ejemplares = new[]
             {
               new Ejemplar { CodigoBarras = "PRS001AA", Estado = EstadoEjemplar.Prestado, LibroId = 1 },
@@ -387,10 +385,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddRangeAsync(ejemplares);
             await _context.SaveChangesAsync();
 
-            // Act
+           
             var result = (await _ejemplarRepository.ObtenerPrestadosAsync()).ToList();
 
-            // Assert
+            
             result.Should().HaveCount(1, "porque solo uno de los ejemplares tiene estado Prestado");
             result.First().Estado.Should().Be(EstadoEjemplar.Prestado);
         }
@@ -403,7 +401,7 @@ namespace SIGEBI.Persistence.Test.Repositories
         {
             await ResetDatabaseAsync();
 
-            // Arrange
+           
             var ejemplar = new Ejemplar
             {
                 Id = 1,
@@ -415,10 +413,10 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Ejemplar.AddAsync(ejemplar);
             await _context.SaveChangesAsync();
 
-            // Act
+          
             var result = await _ejemplarRepository.MarcarComoPerdidoAsync(1);
 
-            // Assert
+         
             result.Success.Should().BeTrue();
             ((bool)result.Data).Should().BeTrue();
             (await _context.Ejemplar.FindAsync(1))!.Estado.Should().Be(EstadoEjemplar.Perdido);

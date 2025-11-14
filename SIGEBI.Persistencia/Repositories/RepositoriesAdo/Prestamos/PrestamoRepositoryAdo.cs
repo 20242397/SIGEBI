@@ -293,7 +293,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
 
             var prestamo = prestamoResult.Data;
 
-            //  Ahora permite calcular penalización incluso si ya fue devuelto
+           
             DateTime fechaComparacion = prestamo.FechaDevolucion ?? DateTime.Now;
             int diasAtraso = (fechaComparacion - prestamo.FechaVencimiento).Days;
 
@@ -303,7 +303,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesAdo.Prestamos
             decimal penalizacion = diasAtraso * 1.00m;
             prestamo.Penalizacion = penalizacion;
 
-            //  Si no tiene fecha de devolución, la establece a hoy
+          
             if (prestamo.FechaDevolucion == null)
                 prestamo.FechaDevolucion = DateTime.Now;
 

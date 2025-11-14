@@ -52,12 +52,12 @@ namespace SIGEBI.Application.Test.Services
                 Contenido = "algo"
             };
 
-            // No se debe llamar al repo — el validador rechaza antes
+           
             var result = await _service.GenerarReporteAsync<Reporte>(dto);
 
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("Tipo de reporte no válido");
-            _repoMock.Invocations.Should().BeEmpty(); // nada del repo
+            _repoMock.Invocations.Should().BeEmpty(); 
         }
 
         [Fact]
@@ -228,19 +228,19 @@ namespace SIGEBI.Application.Test.Services
             var path = result.Data;
             File.Exists(path).Should().BeTrue("el servicio debe haber creado el archivo de exportación");
 
-            // Limpieza
+            
             try
             {
                 if (File.Exists(path)) File.Delete(path);
                 var dir = Path.GetDirectoryName(path);
                 if (!string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir))
                 {
-                    // intenta eliminar si quedó vacío
+                  
                     if (!Directory.EnumerateFileSystemEntries(dir).Any())
                         Directory.Delete(dir);
                 }
             }
-            catch { /* ignorar limpieza en CI */ }
+            catch { }
         }
         #endregion
 

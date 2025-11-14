@@ -23,12 +23,7 @@ namespace SIGEBI.Application.Test.Services
         }
 
 
-        #region RegistrarNotificacionAsync
-
-
-
-
-        #endregion
+    
 
         #region ObtenerPorUsuarioAsync
 

@@ -8,7 +8,7 @@
 
 <div class="container mt-4">
 
-    <!-- =================== ALERTAS =================== -->
+    
     @if (TempData["Ok"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
@@ -24,7 +24,7 @@
         </div>
     }
 
-    <!-- =================== TÍTULO Y BOTONES =================== -->
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary mb-0">
             <i class="bi bi-bell-fill"></i> Gestión de Notificaciones
@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <!-- =================== CARDS DE RESUMEN =================== -->
+  
     <div class="row mb-4 text-center">
         <div class="col-md-3 mb-3">
             <div class="card border-primary border-2 shadow-sm">
@@ -77,16 +77,16 @@
         </div>
     </div>
 
-    <!-- =================== FILTROS RESPONSIVOS =================== -->
+   
     <form asp-action="Index" method="get" class="card p-3 mb-4 shadow-sm">
         <div class="row g-2 g-md-3 align-items-end">
-            <!-- ID Usuario -->
+           
             <div class="col-12 col-sm-6 col-md-3">
                 <label class="form-label mb-1">ID Usuario</label>
                 <input type="number" name="usuarioId" value="@ViewBag.UsuarioId" class="form-control form-control-sm" />
             </div>
 
-            <!-- Tipo -->
+           
             <div class="col-12 col-sm-6 col-md-4">
                 <label class="form-label mb-1">Tipo</label>
                 <input type="text" name="tipo" value="@ViewBag.Tipo"
@@ -94,7 +94,7 @@
                        placeholder="Recordatorio, Penalización, Préstamo..." />
             </div>
 
-            <!-- Estado -->
+           
             <div class="col-12 col-sm-6 col-md-3">
                 <label class="form-label mb-1">Estado</label>
                 <select name="estado" class="form-select form-select-sm">
@@ -104,7 +104,7 @@
                 </select>
             </div>
 
-            <!-- Solo no leídas -->
+          
             <div class="col-6 col-sm-6 col-md-2">
                 <div class="form-check form-switch mt-3 mt-md-0">
                     <input type="checkbox" name="noLeidas" value="true"
@@ -113,7 +113,7 @@
                 </div>
             </div>
 
-            <!-- Botones -->
+         
             <div class="col-12 d-flex justify-content-end gap-2 mt-3">
                 <button type="submit" class="btn btn-primary btn-sm shadow-sm">
                     <i class="bi bi-search"></i> Buscar
@@ -125,7 +125,7 @@
         </div>
     </form>
 
-    <!-- =================== TABLA DE NOTIFICACIONES =================== -->
+    
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-hover align-middle text-center">

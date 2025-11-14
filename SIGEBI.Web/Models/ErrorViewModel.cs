@@ -6,7 +6,7 @@ namespace SIGEBI.Web.Models
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        // Agregar esta propiedad para almacenar el mensaje de error
+       
         public string? Message { get; set; }
     }
 }

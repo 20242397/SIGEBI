@@ -29,7 +29,7 @@ namespace SIGEBI.Application.Services
 
             var usuario = userResult.Data;
 
-            // ✔ VALIDAR CONTRASEÑA EN TEXTO PLANO
+           
             if (usuario.Password != dto.Password)
             {
                 return new OperationResult<LoginResponseDto>
@@ -39,7 +39,7 @@ namespace SIGEBI.Application.Services
                 };
             }
 
-            // ✔ VALIDAR ACTIVIDAD DEL USUARIO
+            
             if (!usuario.Activo)
             {
                 return new OperationResult<LoginResponseDto>

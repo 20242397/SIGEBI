@@ -64,13 +64,13 @@ namespace SIGEBI.Application.Services.SecuritySer
               };
           }
 
-          // 7️⃣ Insertar usuario
+        
           var result = await _usuarioRepository.AddAsync(entity);
 
           if (result.Success)
               _logger.LogInformation("Usuario registrado correctamente: {Email}", entity.Email);
 
-          // 8️⃣ Retornar DTO correcto
+        
           return new OperationResult<T>
           {
               Success = result.Success,

@@ -21,7 +21,7 @@ namespace SIGEBI.Web.Controllers
         // LISTAR TODOS LOS LIBROS
         public async Task<ActionResult> Index()
         {
-            // El servicio ya sabe que debe mapear a LibroGetDto
+          
             var result = await _libroService.ObtenerTodosAsync<IEnumerable<LibroGetDto>>();
 
             if (!result.Success)

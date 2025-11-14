@@ -42,7 +42,7 @@ namespace SIGEBI.Persistence.Test.Repositories
             await _context.Database.EnsureCreatedAsync();
         }
 
-        #region 🧩 AddAsync y UpdateAsync
+        #region  AddAsync y UpdateAsync
 
         [Fact]
         public async Task AddAsync_Should_Add_Valid_Reporte()
@@ -108,7 +108,7 @@ namespace SIGEBI.Persistence.Test.Repositories
 
         #endregion
 
-        #region 🔍 Consultas generales
+        #region  Consultas generales
 
         [Fact]
         public async Task ObtenerReportesPorTipoAsync_Should_Return_Only_Matching_Type()
@@ -168,14 +168,14 @@ namespace SIGEBI.Persistence.Test.Repositories
 
         #endregion
 
-        #region 📊 Generación de reportes automáticos
+        #region  Generación de reportes automáticos
 
         [Fact]
         public async Task GenerarReportePrestamosAsync_Should_Create_Reporte()
         {
             await ResetDatabaseAsync();
 
-            // Arrange: 
+             
             var usuario = new Usuario { Id = 1, Nombre = "Juan", Apellido = "Perez", Email = "juan@correo.com", Estado = "Activo" };
             var libro = new Libro { Id = 1, Titulo = "C# Básico" };
             var ejemplar = new Ejemplar { Id = 1, LibroId = 1, CodigoBarras = "ABC12345" };
@@ -192,12 +192,12 @@ namespace SIGEBI.Persistence.Test.Repositories
 
             await _context.SaveChangesAsync();
 
-            // Act
+           
             var result = await _reporteRepository.GenerarReportePrestamosAsync(
                 DateTime.Now.AddDays(-5), DateTime.Now, 1
             );
 
-            // Assert
+           
             result.Success.Should().BeTrue();
             result.Data.Contenido.Should().Contain("REPORTE DE PRÉSTAMOS");
         }

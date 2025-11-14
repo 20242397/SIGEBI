@@ -16,7 +16,7 @@ namespace SIGEBI.Configuracion.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ✅ JSON Config
+            // JSON Config
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -24,46 +24,46 @@ namespace SIGEBI.Configuracion.Api
                         System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
                 });
 
-            // ✅ Swagger
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // ✅ Logging oficial de .NET
+           
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
-            // ✅ Database Helper (ADO)
+           
             builder.Services.AddTransient<DbHelper>();
 
-            // ✅ Dependencias ADO
+           
             builder.Services.AddUsuarioDependency();
             builder.Services.AddLibroDependency();
             builder.Services.AddPrestamoDependency();
 
-            // ✅ Entity Framework Core
+            
             builder.Services.AddDbContext<SIGEBIContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SIGEBIConnString")));
 
-            // ✅ Dependencias EF
+            
             builder.Services.AddEjemplarDependency();
             builder.Services.AddNotificacionDependency();
             builder.Services.AddReporteDependency();
 
-            // ✅ Logger personalizado (solo para capa Persistence)
+          
             builder.Services.AddSingleton(typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
                                           typeof(SIGEBI.Persistence.Logging.LoggerService<>));
 
             var app = builder.Build();
 
-            // ✅ Swagger en entorno Development
+           
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // ✅ Routing
+            
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();

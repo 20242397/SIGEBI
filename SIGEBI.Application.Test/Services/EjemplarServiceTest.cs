@@ -30,7 +30,7 @@ namespace SIGEBI.Application.Test.Services
         {
             var dto = new EjemplarCreateDto
             {
-                LibroId = 0, // causa error de validación
+                LibroId = 0,
                 CodigoBarras = ""
             };
 
@@ -46,18 +46,18 @@ namespace SIGEBI.Application.Test.Services
         [Fact]
         public async Task RegistrarEjemplarAsync_Should_Return_Error_When_Dto_Is_Null()
         {
-            // ACT
+           
             var result = await _service.RegistrarEjemplarAsync<Ejemplar>(null!);
 
-            // ASSERT
+            
             result.Success.Should().BeFalse();
-            result.Message.Should().Contain("Referencia a objeto no establecida"); // BaseService captura la excepción
+            result.Message.Should().Contain("Referencia a objeto no establecida"); 
         }
 
         [Fact]
         public async Task RegistrarEjemplarAsync_Should_Add_Ejemplar_When_Valid()
         {
-            // ARRANGE
+           
             var dto = new EjemplarCreateDto
             {
                 LibroId = 1,
@@ -80,10 +80,10 @@ namespace SIGEBI.Application.Test.Services
                     Data = entity
                 });
 
-            // ACT
+           
             var result = await _service.RegistrarEjemplarAsync<Ejemplar>(dto);
 
-            // ASSERT
+           
             result.Success.Should().BeTrue();
             result.Message.Should().Contain("correctamente");
             _repoMock.Verify(r => r.AddAsync(It.IsAny<Ejemplar>()), Times.Once);
@@ -96,7 +96,7 @@ namespace SIGEBI.Application.Test.Services
         [Fact]
         public async Task ActualizarEjemplarAsync_Should_Return_Error_When_NotFound()
         {
-            // ARRANGE
+            
             var dto = new EjemplarUpdateDto { Id = 1, Estado = "Prestado" };
 
             _repoMock.Setup(r => r.GetByIdAsync(dto.Id))
@@ -107,10 +107,10 @@ namespace SIGEBI.Application.Test.Services
                          Message = "Ejemplar no encontrado."
                      });
 
-            // ACT
+           
             var result = await _service.ActualizarEjemplarAsync(dto);
 
-            // ASSERT
+           
             result.Success.Should().BeFalse();
             result.Message.Should().Contain("no encontrado");
         }
@@ -118,7 +118,7 @@ namespace SIGEBI.Application.Test.Services
         [Fact]
         public async Task ActualizarEjemplarAsync_Should_Update_When_Valid()
         {
-            // ARRANGE
+           
             var dto = new EjemplarUpdateDto { Id = 1, Estado = "Disponible" };
 
             var ejemplar = new Ejemplar
@@ -135,10 +135,10 @@ namespace SIGEBI.Application.Test.Services
             _repoMock.Setup(r => r.UpdateAsync(It.IsAny<Ejemplar>()))
                      .ReturnsAsync(new OperationResult<Ejemplar> { Success = true, Data = ejemplar });
 
-            // ACT
+            
             var result = await _service.ActualizarEjemplarAsync(dto);
 
-            // ASSERT
+            
             result.Success.Should().BeTrue();
             _repoMock.Verify(r => r.UpdateAsync(It.IsAny<Ejemplar>()), Times.Once);
         }

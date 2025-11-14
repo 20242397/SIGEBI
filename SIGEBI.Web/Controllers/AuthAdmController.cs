@@ -30,13 +30,13 @@ namespace SIGEBI.Web.Controllers
                 return View(dto);
             }
 
-            // ====== GUARDAR SESIÓN ======
+         
             HttpContext.Session.SetInt32("UserId", result.Data.Id);
             HttpContext.Session.SetString("UserName", result.Data.NombreCompleto);
             HttpContext.Session.SetString("UserRole", result.Data.Role);
             HttpContext.Session.SetString("UserEmail", result.Data.Email);
 
-            // ====== REDIRECCIÓN POR ROL ======
+           
             switch (result.Data.Role)
             {
                 case "Admin":
@@ -49,7 +49,7 @@ namespace SIGEBI.Web.Controllers
                     return RedirectToAction("Index", "DashboardEst");
 
                 default:
-                    // Por si acaso viene algún rol raro
+                 
                     return RedirectToAction("Index", "DashboardAdm");
             }
         }

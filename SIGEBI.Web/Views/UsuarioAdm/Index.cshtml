@@ -8,7 +8,7 @@
 
 <h2 class="fw-bold text-center mb-4">Gestión de Usuarios</h2>
 
-<!-- ✅ Tarjetas de estadísticas -->
+
 <div class="row text-center mb-4 g-3">
     <div class="col-md-2">
         <div class="card shadow-sm border-0">
@@ -65,7 +65,7 @@
     </div>
 </div>
 
-<!-- ✅ Buscador alineado -->
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <a asp-action="Create" class="btn btn-success shadow-sm">
         <i class="bi bi-person-plus-fill"></i> Crear Usuario
@@ -79,7 +79,7 @@
     </form>
 </div>
 
-<!-- ✅ Mensajes del sistema -->
+
 @if (TempData["Ok"] != null)
 {
     <div class="alert alert-success shadow-sm">
@@ -93,7 +93,7 @@
     </div>
 }
 
-<!-- ✅ Tabla de usuarios -->
+
 <table class="table table-hover table-striped table-bordered shadow-sm align-middle">
     <thead class="table-dark">
         <tr>
@@ -115,7 +115,7 @@
                 <td>@u.Email</td>
                 <td>@u.PhoneNumber</td>
 
-                <!-- ✅ Rol -->
+               
                 <td>
                     @if (string.IsNullOrWhiteSpace(u.Role))
                     {
@@ -135,7 +135,7 @@
                     }
                 </td>
 
-                <!-- ✅ Estado -->
+              
                 <td>
                     <span class="badge @(u.Estado == "Activo" ? "bg-success" : "bg-danger") p-2">
                         <i class="bi @(u.Estado == "Activo" ? "bi-check-circle" : "bi-x-circle") me-1"></i>
@@ -143,7 +143,7 @@
                     </span>
                 </td>
 
-                <!-- ✅ Activo: True / False -->
+              
                 <td>
                     <span class="fw-bold @(u.Activo ? "text-success" : "text-danger")">
                         <i class="bi @(u.Activo ? "bi-check-circle" : "bi-x-circle") me-1"></i>
@@ -151,25 +151,25 @@
                     </span>
                 </td>
 
-                <!-- ✅ Acciones -->
+              
                 <td class="text-nowrap">
 
-                    <!-- Editar -->
+                  
                     <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-warning btn-sm me-1" data-bs-toggle="tooltip" title="Editar">
                         <i class="bi bi-pencil-square"></i>
                     </a>
 
-                    <!-- Detalles -->
+                   
                     <a asp-action="Details" asp-route-id="@u.Id" class="btn btn-info btn-sm text-white me-1" data-bs-toggle="tooltip" title="Ver detalles">
                         <i class="bi bi-eye-fill"></i>
                     </a>
 
-                    <!-- Eliminar -->
+                  
                     <a asp-action="Delete" asp-route-id="@u.Id" class="btn btn-danger btn-sm me-1" data-bs-toggle="tooltip" title="Eliminar">
                         <i class="bi bi-trash3"></i>
                     </a>
 
-                    <!-- Activar / Desactivar -->
+                  
                     <a asp-action="CambiarEstado"
                        asp-route-id="@u.Id"
                        asp-route-activo="@(u.Activo ? "false" : "true")"
@@ -179,7 +179,7 @@
                         <i class="bi @(u.Activo ? "bi-toggle-off" : "bi-toggle-on")"></i>
                     </a>
 
-                    <!-- Dropdown roles -->
+                   
                     <div class="btn-group">
                         <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="bi bi-person-gear"></i> Rol
@@ -228,7 +228,7 @@
 
 @section Scripts {
     <script>
-        // Activar tooltips Bootstrap
+      
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
     </script>

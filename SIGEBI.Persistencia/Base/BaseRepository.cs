@@ -41,7 +41,7 @@ namespace SIGEBI.Persistence.Base
             }
         }
 
-        //  Agregar entidad
+       
         public virtual async Task<OperationResult<T>> AddAsync(T entity)
         {
             return await ExecuteAsync(async () =>
@@ -52,7 +52,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al agregar entidad.");
         }
 
-        //  Obtener todas las entidades
+       
         public virtual async Task<OperationResult<IEnumerable<T>>> GetAllAsync()
         {
             return await ExecuteAsync(async () =>
@@ -62,7 +62,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al obtener entidades.");
         }
 
-        // Buscar por ID
+       
         public virtual async Task<OperationResult<T>> GetByIdAsync(int id)
         {
             return await ExecuteAsync(async () =>
@@ -74,7 +74,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al buscar entidad.");
         }
 
-        // Actualizar
+       
         public virtual async Task<OperationResult<T>> UpdateAsync(T entity)
         {
             return await ExecuteAsync(async () =>
@@ -85,7 +85,7 @@ namespace SIGEBI.Persistence.Base
             }, "Error al actualizar entidad.");
         }
 
-        // Eliminar
+       
         public virtual async Task<OperationResult<bool>> RemoveAsync(int id)
         {
             return await ExecuteAsync(async () =>

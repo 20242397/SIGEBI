@@ -13,7 +13,7 @@ public static class EntityToModelMapper
             Apellido = r["Apellido"]?.ToString() ?? "",
             Email = r["Email"]?.ToString() ?? "",
 
-            // 🔥 LA LÍNEA QUE FALTABA:
+           
             Password = r.ContainsKey("Password") ? r["Password"]?.ToString() ?? "" : "",
 
             PhoneNumber = r.ContainsKey("PhoneNumber") ? r["PhoneNumber"]?.ToString() : null,

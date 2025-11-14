@@ -12,27 +12,27 @@
     <form asp-action="Create" method="post">
         <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
 
-        <!-- Nombre -->
+      
         <div class="mb-3">
             <label asp-for="Nombre" class="form-label fw-bold"></label>
             <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre" />
             <span asp-validation-for="Nombre" class="text-danger"></span>
         </div>
 
-        <!-- Apellido -->
+      
         <div class="mb-3">
             <label asp-for="Apellido" class="form-label fw-bold"></label>
             <input asp-for="Apellido" class="form-control" placeholder="Ingrese el apellido" />
             <span asp-validation-for="Apellido" class="text-danger"></span>
         </div>
 
-        <!-- Correo -->
+       
         <div class="mb-3">
             <label asp-for="Email" class="form-label fw-bold"></label>
             <input asp-for="Email" type="email" class="form-control" placeholder="usuario@correo.com" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
-        <!-- Contraseña -->
+     
         <div class="mb-3">
             <label asp-for="Password" class="form-label fw-bold">Contraseña</label>
             <input asp-for="Password" type="password" class="form-control" placeholder="Ingrese una contraseña" />
@@ -40,14 +40,14 @@
         </div>
 
 
-        <!-- Teléfono -->
+      
         <div class="mb-3">
             <label asp-for="PhoneNumber" class="form-label fw-bold"></label>
             <input asp-for="PhoneNumber" class="form-control" placeholder="809-000-0000" />
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
 
-        <!-- Rol -->
+       
         <div class="mb-3">
             <label asp-for="Role" class="form-label fw-bold"></label>
             <select asp-for="Role" class="form-select">
@@ -59,7 +59,7 @@
             <span asp-validation-for="Role" class="text-danger"></span>
         </div>
 
-        <!-- Activo -->
+       
         <div class="mb-3">
             <label asp-for="Activo" class="form-label fw-bold"></label>
             <select asp-for="Activo" class="form-select">
@@ -69,7 +69,7 @@
             <span asp-validation-for="Activo" class="text-danger"></span>
         </div>
 
-        <!-- Botones -->
+      
         <div class="mt-4">
             <button type="submit" class="btn btn-success">
                 <i class="bi bi-check2-circle"></i> Guardar

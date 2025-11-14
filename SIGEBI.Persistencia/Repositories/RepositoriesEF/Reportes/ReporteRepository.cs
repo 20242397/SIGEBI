@@ -339,7 +339,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
         {
             try
             {
-                //  Aseguramos que las fechas sean válidas
+               
                 if (inicio == default || fin == default || fin < inicio)
                 {
                     return new OperationResult<Reporte>
@@ -373,9 +373,9 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     };
                 }
 
-                //  Construir el contenido del reporte
+               
                 var sb = new StringBuilder();
-                sb.AppendLine("📚 REPORTE DE LIBROS MÁS PRESTADOS");
+                sb.AppendLine(" REPORTE DE LIBROS MÁS PRESTADOS");
                 sb.AppendLine($"Periodo: {inicio:dd/MM/yyyy} - {fin:dd/MM/yyyy}");
                 sb.AppendLine("------------------------------------------");
 
@@ -385,7 +385,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     sb.AppendLine($"{contador++}. {libro.Titulo} — {libro.TotalPrestamos} préstamos");
                 }
 
-                //  Crear el objeto Reporte
+               
                 var reporte = new Reporte
                 {
                     Tipo = "Libros más prestados",
@@ -394,7 +394,7 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
                     UsuarioId = 1
                 };
 
-                // Guardar el reporte
+              
                 await _context.Reporte.AddAsync(reporte);
                 await _context.SaveChangesAsync();
 
