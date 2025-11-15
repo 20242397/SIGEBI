@@ -1,0 +1,227 @@
+﻿@model IEnumerable<SIGEBI.Web.Models.UsuarioApi.UsuarioApiModel>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    .stat-card {
+        padding: 18px;
+        border-radius: 10px;
+        background: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        border-left: 5px solid transparent;
+    }
+
+    .stat-title {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 26px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .table td, .table th {
+        vertical-align: middle !important;
+        padding: 12px 10px;
+    }
+
+    .btn-sm {
+        padding: 4px 8px !important;
+        font-size: 13px;
+    }
+</style>
+
+<h2 class="fw-bold text-center mb-4">Gestión de Usuarios</h2>
+
+
+<div class="row text-center mb-4 g-3">
+    <div class="col-md-2">
+        <div class="stat-card border-0" style="border-left-color: #6c757d;">
+            <div class="stat-title">Total</div>
+            <div class="stat-value">@Model.Count()</div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="stat-card border-success" style="border-left-color: #28a745;">
+            <div class="stat-title text-success">Activos</div>
+            <div class="stat-value text-success">@Model.Count(u => u.Estado?.ToLower() == "activo")</div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="stat-card border-danger" style="border-left-color: #dc3545;">
+            <div class="stat-title text-danger">Inactivos</div>
+            <div class="stat-value text-danger">@Model.Count(u => u.Estado?.ToLower() == "inactivo")</div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="stat-card border-dark" style="border-left-color: #000;">
+            <div class="stat-title">Admins</div>
+            <div class="stat-value">@Model.Count(u => u.Role?.ToLower() == "admin")</div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="stat-card border-primary" style="border-left-color: #007bff;">
+            <div class="stat-title text-primary">Docentes</div>
+            <div class="stat-value text-primary">@Model.Count(u => u.Role?.ToLower() == "docente")</div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="stat-card border-warning" style="border-left-color: #ffc107;">
+            <div class="stat-title text-warning">Estudiantes</div>
+            <div class="stat-value text-warning">@Model.Count(u => u.Role?.ToLower() == "estudiante")</div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-action="Create" class="btn btn-success shadow-sm">
+        <i class="bi bi-person-plus-fill"></i> Crear Usuario
+    </a>
+
+    <form method="post" asp-action="BuscarPorEmail" class="d-flex" style="max-width: 350px;">
+        <input type="email" name="email" class="form-control shadow-sm me-2" placeholder="Buscar por correo..." />
+        <button class="btn btn-primary shadow-sm">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+</div>
+
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success shadow-sm">
+        <i class="bi bi-check-circle-fill"></i> @TempData["Ok"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger shadow-sm">
+        <i class="bi bi-x-circle-fill"></i> @TempData["Error"]
+    </div>
+}
+
+
+<table class="table table-hover table-striped table-bordered shadow-sm align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Activo</th>
+            <th style="width: 260px;">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Nombre @u.Apellido</td>
+                <td>@u.Email</td>
+                <td>@u.PhoneNumber</td>
+
+                <td>
+                    @if (string.IsNullOrWhiteSpace(u.Role))
+                    {
+                        <span class="badge bg-secondary">Sin rol</span>
+                    }
+                    else if (u.Role.ToLower() == "admin")
+                    {
+                        <span class="badge bg-primary">Admin</span>
+                    }
+                    else if (u.Role.ToLower() == "docente")
+                    {
+                        <span class="badge bg-info text-dark">Docente</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Estudiante</span>
+                    }
+                </td>
+
+                <td>
+                    <span class="badge @(u.Estado == "Activo" ? "bg-success" : "bg-danger") p-2">
+                        @u.Estado
+                    </span>
+                </td>
+
+                <td>
+                    <span class="fw-bold @(u.Activo ? "text-success" : "text-danger")">
+                        @(u.Activo ? "True" : "False")
+                    </span>
+                </td>
+
+                <td class="text-nowrap">
+
+                   
+                    <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-warning btn-sm me-1">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+
+                   
+                    <a asp-action="Details" asp-route-id="@u.Id" class="btn btn-info btn-sm text-white me-1">
+                        <i class="bi bi-eye-fill"></i>
+                    </a>
+
+                  
+                    <a asp-action="Delete" asp-route-id="@u.Id" class="btn btn-danger btn-sm me-1">
+                        <i class="bi bi-trash"></i>
+                    </a>
+
+                   
+                    <a asp-action="CambiarEstado"
+                       asp-route-id="@u.Id"
+                       asp-route-activo="@(u.Activo ? "false" : "true")"
+                       class="btn @(u.Activo ? "btn-secondary" : "btn-success") btn-sm me-1">
+                        <i class="bi @(u.Activo ? "bi-toggle-off" : "bi-toggle-on")"></i>
+                    </a>
+
+                   
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-gear"></i>
+                        </button>
+                        <ul class="dropdown-menu shadow-sm">
+                            <li>
+                                <form method="post" action="/UsuarioApi/AsignarRol">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="nuevoRol" value="Admin" />
+                                    <button class="dropdown-item">Admin</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form method="post" action="/UsuarioApi/AsignarRol">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="nuevoRol" value="Docente" />
+                                    <button class="dropdown-item">Docente</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form method="post" action="/UsuarioApi/AsignarRol">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="nuevoRol" value="Estudiante" />
+                                    <button class="dropdown-item">Estudiante</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

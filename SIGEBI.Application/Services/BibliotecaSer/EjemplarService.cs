@@ -4,7 +4,6 @@ using SIGEBI.Application.Dtos.Models.Configuration.Biblioteca.Ejemplar;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Application.Mappers;
 using SIGEBI.Application.Repositories.Configuration.IBiblioteca;
-using SIGEBI.Application.Validators;
 using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 
@@ -185,6 +184,8 @@ namespace SIGEBI.Application.Services.BibliotecaSer
             });
 
       
+
+
         public Task<ServiceResult<T>> MarcarComoPerdidoAsync<T>(int ejemplarId) =>
             ExecuteAsync<T>(async () =>
             {

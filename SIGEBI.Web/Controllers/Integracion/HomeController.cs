@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Web.Models;
 using System.Diagnostics;
 
-namespace SIGEBI.Web.Controllers
+namespace SIGEBI.Web.Controllers.Integracion
 {
     public class HomeController : Controller
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Web.Filters;
 
-namespace SIGEBI.Web.Controllers
+namespace SIGEBI.Web.Controllers.Integracion
 {
     [AuthFilter]
     [RoleFilter("Admin")]

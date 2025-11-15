@@ -15,6 +15,17 @@ namespace SIGEBI.Configuracion.Api.Controllers
             _ejemplarService = ejemplarService;
         }
 
+        [HttpGet("todos")]
+        public async Task<IActionResult> ObtenerTodos()
+        {
+            var result = await _ejemplarService.ObtenerTodosAsync<IEnumerable<EjemplarGetDto>>();
+
+            return result.Success
+                ? Ok(result)
+                : BadRequest(result);
+        }
+
+
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] EjemplarCreateDto dto)
         {

@@ -2,7 +2,7 @@
 using SIGEBI.Application.Dtos.Auth;
 using SIGEBI.Application.Interfaces;
 
-namespace SIGEBI.Web.Controllers
+namespace SIGEBI.Web.Controllers.Integracion
 {
     public class AuthController : Controller
     {
@@ -30,13 +30,13 @@ namespace SIGEBI.Web.Controllers
                 return View(dto);
             }
 
-         
+
             HttpContext.Session.SetInt32("UserId", result.Data.Id);
             HttpContext.Session.SetString("UserName", result.Data.NombreCompleto);
             HttpContext.Session.SetString("UserRole", result.Data.Role);
             HttpContext.Session.SetString("UserEmail", result.Data.Email);
 
-           
+
             switch (result.Data.Role)
             {
                 case "Admin":
@@ -49,7 +49,7 @@ namespace SIGEBI.Web.Controllers
                     return RedirectToAction("Index", "DashboardEst");
 
                 default:
-                 
+
                     return RedirectToAction("Index", "DashboardAdm");
             }
         }
@@ -66,4 +66,3 @@ namespace SIGEBI.Web.Controllers
         }
     }
 }
-

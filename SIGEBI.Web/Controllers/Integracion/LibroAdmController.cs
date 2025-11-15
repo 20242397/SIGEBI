@@ -4,7 +4,7 @@ using SIGEBI.Application.Interfaces;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Web.Filters;
 
-namespace SIGEBI.Web.Controllers
+namespace SIGEBI.Web.Controllers.Integracion
 {
     [AuthFilter]
     [RoleFilter("Admin", "Docente","Estudiante")]

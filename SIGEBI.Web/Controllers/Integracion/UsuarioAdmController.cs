@@ -3,7 +3,7 @@ using SIGEBI.Application.Dtos.Models.Configuration.Usuario;
 using SIGEBI.Application.Interfaces;
 using SIGEBI.Web.Filters;
 
-namespace SIGEBI.Web.Controllers
+namespace SIGEBI.Web.Controllers.Integracion
 {
     [AuthFilter]
     [RoleFilter("Admin")]

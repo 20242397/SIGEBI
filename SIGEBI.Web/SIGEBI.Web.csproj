@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Consumo Api\**" />
+    <Content Remove="Controllers\Consumo Api\**" />
+    <EmbeddedResource Remove="Controllers\Consumo Api\**" />
+    <None Remove="Controllers\Consumo Api\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
@@ -14,6 +21,12 @@
     <ProjectReference Include="..\SIGEBI.Application\SIGEBI.Application.csproj" />
     <ProjectReference Include="..\SIGEBI.Infraestructure\SIGEBI.Infraestructure.csproj" />
     <ProjectReference Include="..\SIGEBI.Persistencia\SIGEBI.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\ReportesApi\" />
+    <Folder Include="Models\PrestamoApi\" />
+    <Folder Include="Models\NotificacionApi\" />
   </ItemGroup>
 
 </Project>

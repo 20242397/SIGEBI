@@ -17,10 +17,10 @@ namespace SIGEBI.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            
+
             builder.Services.AddHttpContextAccessor();
 
-           
+
             builder.Services.AddControllersWithViews()
                 .AddJsonOptions(options =>
                 {
@@ -28,34 +28,41 @@ namespace SIGEBI.Web
                         JsonIgnoreCondition.WhenWritingNull;
                 });
 
-           
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
+            builder.Services.AddHttpClient("SIGEBIApi", c =>
+            {
+                c.BaseAddress = new Uri("http://localhost:5286/api/");
+            });
 
-           
-            builder.Services.AddTransient<DbHelper>();
 
-          
-            builder.Services.AddUsuarioDependency();
-            builder.Services.AddLibroDependency();
-            builder.Services.AddPrestamoDependency();
+            /*
+                       
+                        builder.Logging.ClearProviders();
+                        builder.Logging.AddConsole();
+                        builder.Logging.AddDebug();
 
-          
-            builder.Services.AddDbContext<SIGEBIContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("SIGEBIConnString")));
 
-           
-            builder.Services.AddEjemplarDependency();
-            builder.Services.AddNotificacionDependency();
-            builder.Services.AddReporteDependency();
+                        builder.Services.AddTransient<DbHelper>();
 
-            
-            builder.Services.AddSingleton(
-                typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
-                typeof(SIGEBI.Persistence.Logging.LoggerService<>));
 
-            
+                        builder.Services.AddUsuarioDependency();
+                        builder.Services.AddLibroDependency();
+                        builder.Services.AddPrestamoDependency();
+
+
+                        builder.Services.AddDbContext<SIGEBIContext>(options =>
+                            options.UseSqlServer(builder.Configuration.GetConnectionString("SIGEBIConnString")));
+
+
+                        builder.Services.AddEjemplarDependency();
+                        builder.Services.AddNotificacionDependency();
+                        builder.Services.AddReporteDependency();
+
+
+                        builder.Services.AddSingleton(
+                            typeof(SIGEBI.Persistence.Logging.ILoggerService<>),
+                            typeof(SIGEBI.Persistence.Logging.LoggerService<>));
+            */
+
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -65,21 +72,21 @@ namespace SIGEBI.Web
 
             var app = builder.Build();
 
-          
+
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            
+
             app.UseSession();
 
-           
+
             app.UseAuthorization();
 
-            
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Auth}/{action=Login}/{id?}");
+                pattern: "{controller=AuthApi}/{action=Login}/{id?}");
 
             app.Run();
         }

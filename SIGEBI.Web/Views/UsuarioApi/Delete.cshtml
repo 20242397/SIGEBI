@@ -1,0 +1,53 @@
+﻿@model SIGEBI.Web.Models.UsuarioApi.UsuarioApiModel
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<h2 class="fw-bold text-danger mb-4">
+    <i class="bi bi-trash-fill"></i> Eliminar Usuario
+</h2>
+
+<div class="card shadow-sm border-danger p-4">
+
+    <p class="text-danger fw-bold">
+        ¿Estás seguro que deseas eliminar este usuario? <br />
+        <span class="fw-bold">Esta acción no se puede deshacer.</span>
+    </p>
+
+    <dl class="row">
+        <dt class="col-sm-3 fw-bold">Nombre</dt>
+        <dd class="col-sm-9">@Model.Nombre @Model.Apellido</dd>
+
+        <dt class="col-sm-3 fw-bold">Correo</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3 fw-bold">Rol</dt>
+        <dd class="col-sm-9">@Model.Role</dd>
+
+        <dt class="col-sm-3 fw-bold">Estado</dt>
+        <dd class="col-sm-9">@Model.Estado</dd>
+
+        <dt class="col-sm-3 fw-bold">Activo</dt>
+        <dd class="col-sm-9">
+            <span class="fw-bold @(Model.Activo ? "text-success" : "text-danger")">
+                @(Model.Activo ? "Sí" : "No")
+            </span>
+        </dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmado" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash3-fill"></i> Eliminar
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
+    </form>
+
+</div>
