@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using SIGEBI.Web.Filters;
 
-namespace SIGEBI.Web.Controllers.ConsumoApi
+namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]
     [RoleFilter("Admin", "Docente")]

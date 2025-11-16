@@ -3,7 +3,7 @@ using SIGEBI.Web.Models.AuthApi;
 using System.Text;
 using System.Text.Json;
 
-namespace SIGEBI.Web.Controllers.ConsumoApi
+namespace SIGEBI.Web.Controllers
 {
     public class AuthApiController : Controller
     {

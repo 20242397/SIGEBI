@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Web.Filters;
 
-namespace SIGEBI.Web.Controllers.ConsumoApi
+namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]
     [RoleFilter("Docente")]

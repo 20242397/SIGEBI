@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Web.Filters;
 
-namespace SIGEBI.Web.Controllers.ConsumoApi
+namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]
-    [RoleFilter("Admin")]
-    public class DashboardAdmApiController : Controller
+    [RoleFilter("Estudiante")]
+    public class DashboardEstApiController : Controller
     {
         public IActionResult Index()
         {
