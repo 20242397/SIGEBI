@@ -116,6 +116,7 @@
 <table class="table table-hover table-striped table-bordered shadow-sm align-middle">
     <thead class="table-dark">
         <tr>
+            <th>Id</th>
             <th>Nombre</th>
             <th>Correo</th>
             <th>Teléfono</th>
@@ -130,6 +131,7 @@
         @foreach (var u in Model)
         {
             <tr>
+                <td>@u.Id</td>
                 <td>@u.Nombre @u.Apellido</td>
                 <td>@u.Email</td>
                 <td>@u.PhoneNumber</td>

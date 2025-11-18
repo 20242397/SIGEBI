@@ -39,8 +39,28 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Reportes
             if (!validacion.Success)
                 return validacion;
 
-            return await base.UpdateAsync(entity);
+            try
+            {
+                _context.Reporte.Update(entity);
+                await _context.SaveChangesAsync();
+
+                return new OperationResult<Reporte>
+                {
+                    Success = true,
+                    Data = entity,
+                    Message = "Reporte actualizado."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<Reporte>
+                {
+                    Success = false,
+                    Message = $"Error al actualizar el reporte: {ex.Message}"
+                };
+            }
         }
+
 
         #endregion
 

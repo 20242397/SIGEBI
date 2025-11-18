@@ -1,0 +1,19 @@
+===== SIGEBI - Reporte =====
+ID: 1
+Usuario ID: 
+Tipo: Penalizaciones
+Fecha: 23/10/2025 15:02
+--------------------------------------------
+Penalizaciones registradas entre 10/1/2025 y 10/31/2025: 1
+
+[Actualizado el 23/10/2025 17:07] string
+
+✅ Este reporte fue marcado como resuelto.
+
+[Actualizado el 12/11/2025 19:09] 
+
+✅ Este reporte fue marcado como resuelto.
+
+[Actualizado el 13/11/2025 16:42] 
+
+✅ Este reporte fue marcado como resuelto.

@@ -178,20 +178,28 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.NotificacionesRepositor
                     .ToListAsync();
 
                 if (!prestamos.Any())
-                    return new OperationResult<int> { Success = false, Message = "No hay préstamos con retraso." };
+                    return new OperationResult<int>
+                    {
+                        Success = false,
+                        Message = "No hay préstamos con retraso."
+                    };
 
                 foreach (var p in prestamos)
                 {
                     var diasRetraso = (DateTime.Today - p.FechaVencimiento.Date).Days;
 
+                   
+                    var titulo = p.Libro?.Titulo ?? "Libro sin título";
+
                     var notificacion = new Notificacion
                     {
                         UsuarioId = p.UsuarioId,
                         Tipo = "Penalización",
-                        Mensaje = $"Tiene {diasRetraso} día(s) de retraso en la devolución del libro '{p.Libro.Titulo}'.",
+                        Mensaje = $"Tiene {diasRetraso} día(s) de retraso en la devolución del libro '{titulo}'.",
                         FechaEnvio = DateTime.Now,
                         Enviado = false
                     };
+
                     await _context.Notificacion.AddAsync(notificacion);
                 }
 
@@ -215,9 +223,10 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.NotificacionesRepositor
             }
         }
 
+
         #region Métodos de consulta y actualización general
 
-       
+
         public async Task<OperationResult<IEnumerable<Notificacion>>> ObtenerNotificacionesPorUsuarioAsync(int usuarioId)
         {
             try

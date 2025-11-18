@@ -16,7 +16,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             _usuarioService = usuarioService;
         }
 
-        // LISTAR
+       
         public async Task<ActionResult> Index()
         {
             var result = await _usuarioService.ObtenerTodosAsync<IEnumerable<UsuarioGetDto>>();
@@ -27,7 +27,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View(result.Data);
         }
 
-        // BUSCAR POR EMAIL
+     
         [HttpPost]
         public async Task<ActionResult> BuscarPorEmail(string email)
         {
@@ -48,10 +48,10 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View("Index", new List<UsuarioGetDto> { result.Data });
         }
 
-        // CREAR (GET)
+       
         public ActionResult Create() => View();
 
-        // CREAR (POST)
+        
         [HttpPost]
         public async Task<ActionResult> Create(UsuarioCreateDto dto)
         {
@@ -70,7 +70,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return RedirectToAction(nameof(Index));
         }
 
-        // EDITAR (GET)
+        
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
@@ -85,7 +85,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View(result.Data);
         }
 
-        // EDITAR (POST)
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(UsuarioUpdateDto dto)
@@ -105,7 +105,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return RedirectToAction(nameof(Index));
         }
 
-        // CAMBIAR ESTADO
+        
         public async Task<ActionResult> CambiarEstado(int id, bool activo)
         {
             var result = await _usuarioService.CambiarEstadoAsync<UsuarioGetDto>(id, activo);
@@ -128,7 +128,7 @@ namespace SIGEBI.Web.Controllers.Integracion
         }
 
 
-        // DETAILS
+      
         public async Task<ActionResult> Details(int id)
         {
             var result = await _usuarioService.ObtenerPorIdAsync<UsuarioGetDto>(id);
@@ -139,7 +139,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View(result.Data);
         }
 
-        // DELETE
+       
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _usuarioService.ObtenerPorIdAsync<UsuarioGetDto>(id);
@@ -150,7 +150,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View(result.Data);
         }
 
-        // DELETE CONFIRMADO
+       
         [HttpPost]
         public async Task<ActionResult> DeleteConfirmado(int id)
         {

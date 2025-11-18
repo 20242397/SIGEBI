@@ -18,7 +18,7 @@ namespace SIGEBI.Web.Controllers.Integracion
         }
 
 
-        // LISTAR TODOS LOS LIBROS
+        
         public async Task<ActionResult> Index()
         {
           
@@ -31,7 +31,7 @@ namespace SIGEBI.Web.Controllers.Integracion
         }
 
 
-        // DETALLES
+     
         public async Task<ActionResult> Details(int id)
         {
             var result = await _libroService.ObtenerPorIdAsync<LibroGetDto>(id);
@@ -42,10 +42,9 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View(result.Data);
         }
 
-        // CREAR (GET)
         public ActionResult Create() => View();
 
-        //  CREAR (POST)
+       
 
         [HttpPost]
         public async Task<ActionResult> Create(LibroCreateDto dto)
@@ -65,7 +64,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return RedirectToAction(nameof(Index));
         }
 
-        //  EDITAR (GET)
+        
 
 
         public async Task<ActionResult> Edit(int id)
@@ -89,7 +88,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-        //  EDITAR (POST)
+       
 
 
         [HttpPost]
@@ -111,7 +110,7 @@ namespace SIGEBI.Web.Controllers.Integracion
         }
 
         
-        // ELIMINAR (GET)
+        
        
         public async Task<ActionResult> Delete(int id)
         {
@@ -123,7 +122,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View(result.Data);
         }
 
-        // ELIMINAR (POST)
+       
 
         [HttpPost, ActionName("Delete")]
         public async Task<ActionResult> DeleteConfirmado(int id)
@@ -161,7 +160,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-        // BÚSQUEDA POR TÍTULO
+       
 
         [HttpPost]
         public async Task<ActionResult> BuscarPorTitulo(string titulo)
@@ -183,7 +182,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View("Index", result.Data);
         }
 
-        // BÚSQUEDA POR AUTOR
+        
 
         [HttpPost]
         public async Task<ActionResult> BuscarPorAutor(string autor)
@@ -199,7 +198,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return View("Index", result.Data);
         }
 
-        // FILTRO AVANZADO
+       
 
         [HttpPost]
         [ValidateAntiForgeryToken]

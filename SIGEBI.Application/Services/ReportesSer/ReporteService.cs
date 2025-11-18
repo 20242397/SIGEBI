@@ -200,7 +200,7 @@ namespace SIGEBI.Application.Services.ReportesSer
                             });
                         });
 
-                        // Pie de página
+                       
                         page.Footer()
                             .AlignRight()
                             .Text($"Generado automáticamente por SIGEBI - {DateTime.Now:dd/MM/yyyy HH:mm}")

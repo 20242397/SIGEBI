@@ -1,32 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultContentItems>true</EnableDefaultContentItems>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Controllers\Consumo Api\**" />
-    <Content Remove="Controllers\Consumo Api\**" />
-    <EmbeddedResource Remove="Controllers\Consumo Api\**" />
-    <None Remove="Controllers\Consumo Api\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SIGEBI.Application\SIGEBI.Application.csproj" />
-    <ProjectReference Include="..\SIGEBI.Infraestructure\SIGEBI.Infraestructure.csproj" />
-    <ProjectReference Include="..\SIGEBI.Persistencia\SIGEBI.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\ReportesApi\" />
-    <Folder Include="Models\PrestamoApi\" />
-    <Folder Include="Models\NotificacionApi\" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SIGEBI.Application\SIGEBI.Application.csproj" />
+		<ProjectReference Include="..\SIGEBI.Infraestructure\SIGEBI.Infraestructure.csproj" />
+		<ProjectReference Include="..\SIGEBI.Persistencia\SIGEBI.Persistence.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -8,6 +8,7 @@
         public string Tipo { get; set; } = string.Empty; 
         public string? Contenido { get; set; }
 
+
         public DateTime FechaGeneracion { get; set; } = DateTime.Now;
 
     }

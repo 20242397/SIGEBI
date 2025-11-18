@@ -109,34 +109,33 @@
                 <i class="bi bi-book-half"></i> SIGEBI
             </div>
 
-           
             @if (userRole == "Admin")
             {
-                <a href="/DashboardAdm/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
-                <a href="/UsuarioAdm/Index"><i class="bi bi-people-fill"></i> Usuarios</a>
-                <a href="/LibroAdm/Index"><i class="bi bi-book"></i> Libros</a>
-                <a href="/EjemplarAdm/Index"><i class="bi bi-collection"></i> Ejemplares</a>
-                <a href="/PrestamoAdm/Index"><i class="bi bi-arrow-left-right"></i> Préstamos</a>
-                <a href="/NotificacionAdm/Index"><i class="bi bi-bell-fill"></i> Notificaciones</a>
-                <a href="/ReporteAdm/Index"><i class="bi bi-bar-chart-fill"></i> Reportes</a>
+                <a href="/DashboardAdmApi/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
+                <a href="/UsuarioApi/Index"><i class="bi bi-people-fill"></i> Usuarios</a>
+                <a href="/LibroApi/Index"><i class="bi bi-book"></i> Libros</a>
+                <a href="/EjemplarApi/Index"><i class="bi bi-collection"></i> Ejemplares</a>
+                <a href="/PrestamoApi/Index"><i class="bi bi-arrow-left-right"></i> Préstamos</a>
+                <a href="/NotificacionApi/Index"><i class="bi bi-bell-fill"></i> Notificaciones</a>
+                <a href="/ReporteApi/Index"><i class="bi bi-bar-chart-fill"></i> Reportes</a>
             }
 
-           
             @if (userRole == "Docente")
             {
-                <a href="/DashboardDoc/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
-                <a href="/LibroAdm/Index"><i class="bi bi-book"></i> Libros</a>
-                <a href="/PrestamoAdm/Index"><i class="bi bi-arrow-left-right"></i> Mis Préstamos</a>
-                <a href="/NotificacionAdm/Index"><i class="bi bi-bell-fill"></i> Notificaciones</a>
+                <a href="/DashboardDocApi/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
+                <a href="/LibroApi/Index"><i class="bi bi-book"></i> Libros</a>
+                <a href="/PrestamoApi/Index"><i class="bi bi-arrow-left-right"></i> Mis Préstamos</a>
+                <a href="/NotificacionApi/Index"><i class="bi bi-bell-fill"></i> Notificaciones</a>
+            }
+
+            @if (userRole == "Estudiante")
+            {
+                <a href="/DashboardEstApi/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
+                <a href="/LibroApi/Index"><i class="bi bi-book"></i> Libros</a>
+                <a href="/PrestamoApi/Index"><i class="bi bi-arrow-left-right"></i> Mis Préstamos</a>
             }
 
            
-            @if (userRole == "Estudiante")
-            {
-                <a href="/DashboardEst/Index"><i class="bi bi-speedometer2"></i> Inicio</a>
-                <a href="/LibroAdm/Index"><i class="bi bi-book"></i> Libros</a>
-                <a href="/PrestamoAdm/Index"><i class="bi bi-arrow-left-right"></i> Mis Préstamos</a>
-            }
         </div>
     }
 

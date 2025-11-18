@@ -1,0 +1,72 @@
+﻿@model SIGEBI.Web.Models.LibroApi.LibroApiUpdateModel
+
+@{
+    ViewData["Title"] = "Editar Libro";
+}
+
+<h2 class="fw-bold text-warning mb-4">
+    <i class="bi bi-pencil-square"></i> Editar Libro
+</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <form asp-action="Edit" method="post" class="row g-3">
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Título</label>
+                <input asp-for="Titulo" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Autor</label>
+                <input asp-for="Autor" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold">ISBN</label>
+                <input asp-for="ISBN" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Editorial</label>
+                <input asp-for="Editorial" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Año de Publicación</label>
+                <input asp-for="AñoPublicacion" type="number" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Categoría</label>
+                <input asp-for="Categoria" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Estado</label>
+                <select asp-for="Estado" class="form-select">
+                    <option>Disponible</option>
+                    <option>Prestado</option>
+                    <option>Reservado</option>
+                    <option>Dañado</option>
+                    <option>Inactivo</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-between mt-3">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+
+                <button type="submit" class="btn btn-warning text-white">
+                    <i class="bi bi-save"></i> Guardar Cambios
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>

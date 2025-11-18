@@ -33,7 +33,7 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
             {"@Nombre", entity.Nombre},
             {"@Apellido", entity.Apellido},
             {"@Email", entity.Email},
-            {"@Password", entity.Password},  // ✔ ARREGLADO
+            {"@Password", entity.Password}, 
             {"@PhoneNumber", entity.PhoneNumber ?? (object)DBNull.Value},
             {"@Role", entity.Role},
             {"@Estado", entity.Estado},
@@ -346,7 +346,7 @@ public sealed class UsuarioRepositoryAdo : IUsuarioRepository
 
             var usuario = EntityToModelMapper.ToUsuario(rows.First());
 
-            // ✔ LOGIN TEXTO PLANO
+          
             if (usuario.Password != password)
             {
                 return new OperationResult<Usuario>

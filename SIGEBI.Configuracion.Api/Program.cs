@@ -16,7 +16,7 @@ namespace SIGEBI.Configuracion.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // JSON Config
+           
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {

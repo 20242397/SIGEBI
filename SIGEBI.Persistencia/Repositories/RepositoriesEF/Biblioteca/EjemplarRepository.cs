@@ -4,7 +4,6 @@ using SIGEBI.Domain.Base;
 using SIGEBI.Domain.Entitines.Configuration.Biblioteca;
 using SIGEBI.Persistence.Base;
 using SIGEBI.Persistence.Context;
-using SIGEBI.Application.Validators;
 using SIGEBI.Persistence.Logging;
 
 namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
@@ -109,12 +108,12 @@ namespace SIGEBI.Persistence.Repositories.RepositoriesEF.Biblioteca
 
         public override async Task<OperationResult<Ejemplar>> UpdateAsync(Ejemplar entity)
         {
-            //  Validar primero los datos
+            
             var validacion = EjemplarValidator.Validar(entity);
             if (!validacion.Success)
                 return validacion;
 
-            //  Luego verificar si el estado ya es el mismo
+            
             var original = await _context.Ejemplar.AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == entity.Id);
 

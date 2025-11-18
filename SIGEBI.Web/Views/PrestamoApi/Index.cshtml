@@ -1,0 +1,181 @@
+﻿@model IEnumerable<SIGEBI.Web.Models.PrestamoApi.PrestamoApiModel>
+
+@{
+    ViewData["Title"] = "Gestión de Préstamos";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container mt-4">
+
+   
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0 text-dark">
+            <i class="bi bi-journal-bookmark-fill text-primary"></i> Gestión de Préstamos
+        </h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm px-4">
+            <i class="bi bi-plus-circle"></i> Registrar nuevo préstamo
+        </a>
+    </div>
+
+   
+    @if (TempData["Ok"] != null)
+    {
+        <div class="alert alert-success shadow-sm d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Ok"]
+        </div>
+    }
+    else if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm d-flex align-items-center">
+            <i class="bi bi-x-circle-fill me-2"></i> @TempData["Error"]
+        </div>
+    }
+
+   
+    <div class="row text-center mb-4 g-3">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-book-half fs-2"></i>
+                    <h5 class="fw-bold mb-0">@Model.Count()</h5>
+                    <small>Préstamos totales</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-success text-white">
+                <div class="card-body">
+                    <i class="bi bi-bookmark-check-fill fs-2"></i>
+                    <h5 class="fw-bold mb-0">@Model.Count(p => p.Estado == "Activo")</h5>
+                    <small>Activos</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-danger text-white">
+                <div class="card-body">
+                    <i class="bi bi-exclamation-octagon-fill fs-2"></i>
+                    <h5 class="fw-bold mb-0">@Model.Count(p => p.Penalizacion > 0)</h5>
+                    <small>Con penalización</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-secondary text-white">
+                <div class="card-body">
+                    <i class="bi bi-clock-history fs-2"></i>
+                    <h5 class="fw-bold mb-0">@Model.Count(p => p.FechaDevolucion == null)</h5>
+                    <small>Pendientes de devolución</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr class="text-center">
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Libro</th>
+                    <th>Ejemplar</th>
+                    <th>Préstamo</th>
+                    <th>Vencimiento</th>
+                    <th>Devolución</th>
+                    <th>Penalización</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr class="text-center">
+                        <td>@p.Id</td>
+                        <td>@p.UsuarioId</td>
+                        <td>@p.LibroId</td>
+                        <td>@p.EjemplarId</td>
+
+                        <td>@p.FechaPrestamo.ToShortDateString()</td>
+                        <td>@p.FechaVencimiento.ToShortDateString()</td>
+
+                        <td>@(p.FechaDevolucion?.ToShortDateString() ?? "-")</td>
+
+                        <td>
+                            @if (p.Penalizacion > 0)
+                            {
+                                <span class="fw-bold text-danger">$@p.Penalizacion</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+
+                        <td>
+                            <span class="badge @(p.Estado == "Activo" ? "bg-success" : "bg-danger") px-3 py-2">
+                                @p.Estado
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+
+                               
+                                <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-warning btn-sm" title="Extender préstamo">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                               
+                                <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-danger btn-sm" title="Eliminar préstamo">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+
+                               
+                                <a asp-action="RegistrarDevolucion" asp-route-id="@p.Id" class="btn btn-success btn-sm" title="Registrar devolución">
+                                    <i class="bi bi-arrow-return-left"></i>
+                                </a>
+
+                               
+                                <a asp-action="CalcularPenalizacion" asp-route-id="@p.Id" class="btn btn-outline-danger btn-sm" title="Calcular penalización">
+                                    <i class="bi bi-cash-stack"></i>
+                                </a>
+
+                                
+                                <a asp-action="Historial" asp-route-usuarioId="@p.UsuarioId" class="btn btn-outline-primary btn-sm" title="Ver historial del usuario">
+                                    <i class="bi bi-journal-text"></i>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .table th {
+        vertical-align: middle;
+    }
+
+    .btn-sm {
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-sm:hover {
+            transform: scale(1.05);
+        }
+</style>

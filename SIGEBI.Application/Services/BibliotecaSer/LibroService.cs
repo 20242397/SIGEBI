@@ -39,7 +39,7 @@ namespace SIGEBI.Application.Services.BibliotecaSer
                 if (!validation.Success)
                     return new OperationResult<T> { Success = false, Message = validation.Message };
 
-                // Verificar ISBN único
+               
                 var existing = await _libroRepository.GetByISBNAsync(dto.ISBN);
                 if (existing.Success && existing.Data is not null)
                 {
