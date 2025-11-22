@@ -1,0 +1,7 @@
+===== SIGEBI - Reporte =====
+ID: 12
+Usuario ID: 16
+Tipo: Penalizaciones
+Fecha: 19/11/2025 17:21
+--------------------------------------------
+Penalizaciones registradas entre 1/1/0001 y 11/19/2025: 6

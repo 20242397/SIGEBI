@@ -9,13 +9,13 @@ namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]
     [RoleFilter("Admin")]
-    public class ReporteApiController : Controller
+    public class ReporteWebController : Controller
     {
         private readonly string _baseUrl = "http://localhost:5286/api/Reporte/";
         private readonly JsonSerializerOptions _jsonOptions =
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-       
+
         public async Task<IActionResult> Index(string tipo = "", DateTime? inicio = null, DateTime? fin = null)
         {
             using var client = new HttpClient();
@@ -52,7 +52,7 @@ namespace SIGEBI.Web.Controllers
             return View(lista);
         }
 
-      
+
         public async Task<IActionResult> Details(int id)
         {
             using var client = new HttpClient();
@@ -71,7 +71,7 @@ namespace SIGEBI.Web.Controllers
             return View(data.Data);
         }
 
-     
+
         [HttpGet]
         public IActionResult Create() => View(new ReporteApiCreateModel());
 
@@ -103,7 +103,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       
+
         [HttpPost]
         public async Task<IActionResult> Actualizar(ReporteApiUpdateModel model)
         {
@@ -125,7 +125,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
-      
+
         [HttpGet]
         public async Task<IActionResult> Exportar(int id, string formato)
         {
@@ -156,7 +156,7 @@ namespace SIGEBI.Web.Controllers
             return File(bytes, contentType, fileName);
         }
 
-        
+
 
     }
 }

@@ -49,6 +49,7 @@ namespace SIGEBI.Configuracion.Api.Controllers
 
 
 
+
         [HttpGet("todas")]
         public async Task<IActionResult> ObtenerTodas()
         {

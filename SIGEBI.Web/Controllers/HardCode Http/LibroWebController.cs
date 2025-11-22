@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace SIGEBI.Web.Controllers
 {
-    public class LibroApiController : Controller
+    public class LibroWebController : Controller
     {
         private const string BaseUrl = "http://localhost:5286/api/";
 
@@ -15,7 +15,7 @@ namespace SIGEBI.Web.Controllers
             PropertyNameCaseInsensitive = true
         };
 
-       
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -36,7 +36,7 @@ namespace SIGEBI.Web.Controllers
             return View(result?.Data ?? new List<LibroApiModel>());
         }
 
-        
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -52,7 +52,7 @@ namespace SIGEBI.Web.Controllers
             return View(result.Data);
         }
 
-        
+
         [HttpGet]
         public IActionResult Create() => View();
 
@@ -82,7 +82,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -125,7 +125,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -161,7 +161,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> BuscarPorTitulo(string titulo)
         {
@@ -182,7 +182,7 @@ namespace SIGEBI.Web.Controllers
             return View("Index", result?.Data ?? new List<LibroApiModel>());
         }
 
-       
+
         [HttpPost]
         public async Task<IActionResult> BuscarPorAutor(string autor)
         {
@@ -204,7 +204,7 @@ namespace SIGEBI.Web.Controllers
         }
 
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Filtrar(
             string? titulo,
@@ -244,7 +244,7 @@ namespace SIGEBI.Web.Controllers
             return View("Index", result?.Data ?? new List<LibroApiModel>());
         }
 
-       
+
         [HttpPost]
         public async Task<IActionResult> CambiarEstado(int id, string estado)
         {
@@ -275,4 +275,3 @@ namespace SIGEBI.Web.Controllers
         }
     }
 }
-

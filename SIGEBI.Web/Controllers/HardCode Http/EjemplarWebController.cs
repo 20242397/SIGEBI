@@ -9,7 +9,7 @@ namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]
     [RoleFilter("Admin", "Docente")]
-    public class EjemplarApiController : Controller
+    public class EjemplarWebController : Controller
     {
         private readonly string _baseUrl = "http://localhost:5286/api/";
 
@@ -19,7 +19,7 @@ namespace SIGEBI.Web.Controllers
             using var client = new HttpClient();
             client.BaseAddress = new Uri(_baseUrl);
 
-            var response = await client.GetAsync("Ejemplar/todos"); 
+            var response = await client.GetAsync("Ejemplar/todos");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -36,21 +36,21 @@ namespace SIGEBI.Web.Controllers
 
             var ejemplares = result?.Data?.ToList() ?? new List<EjemplarApiModel>();
 
-           
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 ViewBag.SearchTerm = search;
 
                 if (int.TryParse(search, out int numero))
                 {
-                    
+
                     ejemplares = ejemplares
                         .Where(e => e.Id == numero || e.LibroId == numero)
                         .ToList();
                 }
                 else
                 {
-                   
+
                     ejemplares = ejemplares
                         .Where(e => !string.IsNullOrEmpty(e.CodigoBarras) &&
                                     e.CodigoBarras.Contains(search, StringComparison.OrdinalIgnoreCase))
@@ -86,10 +86,10 @@ namespace SIGEBI.Web.Controllers
             return View(result.Data);
         }
 
-        
+
         public IActionResult Create() => View();
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Create(EjemplarApiCreateModel model)
         {
@@ -99,7 +99,7 @@ namespace SIGEBI.Web.Controllers
             using var client = new HttpClient();
             client.BaseAddress = new Uri(_baseUrl);
 
-           
+
             var jsonBody = JsonSerializer.Serialize(model);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
@@ -139,7 +139,7 @@ namespace SIGEBI.Web.Controllers
             if (result == null || !result.Success || result.Data == null)
                 return NotFound();
 
-           
+
             var updateModel = new EjemplarApiUpdateModel
             {
                 Id = result.Data.Id,
@@ -187,7 +187,7 @@ namespace SIGEBI.Web.Controllers
             using var client = new HttpClient();
             client.BaseAddress = new Uri(_baseUrl);
 
-           
+
             var response = await client.PutAsync($"Ejemplar/perdido/{id}", null);
 
             if (!response.IsSuccessStatusCode)

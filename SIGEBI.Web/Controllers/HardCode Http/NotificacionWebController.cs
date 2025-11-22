@@ -6,7 +6,7 @@ using SIGEBI.Web.Models.NotificacionApi;
 
 namespace SIGEBI.Web.Controllers
 {
-    public class NotificacionApiController : Controller
+    public class NotificacionWebController : Controller
     {
         private const string BaseUrl = "http://localhost:5286/api/Notificacion/";
 
@@ -162,4 +162,3 @@ namespace SIGEBI.Web.Controllers
         }
     }
 }
-

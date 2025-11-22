@@ -1,12 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Libro;
-using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Prestamo;
-using SIGEBI.Infraestructure.Dependencies.DependenciasADO.Usuario;
-using SIGEBI.Infraestructure.Dependencies.DependenciasEF.Ejemplar;
-using SIGEBI.Infraestructure.Dependencies.DependenciasEF.Notificacion;
-using SIGEBI.Infraestructure.Dependencies.DependenciasEF.Reporte;
-using SIGEBI.Persistence.Context;
-using SIGEBI.Persistence.Repositories.RepositoriesAdo;
+﻿
+using SIGEBI.Web.Dependencies;
+using SIGEBI.Web.Refactory;
 using System.Text.Json.Serialization;
 
 namespace SIGEBI.Web
@@ -28,11 +22,22 @@ namespace SIGEBI.Web
                         JsonIgnoreCondition.WhenWritingNull;
                 });
 
-            builder.Services.AddHttpClient("SIGEBIApi", c =>
+            builder.Services.AddHttpClient("SIGEBIApi", client =>
             {
-                c.BaseAddress = new Uri("http://localhost:5286/api/");
+                client.BaseAddress = new Uri("http://localhost:5286/api/");
+               
             });
 
+            builder.Services.AddScoped<IApiClient, ApiClient>();
+
+            builder.Services.AddAuthApiDependency();
+            builder.Services.AddDashboardApiDependency();
+            builder.Services.AddEjemplarApiDependency();
+            builder.Services.AddLibroApiDependency();
+            builder.Services.AddNotificacionApiDependency();
+            builder.Services.AddPrestamoApiDependency();
+            builder.Services.AddReporteApiDependency();
+            builder.Services.AddUsuarioApiDependency();
 
             /*
                        

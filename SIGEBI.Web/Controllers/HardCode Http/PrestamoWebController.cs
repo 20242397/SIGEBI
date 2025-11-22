@@ -9,11 +9,11 @@ namespace SIGEBI.Web.Controllers.Integracion
 {
     [AuthFilter]
     [RoleFilter("Admin", "Docente", "Estudiante")]
-    public class PrestamoApiController : Controller
+    public class PrestamoWebController : Controller
     {
         private readonly string _baseUrl = "http://localhost:5286/api/Prestamo/";
 
-     
+
         public async Task<IActionResult> Index()
         {
             using var client = new HttpClient();
@@ -37,7 +37,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-      
+
         public async Task<IActionResult> Details(int id)
         {
             using var client = new HttpClient();
@@ -63,12 +63,12 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-       
+
         public IActionResult Create() => View();
 
 
 
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PrestamoApiCreateModel model)
@@ -81,7 +81,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
             using var client = new HttpClient();
 
-            
+
             var restriccion = await client.GetAsync(_baseUrl + $"restringir/{model.UsuarioId}");
 
             var restriccionJson = await restriccion.Content.ReadAsStringAsync();
@@ -93,7 +93,7 @@ namespace SIGEBI.Web.Controllers.Integracion
                 return RedirectToAction(nameof(Index));
             }
 
-          
+
             var body = new StringContent(
                 JsonSerializer.Serialize(model),
                 Encoding.UTF8,
@@ -117,7 +117,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-       
+
         public async Task<IActionResult> Edit(int id)
         {
             using var client = new HttpClient();
@@ -146,7 +146,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-      
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PrestamoApiUpdateModel model)
@@ -182,7 +182,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-       
+
         public async Task<IActionResult> RegistrarDevolucion(int id)
         {
             using var client = new HttpClient();
@@ -201,7 +201,7 @@ namespace SIGEBI.Web.Controllers.Integracion
             return RedirectToAction(nameof(Index));
         }
 
-        
+
 
 
 
@@ -216,14 +216,14 @@ namespace SIGEBI.Web.Controllers.Integracion
 
             if (response.IsSuccessStatusCode)
             {
-                
+
                 TempData["Ok"] = string.IsNullOrWhiteSpace(result?.Message)
                     ? "Penalización calculada correctamente."
                     : result.Message;
             }
             else
             {
-               
+
                 TempData["Error"] = string.IsNullOrWhiteSpace(result?.Message)
                     ? "Error al calcular la penalización."
                     : result.Message;
@@ -235,7 +235,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-       
+
         public async Task<IActionResult> Historial(int usuarioId)
         {
             using var client = new HttpClient();
@@ -261,7 +261,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-       
+
         public async Task<IActionResult> Delete(int id)
         {
             using var client = new HttpClient();
@@ -284,7 +284,7 @@ namespace SIGEBI.Web.Controllers.Integracion
 
 
 
-       
+
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

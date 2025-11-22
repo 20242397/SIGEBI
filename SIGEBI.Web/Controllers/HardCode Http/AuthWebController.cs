@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace SIGEBI.Web.Controllers
 {
-    public class AuthApiController : Controller
+    public class AuthWebController : Controller
     {
         [HttpGet]
         public IActionResult Login()
@@ -19,12 +19,12 @@ namespace SIGEBI.Web.Controllers
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5286/api/");
 
-           
+
             var jsonBody = JsonSerializer.Serialize(model);
 
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-          
+
             var response = await client.PostAsync("Auth/login", content);
 
             if (!response.IsSuccessStatusCode)
@@ -46,7 +46,7 @@ namespace SIGEBI.Web.Controllers
                 return View(model);
             }
 
-           
+
             HttpContext.Session.SetInt32("UserId", user.Id);
             HttpContext.Session.SetString("UserName", user.NombreCompleto);
             HttpContext.Session.SetString("UserRole", user.Role);

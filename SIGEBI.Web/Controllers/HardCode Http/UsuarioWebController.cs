@@ -10,7 +10,7 @@ namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]
     [RoleFilter("Admin")]
-    public class UsuarioApiController : Controller
+    public class UsuarioWebController : Controller
     {
         private readonly string _baseUrl = "http://localhost:5286/api/";
 
@@ -37,7 +37,7 @@ namespace SIGEBI.Web.Controllers
             return View(result?.Data ?? new List<UsuarioApiModel>());
         }
 
-       
+
         public async Task<IActionResult> Details(int id)
         {
             using var client = new HttpClient();
@@ -58,10 +58,10 @@ namespace SIGEBI.Web.Controllers
             return View(result?.Data);
         }
 
-       
+
         public IActionResult Create() => View();
 
-       
+
         [HttpPost]
         public async Task<IActionResult> Create(UsuarioApiCreateModel model)
         {
@@ -93,7 +93,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-      
+
         public async Task<IActionResult> Edit(int id)
         {
             using var client = new HttpClient();
@@ -114,7 +114,7 @@ namespace SIGEBI.Web.Controllers
             return View(result?.Data);
         }
 
-      
+
         [HttpPost]
         public async Task<IActionResult> Edit(UsuarioApiUpdateModel model)
         {
@@ -145,7 +145,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-     
+
         [HttpPost]
         public async Task<IActionResult> BuscarPorEmail(string email)
         {
@@ -176,7 +176,7 @@ namespace SIGEBI.Web.Controllers
             return View("Index", new List<UsuarioApiModel> { result.Data });
         }
 
-      
+
         public async Task<IActionResult> CambiarEstado(int id, bool activo)
         {
             using var client = new HttpClient();
@@ -224,7 +224,7 @@ namespace SIGEBI.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
         public async Task<IActionResult> Delete(int id)
         {
             using var client = new HttpClient();
@@ -245,7 +245,7 @@ namespace SIGEBI.Web.Controllers
             return View(result?.Data);
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmado(int id)
         {
