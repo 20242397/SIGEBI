@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Web.Filters;
 using SIGEBI.Web.InterfacesApi;
-using System.Linq;
-
 namespace SIGEBI.Web.Controllers
 {
     [AuthFilter]

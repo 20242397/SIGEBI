@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGEBI.Web.Filters;
 using SIGEBI.Web.InterfacesApi;
-using SIGEBI.Web.Models.LibroApi;
 using SIGEBI.Web.Models.UsuarioApi;
 
 namespace SIGEBI.Web.Controllers
