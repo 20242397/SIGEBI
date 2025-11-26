@@ -24,8 +24,8 @@ namespace SIGEBI.Web.ServiciosApi
 
         public async Task<EjemplarApiModel?> GetByIdAsync(int id)
         {
-            var r = await _api.GetAsync<ApiResponse<EjemplarApiModel>>($"Ejemplar/{id}");
-            return r.Data?.Data;
+            var r = await _api.GetAsync<EjemplarApiModel>($"Ejemplar/{id}");
+            return r.Data;
         }
 
 

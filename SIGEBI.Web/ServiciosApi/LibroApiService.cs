@@ -22,9 +22,10 @@ namespace SIGEBI.Web.ServiciosApi
 
         public async Task<LibroApiModel?> GetByIdAsync(int id)
         {
-            var r = await _api.GetAsync<ApiResponse<LibroApiModel>>($"Libro/{id}");
-            return r.Data?.Data;
+            var r = await _api.GetAsync<LibroApiModel>($"Libro/{id}");
+            return r.Data;
         }
+
 
         public Task<ApiResponse<object>> CreateAsync(LibroApiCreateModel model)
             => _api.PostAsync<object>("Libro/registrar", model);
